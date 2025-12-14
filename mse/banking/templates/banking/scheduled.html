@@ -1,0 +1,100 @@
+{% extends "banking/base.html" %}
+{% load banking_extras %}
+{% block title %}Scheduled Payments{% endblock %}
+
+{% block body %}
+<section class="bk-pagehead" data-reveal>
+  <h2 class="bk-h2">Scheduled Payments</h2>
+  <p class="bk-muted">
+    Automate bill payments — one-time or monthly.
+  </p>
+</section>
+
+<section class="bk-grid">
+  <!-- CREATE -->
+  <div class="bk-card" data-reveal>
+    <div class="bk-card-head">
+      <div class="bk-card-title">New Scheduled Payment</div>
+      <div class="bk-pill">Auto</div>
+    </div>
+
+    <form method="post" class="bk-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="create"/>
+
+      <div class="bk-form-row">
+        <label class="bk-label">From Account</label>
+        {{ form.account }}
+      </div>
+
+      <div class="bk-form-row">
+        <label class="bk-label">Payee</label>
+        {{ form.payee }}
+      </div>
+
+      <div class="bk-form-row">
+        <label class="bk-label">Amount</label>
+        {{ form.amount }}
+      </div>
+
+      <div class="bk-form-row">
+        <label class="bk-label">Frequency</label>
+        {{ form.frequency }}
+      </div>
+
+      <div class="bk-form-row">
+        <label class="bk-label">First Run Date</label>
+        {{ form.next_run }}
+      </div>
+
+      <button class="bk-btn bk-btn-primary" type="submit">
+        <span class="bk-btn-glow"></span> Schedule Payment
+      </button>
+    </form>
+  </div>
+
+  <!-- LIST -->
+  <div class="bk-card" data-reveal>
+    <div class="bk-card-head">
+      <div class="bk-card-title">Your Scheduled Payments</div>
+      <div class="bk-pill">{{ payments|length }}</div>
+    </div>
+
+    {% if payments %}
+      <div class="bk-payees">
+        {% for p in payments %}
+          <div class="bk-payee">
+            <div class="bk-payee-name">
+              {{ p.payee.name }} — {{ p.amount|money }}
+            </div>
+            <div class="bk-payee-sub">
+              {{ p.frequency }} • Next: {{ p.next_run }}
+              • {{ p.account.nickname|default:p.account.get_account_type_display }}
+            </div>
+
+            <div style="margin-top:10px; display:flex; gap:8px;">
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="toggle"/>
+                <input type="hidden" name="payment_id" value="{{ p.id }}"/>
+                <button class="bk-btn {% if p.active %}bk-btn-ghost{% else %}bk-btn-primary{% endif %}">
+                  {% if p.active %}Pause{% else %}Resume{% endif %}
+                </button>
+              </form>
+
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete"/>
+                <input type="hidden" name="payment_id" value="{{ p.id }}"/>
+                <button class="bk-btn bk-btn-ghost">Delete</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="bk-empty">No scheduled payments yet.</div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

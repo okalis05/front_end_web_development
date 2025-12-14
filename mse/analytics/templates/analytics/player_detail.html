@@ -1,0 +1,76 @@
+{% extends "analytics/base.html" %}
+{% load static %}
+
+{% block title %}{{ player }} | Mystics Player Detail{% endblock %}
+
+{% block body %}
+<div class="layout">
+    <aside class="left-bar">
+        <div class="sidebar-logo-wrapper">
+            <img src="{% static 'analytics/images/mystics-logo.png' %}" alt="Washington Mystics Logo">
+            <div>{{ player.team.city }} {{ player.team.name }}</div>
+            <small>Player Detail View</small>
+        </div>
+    </aside>
+
+    <section class="right-content fade-in">
+        <div class="page-header">
+            <h1>{{ player.first_name }} <span class="highlight">{{ player.last_name }}</span></h1>
+            <p>Season {{ season }} game-by-game performance.</p>
+        </div>
+
+        <section class="roster-layout">
+            <article class="player-detail-card"
+                     id="playerDetail"
+                     data-players='[{
+                        "id": {{ player.id }},
+                        "name": "{{ player.first_name }} {{ player.last_name }}",
+                        "jersey": "{{ player.jersey|default:'--' }}",
+                        "age": "{{ player.age|default_if_none:'-' }}",
+                        "height": "{{ player.height|default:'-' }}",
+                        "weight": "{{ player.weight|default:'-' }}",
+                        "headshot": "{{ player.headshot_url|default_if_none:'' }}"
+                     }]'>
+                <div class="player-photo-wrapper">
+                    <img id="playerPhoto"
+                         class="player-photo"
+                         src="{% if player.headshot_url %}{{ player.headshot_url }}{% else %}{% static 'analytics/images/default-player.jpg' %}{% endif %}"
+                         alt="{{ player }}">
+                </div>
+                <div class="player-meta">
+                    <h2 id="playerName">{{ player.first_name }} {{ player.last_name }}</h2>
+                    <div class="jersey" id="playerJersey">#{{ player.jersey|default:'--' }}</div>
+                    <ul>
+                        <li><strong>Age:</strong> <span id="playerAge">{{ player.age|default_if_none:'-' }}</span></li>
+                        <li><strong>Height:</strong> <span id="playerHeight">{{ player.height|default:'-' }}</span></li>
+                        <li><strong>Weight:</strong> <span id="playerWeight">{{ player.weight|default:'-' }}</span></li>
+                    </ul>
+                </div>
+            </article>
+
+            <div class="roster-select-card">
+                <label>Game log (points per game)</label>
+                <div class="chart-card">
+                    <h3>Game Log – Points</h3>
+                    <canvas id="playerTrendChart"></canvas>
+                </div>
+
+                <!-- Hidden select so we can reuse the roster chart JS -->
+                <select id="playerSelect"
+                        style="display:none;"
+                        data-player-chart-url="{% url 'analytics:player_game_log' player.id %}">
+                    <option value="{{ player.id }}" selected>
+                        {{ player.first_name }} {{ player.last_name }}
+                    </option>
+                </select>
+            </div>
+        </section>
+
+        <div class="bottom-button-wrapper">
+            <a href="{% url 'analytics:roster' %}" class="bottom-button">
+                Back to Roster
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

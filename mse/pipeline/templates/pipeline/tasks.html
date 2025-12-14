@@ -1,0 +1,13 @@
+{% extends 'pipeline/base.html' %}
+
+{% block body %}
+<ul>
+    <h1>Tasks</h1>
+    {% for task in tasks %}
+    <li>{{task}}</li>
+    {% empty %}
+    <li>No Task</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'pipeline:add' %}">Add Tasks</a>
+{% endblock %}

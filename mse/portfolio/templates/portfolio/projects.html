@@ -1,0 +1,95 @@
+{% extends "portfolio/base.html" %}
+
+{% block content %}
+
+
+<section class="skills-header fade-in">
+    <h1 class="section-title">Projects</h1>
+    <p class="skills-intro">
+        A refined showcase of engineered solutions shaped by technical mastery, 
+        creativity, and real-world execution.
+    </p>
+</section>
+
+    <!-- PROJECT GRID (Matches Skills Page Layout) -->
+    <div class="project-grid-enhanced">
+
+        <!-- PROJECT 1 -->
+        <div class="project-card-enhanced">
+            <img src="https://bunny-wp-pullzone-3xue3q6yzy.b-cdn.net/wp-content/uploads/2024/10/Untitled-design-3-1.jpg"
+                 class="project-img-enhanced">
+            <h2>Basketball Analytics Dashboard</h2>
+            <p>
+                An advanced shot-chart and analytics system powered by Django, PostgreSQL,
+                and real-time WNBA/NBA ingestion pipelines.
+            </p>
+            <a href="{% url 'analytics:index' %}" class="project-btn-enhanced">View Dashboard →</a>
+        </div>
+
+        <!-- PROJECT 2 -->
+        <div class="project-card-enhanced">
+            <img src="https://images.pexels.com/photos/669619/pexels-photo-669619.jpeg"
+                 class="project-img-enhanced">
+            <h2>Data Pipeline with Prefect & dbt</h2>
+            <p>
+                Automated ETL flows transforming raw data into analytics-ready models
+                using Prefect orchestration and dbt transformations.
+            </p>
+            <a href="{% url 'pipeline:index' %}"  class="project-btn-enhanced">View ETL Workflows →</a>
+        </div>
+
+        <!-- PROJECT 3 -->
+        <div class="project-card-enhanced">
+            <img src="https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg"
+                 class="project-img-enhanced">
+            <h2>Next.js + Django Hybrid Application</h2>
+            <p>
+                A cloud-ready full-stack application featuring JWT auth, dashboards,
+                and an API-driven architecture.
+            </p>
+            <a href="#" class="project-btn-enhanced">View Next.js App →</a>
+        </div>
+
+        <!-- PROJECT 4 -->
+        <div class="project-card-enhanced">
+            <img src="https://images.pexels.com/photos/574071/pexels-photo-574071.jpeg"
+                 class="project-img-enhanced">
+            <h2>Modern Core Banking System</h2>
+            <p>
+               A full-stack Django banking app that models core banking operations, including transaction integrity, account management, and activity reporting through a clean, intuitive interface.
+            </p>
+            <a href="{% url 'banking:dashboard' %}" class="project-btn-enhanced">View Banking App →</a>
+        </div>
+
+        <!-- PROJECT 5 -->
+        <div class="project-card-enhanced">
+            <img src="https://images.pexels.com/photos/5077065/pexels-photo-5077065.jpeg"
+                 class="project-img-enhanced">
+            <h2>Full-Stack e-Commerce Store</h2>
+            <p>
+                A cloud-hosted e-commerce platform with secure authentication,
+                inventory management, and Stripe-powered payments.
+            </p>
+            <a href="{% url 'store:pricing' %}" class="project-btn-enhanced">View Store →</a>
+        </div>
+
+          <!-- PROJECT 6 -->
+        <div class="project-card-enhanced">
+            <img src="https://www.simplilearn.com/ice9/free_resources_article_thumb/Data_Visualization_Tools.jpg"
+                 class="project-img-enhanced">
+            <h2>Border Analytics Playground</h2>
+            <p>
+                Interactive geospatial analytics of U.S. border encounters powered by open government data,
+                map visualizations, and dynamic D3 charts.
+            </p>
+            <a href="{% url 'playground:intro' %}" class="project-btn-enhanced">View Analytics Playground →</a>
+        </div>
+
+    </div>
+<div class="bottom-button-wrapper no-space">
+    <a href="{% url 'portfolio:contacts' %}" class="bottom-button">
+        Let's Connect →
+    </a>
+</div>
+
+{% endblock %}

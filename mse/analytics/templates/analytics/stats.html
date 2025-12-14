@@ -1,0 +1,50 @@
+{% extends "analytics/base.html" %}
+
+{% block title %}Charts | Mystics Insight Hub{% endblock %}
+
+{% block body %}
+<div class="layout">
+    <aside class="left-bar">
+        <div class="sidebar-logo-wrapper">
+            <div>Season Analytics</div>
+            <small>Visualize trends across the league</small>
+        </div>
+    </aside>
+
+    <section class="right-content fade-in">
+        <div class="page-header">
+            <h1>Visualization <span class="highlight">Playground</span></h1>
+            <p>
+                These demo charts reuse the same styling as the main dashboard and can
+                be wired to additional endpoints (shot charts, on/off splits, etc.).
+            </p>
+        </div>
+
+        <section class="stats-wrapper" id="demoCharts">
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Sample Points Per Game</h3>
+                    <canvas id="lineChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <h3>Offensive vs Defensive Rating</h3>
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bubble-chart-wrapper chart-card">
+                <h3>Usage vs Efficiency (Bubble Size = Minutes)</h3>
+                <canvas id="bubbleChart"></canvas>
+            </div>
+
+            <div class="stats-summary" id="aiSummary">
+                <h3>AI-Style Summary</h3>
+                <p>Loading summary...</p>
+            </div>
+        </section>
+    </section>
+</div>
+{% endblock %}
+
+

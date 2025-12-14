@@ -1,0 +1,73 @@
+{% extends "banking/base.html" %}
+{% load banking_extras %}
+{% block title %}Account{% endblock %}
+
+{% block body %}
+<section class="bk-pagehead" data-reveal>
+  <div class="bk-pagehead-row">
+    <div>
+      <h2 class="bk-h2">{{ account.nickname|default:account.get_account_type_display }} <span class="bk-muted">••••{{ account.last4 }}</span></h2>
+      <div class="bk-muted">{{ account.public_id }} • {{ account.get_account_type_display }}</div>
+    </div>
+    <div class="bk-pagehead-actions">
+      <a class="bk-btn bk-btn-ghost" href="{% url 'banking:export_csv' account.public_id %}">Export CSV</a>
+      <a class="bk-btn bk-btn-primary" href="{% url 'banking:transfer' %}"><span class="bk-btn-glow"></span> Transfer</a>
+    </div>
+  </div>
+
+  <div class="bk-balancebar">
+    <div class="bk-balance">
+      <div class="bk-muted">Balance</div>
+      <div class="bk-balance-val">{{ account.balance|money }}</div>
+    </div>
+    <div class="bk-balance">
+      <div class="bk-muted">Available</div>
+      <div class="bk-balance-val">{{ account.available_balance|money }}</div>
+    </div>
+  </div>
+</section>
+
+<section class="bk-card" data-reveal>
+  <div class="bk-card-head">
+    <div class="bk-card-title">Transactions</div>
+    <form class="bk-filters" method="get">
+      <select name="t" class="bk-select">
+        <option value="">All types</option>
+        <option value="DEPOSIT" {% if request.GET.t == "DEPOSIT" %}selected{% endif %}>Deposit</option>
+        <option value="WITHDRAWAL" {% if request.GET.t == "WITHDRAWAL" %}selected{% endif %}>Withdrawal</option>
+        <option value="TRANSFER_IN" {% if request.GET.t == "TRANSFER_IN" %}selected{% endif %}>Transfer In</option>
+        <option value="TRANSFER_OUT" {% if request.GET.t == "TRANSFER_OUT" %}selected{% endif %}>Transfer Out</option>
+        <option value="BILLPAY" {% if request.GET.t == "BILLPAY" %}selected{% endif %}>Bill Pay</option>
+        <option value="CARD" {% if request.GET.t == "CARD" %}selected{% endif %}>Card</option>
+      </select>
+
+      <input class="bk-input" type="search" name="q" placeholder="Search memo / merchant…" value="{{ request.GET.q|default:'' }}">
+      <button class="bk-btn bk-btn-ghost" type="submit">Filter</button>
+    </form>
+  </div>
+
+  <div class="bk-txnlist">
+    {% for t in txns %}
+      <div class="bk-txn">
+        <div class="bk-txn-ic" data-txn="{{ t.txn_type }}"></div>
+        <div class="bk-txn-mid">
+          <div class="bk-txn-title">
+            {% if t.payee %}{{ t.payee.name }}{% elif t.memo %}{{ t.memo }}{% else %}{{ t.txn_type }}{% endif %}
+          </div>
+          <div class="bk-txn-sub">
+            {{ t.created_at|date:"M d, Y • g:i A" }}
+            {% if t.related_account %} • Related {{ t.related_account.public_id }}{% endif %}
+          </div>
+        </div>
+        <div class="bk-txn-amt">
+          <span class="{% if t.txn_type in 'DEPOSIT TRANSFER_IN' %}is-pos{% else %}is-neg{% endif %}">
+            {{ t.amount|money }}
+          </span>
+        </div>
+      </div>
+    {% empty %}
+      <div class="bk-empty">No transactions match your filter.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

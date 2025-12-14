@@ -1,0 +1,286 @@
+
+/* ---------------------------------------------
+   THEME VARIABLES
+---------------------------------------------- */
+
+:root {
+  --blue: #0d6efd;
+  --light-blue: #cfe8ff;
+  --red: #e63946;
+  --white: #ffffff;
+
+  --bg-main: #e3e8ea;
+  --bg-surface: #ffffff;
+  --text-main: #003255;
+  --shadow: rgba(0,0,0,0.08);
+}
+
+/* ---------------------------------------------
+   DARK MODE OVERRIDES
+---------------------------------------------- */
+
+body.dark-mode {
+  --blue: #1f6fff;
+  --light-blue: #12253b;
+  --red: #ff5b6e;
+
+  --bg-main: #050915;
+  --bg-surface: #101a30;
+  --text-main: #f5f7fa;
+  --shadow: rgba(0,0,0,0.4);
+}
+
+/* ---------------------------------------------
+   GLOBAL BASE
+---------------------------------------------- */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ---------------------------------------------
+   NAVBAR
+---------------------------------------------- */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: var(--blue);
+  color: var(--white);
+  width: 100%;
+  transition: background 0.3s ease;
+}
+
+.navbar a {
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.navbar a:hover {
+  color: var(--red);
+}
+
+/* ---------------------------------------------
+   LAYOUT
+---------------------------------------------- */
+
+.layout {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 85px);
+}
+
+.left-bar {
+  width: 20%;
+  background: #000;
+  border-right: 5px solid var(--red);
+}
+
+body.dark-mode .left-bar {
+  background: #000;
+}
+
+.right-content {
+  width: 80%;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  padding: 40px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ---------------------------------------------
+   CARDS / SECTIONS
+---------------------------------------------- */
+
+.skill-card,
+.project-card-enhanced,
+.roster-select-card,
+.player-detail-card,
+.stats-wrapper,
+.chart-card,
+.callout-card {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  box-shadow: 0px 6px 12px var(--shadow);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ---------------------------------------------
+   HERO SECTION
+---------------------------------------------- */
+
+.mystics-hero {
+  background: linear-gradient(135deg, #001f3f, var(--blue));
+  color: var(--white);
+  border-radius: 16px;
+  padding: 35px 30px;
+  box-shadow: 0px 10px 24px rgba(0,0,0,0.25);
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  align-items: center;
+}
+
+.highlight {
+  color: var(--red);
+  font-weight: bold;
+}
+
+/* ---------------------------------------------
+   CALL OUTS
+---------------------------------------------- */
+
+.callouts-grid {
+  margin-top: 35px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.callout-card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: var(--blue);
+}
+
+.callout-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------
+   ROSTER LAYOUT
+---------------------------------------------- */
+
+.roster-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.roster-select-card select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid var(--blue);
+  font-size: 1rem;
+  background: var(--bg-surface);
+  color: var(--text-main);
+}
+
+/* ---------------------------------------------
+   PLAYER DETAIL
+---------------------------------------------- */
+
+.player-detail-card {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap: 20px;
+}
+
+.player-photo {
+  width: 100%;
+  max-width: 220px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 4px solid var(--red);
+}
+
+/* ---------------------------------------------
+   STATS
+---------------------------------------------- */
+
+.stats-wrapper {
+  padding: 25px;
+  border-radius: 16px;
+}
+
+.chart-card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+.chart-card canvas {
+  width: 100%;
+  height: 260px;
+}
+
+.stats-summary {
+  margin-top: 25px;
+  background: var(--bg-surface);
+  padding: 18px 20px;
+  border-radius: 12px;
+  border-left: 5px solid var(--red);
+  border-right: 5px solid var(--blue);
+}
+
+/* ---------------------------------------------
+   RESPONSIVE
+---------------------------------------------- */
+
+@media (max-width: 980px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .left-bar {
+    width: 100%;
+    padding: 15px 0;
+  }
+
+  .right-content {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .mystics-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .callouts-grid,
+  .roster-layout,
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .player-detail-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

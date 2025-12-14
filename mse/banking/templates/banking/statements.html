@@ -1,0 +1,42 @@
+{% extends "banking/base.html" %}
+{% block title %}Statements{% endblock %}
+
+{% block body %}
+<section class="bk-pagehead">
+  <h2 class="bk-h2">Statements</h2>
+  <p class="bk-muted">Download monthly account statements (PDF).</p>
+</section>
+
+<div class="bk-grid">
+  <div class="bk-card">
+    <form method="post" class="bk-form">
+      {% csrf_token %}
+      <label class="bk-label">Account</label>
+      <select name="account">
+        {% for a in accounts %}
+          <option value="{{ a.id }}">{{ a.nickname|default:a.get_account_type_display }}</option>
+        {% endfor %}
+      </select>
+
+      <label class="bk-label">Month</label>
+      <input type="month" name="month" required>
+
+      <button class="bk-btn bk-btn-primary">
+        <span class="bk-btn-glow"></span> Generate Statement
+      </button>
+    </form>
+  </div>
+
+  <div class="bk-card">
+    <h3 class="bk-card-title">Available Statements</h3>
+    {% for s in statements %}
+      <div class="bk-payee">
+        {{ s.account.nickname }} — {{ s.month|date:"F Y" }}
+        <a class="bk-link" href="{{ s.pdf.url }}" download>Download</a>
+      </div>
+    {% empty %}
+      <div class="bk-empty">No statements yet.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

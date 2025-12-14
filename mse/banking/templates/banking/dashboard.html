@@ -1,0 +1,119 @@
+{% extends "banking/base.html" %}
+{% load banking_extras %}
+
+{% block title %}Overview{% endblock %}
+
+{% block body %}
+<section class="bk-hero">
+  <div class="bk-hero-left">
+    <div class="bk-kicker">Premium • Red / Gold • Interactive</div>
+    <h1 class="bk-h1">Your money, styled like a flagship banking app.</h1>
+    <p class="bk-sub">
+      Track balances, view transactions, move money instantly, and manage cards — all inside your <span class="bk-chip">Elite</span> Banking App.
+    </p>
+
+    <div class="bk-cta-row">
+      <a class="bk-btn bk-btn-primary" href="{% url 'banking:transfer' %}">
+        <span class="bk-btn-glow"></span> Make a Transfer
+      </a>
+      <a class="bk-btn bk-btn-ghost" href="{% url 'banking:accounts' %}">View Accounts</a>
+    </div>
+
+    <div class="bk-stats">
+      <div class="bk-stat" data-reveal>
+        <div class="bk-stat-label">Total Balance</div>
+        <div class="bk-stat-value" data-countup="{{ total }}">{{ total|money }}</div>
+      </div>
+      <div class="bk-stat" data-reveal>
+        <div class="bk-stat-label">30-day Outflow</div>
+        <div class="bk-stat-value" data-countup="{{ spend_30 }}">{{ spend_30|money }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bk-hero-right" data-reveal>
+    <div class="bk-card bk-glass">
+      <div class="bk-card-head">
+        <div class="bk-card-title">Balance Trend</div>
+        <div class="bk-pill">Live UI</div>
+      </div>
+      <canvas id="bkChartBalance" height="130"></canvas>
+      <div class="bk-mini-note">Demo chart generated from your current accounts.</div>
+    </div>
+
+    <div class="bk-card bk-glass bk-card-slim">
+      <div class="bk-card-title">Quick Actions</div>
+      <div class="bk-actions">
+        <button class="bk-action" data-modal="deposit">
+          <span class="bk-action-ic">＋</span>
+          <span class="bk-action-txt">Deposit</span>
+        </button>
+        <button class="bk-action" data-modal="withdraw">
+          <span class="bk-action-ic">−</span>
+          <span class="bk-action-txt">Withdraw</span>
+        </button>
+        <a class="bk-action" href="{% url 'banking:billpay' %}">
+          <span class="bk-action-ic">⌁</span>
+          <span class="bk-action-txt">Pay Bill</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bk-grid">
+  <div class="bk-card" data-reveal>
+    <div class="bk-card-head">
+      <div class="bk-card-title">Your Accounts</div>
+      <a class="bk-link" href="{% url 'banking:accounts' %}">Open</a>
+    </div>
+
+    <div class="bk-accounts">
+      {% for a in accounts %}
+        <a class="bk-acct" href="{% url 'banking:account_detail' a.public_id %}">
+          <div class="bk-acct-left">
+            <div class="bk-acct-name">{{ a.nickname|default:a.get_account_type_display }}</div>
+            <div class="bk-acct-sub">••••{{ a.last4 }} • {{ a.get_account_type_display }}</div>
+          </div>
+          <div class="bk-acct-right">
+            <div class="bk-acct-bal">{{ a.balance|money }}</div>
+            <div class="bk-acct-avail">Available {{ a.available_balance|money }}</div>
+          </div>
+        </a>
+      {% empty %}
+        <div class="bk-empty">No accounts yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="bk-card" data-reveal>
+    <div class="bk-card-head">
+      <div class="bk-card-title">Recent Activity</div>
+      <div class="bk-pill">Last 12</div>
+    </div>
+
+    <div class="bk-txnlist">
+      {% for t in recent %}
+        <div class="bk-txn">
+          <div class="bk-txn-ic" data-txn="{{ t.txn_type }}"></div>
+          <div class="bk-txn-mid">
+            <div class="bk-txn-title">
+              {% if t.payee %}{{ t.payee.name }}{% elif t.memo %}{{ t.memo }}{% else %}{{ t.txn_type }}{% endif %}
+            </div>
+            <div class="bk-txn-sub">
+              {{ t.created_at|date:"M d, Y • g:i A" }} • {{ t.account.nickname|default:t.account.get_account_type_display }} ••••{{ t.account.last4 }}
+            </div>
+          </div>
+          <div class="bk-txn-amt">
+            <span class="{% if t.txn_type in 'DEPOSIT TRANSFER_IN' %}is-pos{% else %}is-neg{% endif %}">
+              {{ t.amount|money }}
+            </span>
+          </div>
+        </div>
+      {% empty %}
+        <div class="bk-empty">No transactions yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

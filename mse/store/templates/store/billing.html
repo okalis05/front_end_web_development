@@ -1,0 +1,32 @@
+{% extends "store/base.html" %}
+{% block title %}Billing{% endblock %}
+{% block body %}
+<section class="st-section">
+  <div class="st-shell">
+    <h2 class="st-h2">Billing</h2>
+    <p class="st-muted">Only org admins can open Stripe’s billing portal.</p>
+
+    <div class="st-grid st-grid--2">
+      <article class="st-card st-float">
+        <h3 class="st-h3">Current subscription</h3>
+        {% if sub %}
+          <p>Status: <span class="st-pill">{{ sub.status }}</span></p>
+          <p>Plan: <strong>{{ sub.plan.name }}</strong></p>
+        {% else %}
+          <p class="st-muted">No subscription yet.</p>
+          <a class="st-btn st-btn--gold" href="{% url 'store:pricing' %}">Subscribe</a>
+        {% endif %}
+      </article>
+
+      <article class="st-card st-float">
+        <h3 class="st-h3">Manage</h3>
+        {% if membership.role == "admin" %}
+          <a class="st-btn st-btn--gold" href="{% url 'store:open_portal' %}">Open Stripe portal</a>
+        {% else %}
+          <p class="st-muted">Ask an admin to manage billing.</p>
+        {% endif %}
+      </article>
+    </div>
+  </div>
+</section>
+{% endblock %}

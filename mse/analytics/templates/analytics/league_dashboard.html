@@ -1,0 +1,59 @@
+{% extends "analytics/base.html" %}
+
+{% block title %}League Dashboard | Mystics Insight Hub{% endblock %}
+
+{% block body %}
+<div class="layout">
+    <aside class="left-bar">
+        <div class="sidebar-logo-wrapper">
+            <div>WNBA League View</div>
+            <small>Team season scoring, rebounding &amp; assists</small>
+        </div>
+    </aside>
+
+    <section class="right-content fade-in">
+        <div class="page-header">
+            <h1>League-Wide <span class="highlight">Analytics</span></h1>
+            <p>Teams sorted by points per game for the {{ season }} regular season.</p>
+        </div>
+
+        <div class="stats-wrapper">
+            <table style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th style="text-align:left; padding:8px;">Team</th>
+                        <th style="text-align:right; padding:8px;">PPG</th>
+                        <th style="text-align:right; padding:8px;">RPG</th>
+                        <th style="text-align:right; padding:8px;">APG</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ts in teams_stats %}
+                        <tr style="border-top:1px solid #ddd;">
+                            <td style="padding:8px;">
+                                {{ ts.team.city }} {{ ts.team.name }}
+                            </td>
+                            <td style="padding:8px; text-align:right;">
+                                {{ ts.ppg|floatformat:1 }}
+                            </td>
+                            <td style="padding:8px; text-align:right;">
+                                {{ ts.rpg|floatformat:1 }}
+                            </td>
+                            <td style="padding:8px; text-align:right;">
+                                {{ ts.apg|floatformat:1 }}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" style="padding:10px;">
+                                No season stats loaded yet. Run the Celery sync task to populate this table.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+<a href="{% url 'portfolio:about'}"
+{% endblock %}

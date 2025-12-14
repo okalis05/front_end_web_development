@@ -1,0 +1,62 @@
+{% extends "banking/base.html" %}
+{% block title %}Cash Tools{% endblock %}
+
+{% block body %}
+<section class="bk-pagehead" data-reveal>
+  <h2 class="bk-h2">Cash Tools</h2>
+  <p class="bk-muted">Demo deposit/withdraw with premium UI. (Atomic updates + transaction records.)</p>
+</section>
+
+<div class="bk-card" data-reveal>
+  <div class="bk-actions big">
+    <button class="bk-action" data-modal="deposit">
+      <span class="bk-action-ic">＋</span>
+      <span class="bk-action-txt">Deposit</span>
+    </button>
+    <button class="bk-action" data-modal="withdraw">
+      <span class="bk-action-ic">−</span>
+      <span class="bk-action-txt">Withdraw</span>
+    </button>
+  </div>
+
+  <template id="tplDeposit">
+    <form method="post" class="bk-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="deposit"/>
+      <div class="bk-form-row">
+        <label class="bk-label">Account</label>
+        {{ deposit_form.account }}
+      </div>
+      <div class="bk-form-row">
+        <label class="bk-label">Amount</label>
+        {{ deposit_form.amount }}
+      </div>
+      <div class="bk-form-row">
+        <label class="bk-label">Memo (optional)</label>
+        {{ deposit_form.memo }}
+      </div>
+      <button class="bk-btn bk-btn-primary" type="submit"><span class="bk-btn-glow"></span> Post Deposit</button>
+    </form>
+  </template>
+
+  <template id="tplWithdraw">
+    <form method="post" class="bk-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="withdraw"/>
+      <div class="bk-form-row">
+        <label class="bk-label">Account</label>
+        {{ withdraw_form.account }}
+      </div>
+      <div class="bk-form-row">
+        <label class="bk-label">Amount</label>
+        {{ withdraw_form.amount }}
+      </div>
+      <div class="bk-form-row">
+        <label class="bk-label">Memo (optional)</label>
+        {{ withdraw_form.memo }}
+      </div>
+      <button class="bk-btn bk-btn-primary" type="submit"><span class="bk-btn-glow"></span> Post Withdrawal</button>
+    </form>
+  </template>
+</div>
+{% endblock %}

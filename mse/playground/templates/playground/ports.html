@@ -1,0 +1,81 @@
+{% extends "playground/base.html" %}
+{% load static %}
+
+{% block title %}Port Analytics{% endblock %}
+
+{% block extra_head %}
+<!-- Plotly for all charts -->
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<section class="pg-section">
+    <div class="pg-section-header">
+        <h1>Port Analytics</h1>
+        <p>
+            Explore <strong>Encounters</strong> by port for years (2020–2025). Select a port to see
+            its annual trend, and choose a year to compare ports in a bubble chart.
+        </p>
+    </div>
+
+    <div class="pg-ports-layout">
+        <!-- LEFT: selector + textarea -->
+        <div class="pg-card">
+            <label for="port-select" class="pg-label">Choose a port</label>
+            <select id="port-select" class="pg-select">
+                <option value="">Select a port...</option>
+            </select>
+
+            <label for="port-info" class="pg-label pg-label-top">
+                Port narrative
+            </label>
+            <textarea
+                id="port-info"
+                class="pg-textarea"
+                readonly
+            ></textarea>
+        </div>
+
+        <!-- RIGHT: charts -->
+        <div class="pg-charts">
+            <!-- Bar chart: Value per year for selected port -->
+            <div class="pg-chart-card">
+                <div class="pg-chart-title">Annual Value (Bar)</div>
+                <div id="bar-chart" class="chart-svg"></div>
+            </div>
+
+            <!-- Line chart: Value per year for selected port -->
+            <div class="pg-chart-card">
+                <div class="pg-chart-title">Annual Value (Line)</div>
+                <div id="line-chart" class="chart-svg"></div>
+            </div>
+
+            <!-- Bubble chart: Value by port for selected year -->
+            <div class="pg-chart-card">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                    <div class="pg-chart-title">Value by Port (Bubble)</div>
+                    <div>
+                        <label for="year-select" class="pg-label" style="margin-bottom:2px; font-size:0.7rem;">
+                            Year
+                        </label>
+                        <select id="year-select" class="pg-select" style="padding:4px 10px; height:auto; font-size:0.8rem;">
+                            <option value="">Year...</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="bubble-chart" class="chart-svg"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<a href="{% url 'portfolio:about' %}">
+    <button id="btn">back to portfolio &rarr;</button>
+</a>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="module" src="{% static 'playground/js/ports-page.js' %}"></script>
+{% endblock %}
+
+

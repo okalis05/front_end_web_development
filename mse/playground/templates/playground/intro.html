@@ -1,0 +1,70 @@
+{% extends "playground/base.html" %}
+
+{% block title %}Border Crossing Playground{% endblock %}
+
+{% block body %}
+<section class="pg-hero fade-in">
+    <div class="pg-hero-main">
+        <h1 class="pg-hero-title">
+            Border Crossing <span>Playground</span>
+        </h1>
+        <p class="pg-hero-subtitle">
+            Interactive geospatial analytics of U.S. border crossings powered by open
+            government data, Plotly charts, and Leaflet maps — focused on the years 2020–2025.
+        </p>
+
+        <div class="pg-hero-actions">
+            <a href="{% url 'playground:map' %}" class="pg-btn-primary">Explore Map</a>
+            <a href="{% url 'playground:ports' %}" class="pg-btn-outline">Port Analytics</a>
+        </div>
+
+        <div class="pg-hero-tags">
+            <span class="pg-pill">Live fetch</span>
+            <span class="pg-pill">2020–2025</span>
+            <span class="pg-pill">Border · Measure · Value</span>
+        </div>
+    </div>
+
+    <div class="pg-hero-card">
+        <h3>Project Snapshot</h3>
+        <ul>
+            <li>Loads U.S. border data from the Transportation.gov open API.</li>
+            <li>Aggregates <strong>Value</strong> by port and year 2020–2025.</li>
+            <li>Maps ports with Leaflet, sized by total Value.</li>
+            <li>Uses Plotly for bar, line, and bubble charts per port and year.</li>
+        </ul>
+        <p class="pg-hero-footnote">
+            Built as a standalone <strong>playground</strong> app inside your <strong>mse</strong> project — no impact on other apps.
+        </p>
+    </div>
+</section>
+
+<section class="pg-section">
+    <div class="pg-section-header">
+        <h2>What You Can Explore</h2>
+        <p>
+            Use the map for a high-level overview of border crossing intensity and the analytics
+            view for per-port Value trends over time.
+        </p>
+    </div>
+
+    <div class="pg-two-col">
+        <div class="pg-card">
+            <h3>Encounters Map</h3>
+            <p>
+                A Leaflet map where each port is a circle marker whose radius represents total
+                <strong>Value</strong> across 2020–2025. Popups show port name, border, state, and totals.
+            </p>
+        </div>
+
+        <div class="pg-card">
+            <h3>Port Analytics</h3>
+            <p>
+                For each selected port, see a Plotly bar + line chart of annual Value, and explore
+                bubble charts showing total Value by port for a specific year.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

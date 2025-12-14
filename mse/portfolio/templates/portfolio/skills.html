@@ -1,0 +1,99 @@
+{% extends 'portfolio/base.html' %}
+
+{% block content %}
+
+<section class="skills-header fade-in">
+    <h1 class="section-title">Skills & Technologies</h1>
+    <p class="skills-intro">
+        A comprehensive blend of backend engineering, frontend development, analytics,
+        cloud infrastructure, and sports data intelligence.
+    </p>
+</section>
+
+<div class="skill-grid-enhanced">
+
+    {% comment %} Backend {% endcomment %}
+    <div class="skill-card-enhanced">
+        <h2>Backend Engineering</h2>
+        <ul>
+            <li>Django (advanced)</li>
+            <li>Python (expert)</li>
+            <li>REST API development</li>
+            <li>Authentication & permissions</li>
+            <li>Database design & migrations</li>
+        </ul>
+    </div>
+
+    {% comment %} Frontend {% endcomment %}
+    <div class="skill-card-enhanced">
+        <h2>Frontend Development</h2>
+        <ul>
+            <li>JavaScript / TypeScript</li>
+            <li>React, Svelte, Next.js</li>
+            <li>HTML5, CSS3, animations</li>
+            <li>Data Visualizations: Chart.js, D3</li>
+        </ul>
+    </div>
+
+    {% comment %} Data Engineering {% endcomment %}
+    <div class="skill-card-enhanced">
+        <h2>Data Engineering</h2>
+        <ul>
+            <li>ETL pipelines with Prefect</li>
+            <li>dbt modeling</li>
+            <li>Data warehousing (OLAP)</li>
+            <li>Batch + real-time ingestion</li>
+            <li>SQL optimization</li>
+        </ul>
+    </div>
+
+    {% comment %} Databases {% endcomment %}
+    <div class="skill-card-enhanced">
+        <h2>Databases</h2>
+        <ul>
+            <li>PostgreSQL (OLTP)</li>
+            <li>DuckDB / BigQuery</li>
+            <li>Redis caching</li>
+            <li>Schema design</li>
+            <li>Performance tuning</li>
+        </ul>
+    </div>
+
+    {% comment %} Cloud {% endcomment %}
+    <div class="skill-card-enhanced">
+        <h2>Cloud & Infrastructure</h2>
+        <ul>
+            <li>AWS, GCP, Azure</li>
+            <li>EC2, Lambda, RDS</li>
+            <li>Docker & containers</li>
+            <li>CI/CD pipelines</li>
+            <li>Linux & macOS development</li>
+        </ul>
+    </div>
+
+    {% comment %} Collaboration {% endcomment %}
+    <div class="skill-card-enhanced">
+        <h2>Collaboration</h2>
+        <ul>
+            <li>Cross-functional teamwork</li>
+            <li>Documentation & storytelling</li>
+            <li>Leadership</li>
+            <li>Agile / Scrum</li>
+        </ul>
+    </div>
+
+</div>
+
+<div class="bottom-button-wrapper no-space">
+    <a href="{% url 'portfolio:projects' %}" class="bottom-button">
+        View Projects →
+    </a>
+</div>
+
+{% endblock %}
+    
+
+
+
+
+

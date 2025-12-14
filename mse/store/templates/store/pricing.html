@@ -1,0 +1,36 @@
+{% extends "store/base.html" %}
+{% block title %}Pricing | Elysian Store{% endblock %}
+{% block body %}
+<section class="st-section">
+  <div class="st-shell">
+    <h2 class="st-h2">Plans</h2>
+    <p class="st-muted">Tenant-aware billing. Use <code>?tenant=your-slug</code> or set session tenant via Org Switch.</p>
+
+    <div class="st-grid">
+      {% for p in plans %}
+      <article class="st-card st-float" aria-label="{{ p.name }} plan">
+        <header class="st-card__head">
+          <h3 class="st-h3">{{ p.name }}</h3>
+          <p class="st-price">${{ p.monthly_price_usd }}<span class="st-muted">/mo</span></p>
+        </header>
+        <p class="st-muted">{{ p.description|default:"A refined tier for modern teams." }}</p>
+
+        <ul class="st-list">
+          <li>Seats included: {{ p.seats_included }}</li>
+          <li>API access: {{ p.api_access|yesno:"Yes,No" }}</li>
+          <li>Priority support: {{ p.priority_support|yesno:"Yes,No" }}</li>
+        </ul>
+
+        <div class="st-card__foot">
+          {% if user.is_authenticated %}
+            <a class="st-btn st-btn--gold" href="{% url 'store:start_checkout' p.code %}">Subscribe</a>
+          {% else %}
+            <a class="st-btn st-btn--gold" href="{% url 'store:signup' %}">Start</a>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

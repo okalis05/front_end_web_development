@@ -1,0 +1,98 @@
+{% extends "playground/base.html" %}
+{% load static %}
+
+{% block title %}AI Insights & Comparison{% endblock %}
+
+{% block extra_head %}
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <!-- Leaflet -->
+  <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+
+{% block body %}
+<section class="pg-section fade-in">
+  <div class="pg-section-header">
+    <h1>AI-style Port Insights & Comparison</h1>
+    <p>
+      Compare two ports side-by-side, read narrative summaries, and explore a
+      time-animated bubble map of total <strong>Value</strong> from
+      <strong>2020–2025</strong>.
+    </p>
+  </div>
+
+  <!-- TOP: selectors + narrative + comparison charts -->
+  <div class="pg-ports-layout" style="margin-top: 24px;">
+    <!-- LEFT: selectors + AI narrative -->
+    <div class="pg-card">
+      <label for="port-a-select" class="pg-label">Port A</label>
+      <select id="port-a-select" class="pg-select">
+        <option value="">Select Port A...</option>
+      </select>
+
+      <label for="port-b-select" class="pg-label pg-label-top">Port B</label>
+      <select id="port-b-select" class="pg-select">
+        <option value="">Select Port B...</option>
+      </select>
+
+      <label class="pg-label pg-label-top">AI-style Narrative</label>
+      <div id="ai-summary" class="pg-textarea" style="min-height: 220px;"></div>
+    </div>
+
+    <!-- RIGHT: comparison charts -->
+    <div class="pg-charts">
+      <div class="pg-chart-card" style="grid-column: 1 / -1;">
+        <div class="pg-chart-title">Port Comparison — Value by Year (Bar)</div>
+        <div id="compare-bar" style="width: 100%; height: 280px;"></div>
+      </div>
+
+      <div class="pg-chart-card">
+        <div class="pg-chart-title">Port A — Trend (Line)</div>
+        <div id="port-a-line" style="width: 100%; height: 240px;"></div>
+      </div>
+
+      <div class="pg-chart-card">
+        <div class="pg-chart-title">Port B — Trend (Line)</div>
+        <div id="port-b-line" style="width: 100%; height: 240px;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM: Time-animated bubble map -->
+<section class="pg-section" style="margin-top: 32px;">
+  <div class="pg-card">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+      <div>
+        <h2 style="margin:0;">Time-Animated Bubble Map</h2>
+        <p style="margin:4px 0 0;">
+          Bubbles show total <strong>Value</strong> per port for the current year.
+          Auto-plays from <strong>2020</strong> to <strong>2025</strong>.
+        </p>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button id="year-play-toggle" class="pg-btn-primary" type="button">
+          ▶ Play
+        </button>
+        <div style="font-weight:700; font-size:1.1rem;">
+          Year: <span id="current-year-label">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="time-map" style="width:100%; height:480px; border-radius:16px;"></div>
+  </div>
+</section>
+
+<a href="{% url 'portfolio:about' %}">
+    <button id="btn">back to portfolio &rarr;</button>
+</a>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script type="module" src="{% static 'playground/js/insights.js' %}"></script>
+{% endblock %}

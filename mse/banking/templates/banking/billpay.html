@@ -1,0 +1,78 @@
+{% extends "banking/base.html" %}
+{% block title %}Bill Pay{% endblock %}
+
+{% block body %}
+<section class="bk-pagehead" data-reveal>
+  <h2 class="bk-h2">Bill Pay</h2>
+  <p class="bk-muted">Add payees and send bill payments (posted as transactions).</p>
+</section>
+
+<section class="bk-grid">
+  <div class="bk-card" data-reveal>
+    <div class="bk-card-head">
+      <div class="bk-card-title">Send Payment</div>
+      <div class="bk-pill">Fast</div>
+    </div>
+    <form method="post" class="bk-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="pay_bill"/>
+      <div class="bk-form-row">
+        <label class="bk-label">From Account</label>
+        {{ bill_form.from_account }}
+      </div>
+      <div class="bk-form-row">
+        <label class="bk-label">Payee</label>
+        {{ bill_form.payee }}
+      </div>
+      <div class="bk-form-row">
+        <label class="bk-label">Amount</label>
+        {{ bill_form.amount }}
+      </div>
+      <div class="bk-form-row">
+        <label class="bk-label">Memo (optional)</label>
+        {{ bill_form.memo }}
+      </div>
+      <button class="bk-btn bk-btn-primary" type="submit"><span class="bk-btn-glow"></span> Pay Now</button>
+    </form>
+  </div>
+
+  <div class="bk-card" data-reveal>
+    <div class="bk-card-head">
+      <div class="bk-card-title">Payees</div>
+      <button class="bk-btn bk-btn-ghost" type="button" data-modal-open="add-payee">+ Add</button>
+    </div>
+
+    <div class="bk-payees">
+      {% for p in payees %}
+        <div class="bk-payee">
+          <div class="bk-payee-name">{{ p.name }}</div>
+          <div class="bk-payee-sub">{{ p.category }}{% if p.account_hint %} • {{ p.account_hint }}{% endif %}</div>
+        </div>
+      {% empty %}
+        <div class="bk-empty">No payees yet. Add one to start bill pay.</div>
+      {% endfor %}
+    </div>
+
+    <template id="tplAddPayee">
+      <form method="post" class="bk-form">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add_payee"/>
+        <div class="bk-form-row">
+          <label class="bk-label">Name</label>
+          {{ payee_form.name }}
+        </div>
+        <div class="bk-form-row">
+          <label class="bk-label">Category</label>
+          {{ payee_form.category }}
+        </div>
+        <div class="bk-form-row">
+          <label class="bk-label">Account Hint</label>
+          {{ payee_form.account_hint }}
+        </div>
+        <button class="bk-btn bk-btn-primary" type="submit"><span class="bk-btn-glow"></span> Save Payee</button>
+      </form>
+    </template>
+
+  </div>
+</section>
+{% endblock %}

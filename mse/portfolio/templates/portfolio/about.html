@@ -1,0 +1,32 @@
+{% extends "portfolio/base.html" %}
+
+{% block content %}
+<div class="about-left fade-in">
+    <section class="hero-section">
+        <h1>Hello, I'm <span class="highlight">Francoise</span></h1>
+        <p>A full-stack engineer passionate about building impactful digital experiences.</p>
+    </section>
+</div>
+
+<div class="skill-grid-enhanced">
+
+    <div class="skill-card-enhanced">
+        <h2>What I Bring:</h2>
+        <ul>
+        <li>Strong backend engineering with Django & Python</li>
+            <li>ETL pipelines using Prefect + dbt</li>
+            <li>Cloud architecture on AWS, GCP, Azure</li>
+            <li>Interactive analytics dashboards</li>
+            <li>OLTP & OLAP database modeling</li>
+            <li>Modern frontend development: React, Svelte, Next.js</li>
+            <li>Leadership, collaboration, communication</li>
+            <li>Visualization with Power BI, Tableau, Python, JavaScript</li>
+            <li>Advanced plugin-based visual enhancements</li>
+        </ul>
+    </div>
+</div>
+<div class="bottom-button-wrapper no-space">
+    <a href="{% url 'portfolio:skills' %}" class="bottom-button">View My Skills →</a>
+</div>
+{% endblock %}
+

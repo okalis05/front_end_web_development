@@ -1,0 +1,50 @@
+{% extends "banking/base.html" %}
+{% block title %}Transfers{% endblock %}
+
+{% block body %}
+<section class="bk-pagehead" data-reveal>
+  <h2 class="bk-h2">Transfers</h2>
+  <p class="bk-muted">Move funds between your accounts instantly (demo logic, real-safe atomic backend).</p>
+</section>
+
+<div class="bk-card bk-formcard" data-reveal>
+  <form method="post" class="bk-form">
+    {% csrf_token %}
+    <div class="bk-form-row">
+      <label class="bk-label">From</label>
+      {{ form.from_account }}
+    </div>
+    <div class="bk-form-row">
+      <label class="bk-label">To</label>
+      {{ form.to_account }}
+    </div>
+    <div class="bk-form-row">
+      <label class="bk-label">Amount</label>
+      {{ form.amount }}
+    </div>
+    <div class="bk-form-row">
+      <label class="bk-label">Memo (optional)</label>
+      {{ form.memo }}
+    </div>
+
+    <button class="bk-btn bk-btn-primary" type="submit">
+      <span class="bk-btn-glow"></span> Send Transfer
+    </button>
+  </form>
+
+  <div class="bk-form-aside">
+    <div class="bk-aside-box">
+      <div class="bk-aside-title">Instant + Safe</div>
+      <div class="bk-aside-text">
+        Transfers are processed in a single database transaction to keep balances consistent.
+      </div>
+    </div>
+    <div class="bk-aside-box gold">
+      <div class="bk-aside-title">Premium UI</div>
+      <div class="bk-aside-text">
+        Smooth transitions, micro-interactions, and a red/gold glass finish.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

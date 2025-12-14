@@ -1,0 +1,45 @@
+{% extends "banking/base.html" %}
+{% block title %}Cards{% endblock %}
+
+{% block body %}
+<section class="bk-pagehead" data-reveal>
+  <h2 class="bk-h2">Cards</h2>
+  <p class="bk-muted">Freeze/unfreeze cards instantly (demo controls; real persisted status).</p>
+</section>
+
+<div class="bk-grid">
+  {% for c in cards %}
+    <div class="bk-card" data-reveal>
+      <div class="bk-card-head">
+        <div class="bk-card-title">{{ c.display_name }}</div>
+        <div class="bk-pill {% if c.status == 'FROZEN' %}danger{% else %}ok{% endif %}">{{ c.get_status_display }}</div>
+      </div>
+
+      <div class="bk-cardface">
+        <div class="bk-cardface-top">
+          <div class="bk-cardbrand">{{ c.brand }}</div>
+          <div class="bk-chip-gold"></div>
+        </div>
+        <div class="bk-cardface-num">•••• •••• •••• {{ c.last4 }}</div>
+        <div class="bk-cardface-sub">Linked: {{ c.linked_account.nickname|default:c.linked_account.get_account_type_display }}</div>
+      </div>
+
+      <form method="post" class="bk-inline">
+        {% csrf_token %}
+        <input type="hidden" name="card_id" value="{{ c.id }}"/>
+        <input type="hidden" name="action" value="toggle_freeze"/>
+        <button class="bk-btn {% if c.status == 'FROZEN' %}bk-btn-primary{% else %}bk-btn-ghost{% endif %}" type="submit">
+          <span class="bk-btn-glow"></span>
+          {% if c.status == 'FROZEN' %}Unfreeze{% else %}Freeze{% endif %}
+        </button>
+      </form>
+
+      <div class="bk-muted" style="margin-top:10px;">
+        Daily limit: ${{ c.daily_limit }}
+      </div>
+    </div>
+  {% empty %}
+    <div class="bk-empty">No cards.</div>
+  {% endfor %}
+</div>
+{% endblock %}

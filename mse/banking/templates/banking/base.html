@@ -1,0 +1,84 @@
+{% load static %}
+{% load banking_extras %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Banking{% endblock %} • MSE</title>
+
+  <link rel="stylesheet" href="{% static 'banking/css/banking.css' %}">
+  <script src="{% static 'banking/js/banking.js' %}" defer></script>
+
+  <!-- Charts (scoped to this app only via this template) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bk-body">
+  <div class="bk-ambient"></div>
+
+  <header class="bk-topbar">
+    <div class="bk-topbar-inner">
+      <a class="bk-brand" href="{% url 'banking:dashboard' %}">
+        <span class="bk-brand-mark"></span>
+        <span class="bk-brand-text">Banking</span>
+        <span class="bk-chip">Elite</span>
+      </a>
+
+      <nav class="bk-nav">
+        <a class="bk-navlink {% if request.resolver_match.url_name == 'dashboard' %}is-active{% endif %}" href="{% url 'banking:dashboard' %}">Overview</a>
+        <a class="bk-navlink {% if request.resolver_match.url_name == 'accounts' %}is-active{% endif %}" href="{% url 'banking:accounts' %}">Accounts</a>
+        <a class="bk-navlink {% if request.resolver_match.url_name == 'transfer' %}is-active{% endif %}" href="{% url 'banking:transfer' %}">Transfers</a>
+        <a class="bk-navlink {% if request.resolver_match.url_name == 'billpay' %}is-active{% endif %}" href="{% url 'banking:billpay' %}">Bill Pay</a>
+        <a class="bk-navlink {% if request.resolver_match.url_name == 'cards' %}is-active{% endif %}" href="{% url 'banking:cards' %}">Cards</a>
+        <a class="bk-navlink {% if request.resolver_match.url_name == 'quick_cash' %}is-active{% endif %}" href="{% url 'banking:quick_cash' %}">Cash Tools</a>
+        <a class="bk-navlink" href="{% url 'banking:scheduled' %}">Scheduled</a>
+        <a class="bk-navlink" href="{% url 'banking:scheduled' %}">Scheduled</a>
+        <a class="bk-navlink" href="{% url 'banking:statements' %}">Statements</a>
+        <a class="bk-navlink" href="{% url 'banking:card_activity' %}">Card Activity</a>
+        <a class="bk-navlink" href="{% url 'banking:spending' %}">Spending</a>
+
+
+        
+        
+      </nav>
+
+      <div class="bk-user">
+        <div class="bk-user-pill">
+          <span class="bk-avatar">{{ request.user.username|slice:":1"|upper }}</span>
+          <span class="bk-user-name">{{ request.user.username }}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="bk-main">
+    {% if messages %}
+      <div class="bk-toasts" aria-live="polite">
+        {% for message in messages %}
+          {% include "banking/partials/_toast.html" with message=message %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block body %}{% endblock %}
+  </main>
+
+  <footer class="bk-footer">
+    <div class="bk-footer-inner">
+      <div class="bk-fineprint">
+        Demo banking experience (not real financial services).
+      </div>
+      <div class="bk-footer-links">
+        <span class="bk-dot"></span> Secure
+        <span class="bk-dot"></span> Fast
+        <span class="bk-dot"></span> Premium UI
+      </div>
+    </div>
+  </footer>
+
+  {% include "banking/partials/_modal.html" %}
+</body>
+</html>

@@ -1,0 +1,21 @@
+{% extends "banking/base.html" %}
+{% load banking_extras %}
+{% block title %}Spending{% endblock %}
+
+{% block body %}
+<section class="bk-pagehead">
+  <h2 class="bk-h2">Spending Overview</h2>
+  <p class="bk-muted">Where your money goes.</p>
+</section>
+
+<div class="bk-card">
+  {% for row in data %}
+    <div class="bk-payee">
+      {{ row.merchant|default:"Uncategorized" }}
+      <strong>{{ row.total|money }}</strong>
+    </div>
+  {% empty %}
+    <div class="bk-empty">No data yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}

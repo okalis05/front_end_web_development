@@ -1,0 +1,86 @@
+{% extends "analytics/base.html" %}
+{% load static %}
+
+{% block title %}Mystics Roster | Mystics Insight Hub{% endblock %}
+
+{% block body %}
+<div class="layout">
+    <aside class="left-bar">
+        <div class="sidebar-logo-wrapper">
+            <img src="data:image/png;base64,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" alt="Washington Mystics Logo">
+            <div>Roster Explorer</div>
+            <small>Select a player to view analytics</small>
+        </div>
+    </aside>
+
+    <main class="right-content fade-in">
+        <div class="page-header">
+            <h1>Mystics <span class="highlight">Roster</span></h1>
+            <p>
+                Select a player to see their bio, headshot, and a mini trend chart of
+                recent performance.
+            </p>
+        </div>
+
+        <section class="roster-layout">
+            <!-- SELECT COLUMN -->
+            <div class="roster-select-card">
+                <label for="playerSelect">Select a player</label>
+                <select id="playerSelect"
+                        data-player-chart-url="{% url 'analytics:player_game_log' 0 %}">
+                    {% for p in players %}
+                        <option value="{{ p.id }}">{{ p.first_name }} {{ p.last_name }}</option>
+                    {% endfor %}
+                </select>
+
+                <p style="margin-top:15px; font-size:0.95rem;">
+                    The chart below updates live when you switch players.
+                </p>
+
+                <div class="chart-card" style="margin-top:15px;">
+                    <h3>Recent Game Trend (Points)</h3>
+                    <canvas id="playerTrendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- PLAYER DETAIL COLUMN -->
+            <article class="player-detail-card" id="playerDetail"
+                     data-players='[
+                         {% for p in players %}
+                         {
+                             "id": {{ p.id }},
+                             "name": "{{ p.first_name }} {{ p.last_name }}",
+                             "jersey": "{{ p.jersey|default:'--' }}",
+                             "age": "{{ p.age|default_if_none:'-' }}",
+                             "height": "{{ p.height|default:'-' }}",
+                             "weight": "{{ p.weight|default:'-' }}",
+                             "headshot": "{{ p.headshot_url|default_if_none:'' }}"
+                         }{% if not forloop.last %},{% endif %}
+                         {% endfor %}
+                     ]'>
+                <div class="player-photo-wrapper">
+                    <img id="playerPhoto"
+                         class="player-photo"
+                         src="{% static 'analytics/images/default-player.jpg' %}"
+                         alt="Player headshot">
+                </div>
+                <div class="player-meta">
+                    <h2 id="playerName">Select a player</h2>
+                    <div class="jersey" id="playerJersey">#--</div>
+                    <ul>
+                        <li><strong>Age:</strong> <span id="playerAge">–</span></li>
+                        <li><strong>Height:</strong> <span id="playerHeight">–</span></li>
+                        <li><strong>Weight:</strong> <span id="playerWeight">–</span></li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <div class="bottom-button-wrapper">
+            <a href="{% url 'analytics:dashboard' %}" class="bottom-button">
+                View Team Analytics &amp; Charts
+            </a>
+        </div>
+    </main>
+</div>
+{% endblock %}

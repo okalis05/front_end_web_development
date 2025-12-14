@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Playground{% endblock %}</title>
+
+    <!-- Playground-only stylesheet -->
+    <link rel="stylesheet" href="{% static 'playground/css/playground.css' %}">
+
+    <!-- Persist dark mode for playground -->
+    <script>
+        if (localStorage.getItem("playground-dark-mode") === "true") {
+            document.documentElement.classList.add("pg-dark");
+        }
+    </script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="playground-body">
+    <!-- TOP NAVBAR (playground-only) -->
+    <header class="pg-navbar">
+        <div class="pg-nav-inner">
+            <div class="pg-nav-left">
+                <a href="{% url 'playground:intro' %}" class="pg-logo">
+                    Border Playground
+                </a>
+            </div>
+
+            <nav class="pg-nav-links">
+                <a href="{% url 'playground:intro' %}" class="pg-nav-link">Intro</a>
+                <a href="{% url 'playground:map' %}" class="pg-nav-link">Map</a>
+                <a href="{% url 'playground:ports' %}" class="pg-nav-link">Port Analytics</a>
+                <a href="{% url 'playground:insights' %}" class="pg-nav-link">AI Insights</a>
+                <a href="{% url 'playground:extra' %}" class="pg-nav-link">Extras</a> <!-- NEW -->
+            </nav>
+
+            <div class="pg-nav-actions">
+                <button id="pg-dark-toggle" class="pg-dark-toggle" type="button">
+                    🌙
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN LAYOUT: sidebar + content -->
+    <div class="pg-shell">
+        <aside class="pg-sidebar">
+            <div class="pg-sidebar-header">
+                <div class="pg-sidebar-badge">BC</div>
+                <div class="pg-sidebar-text">
+                    <h2>Border Crossing</h2>
+                    <p>2020–2025 open data</p>
+                </div>
+            </div>
+
+            <div class="pg-sidebar-section-title">Views</div>
+            <a href="{% url 'playground:intro' %}" class="pg-side-link">Overview</a>
+            <a href="{% url 'playground:map' %}" class="pg-side-link">Encounters Map</a>
+            <a href="{% url 'playground:ports' %}" class="pg-side-link">Port Analytics</a>
+            <a href="{% url 'playground:insights' %}" class="pg-side-link">AI Insights</a>
+            <a href="{% url 'playground:extra' %}" class="pg-side-link">Extras</a> <!-- NEW -->
+             <!-- NEW -->
+
+            <div class="pg-sidebar-section-title">Tech Stack</div>
+            <div class="pg-pills">
+                <span class="pg-pill">Django</span>
+                <span class="pg-pill">Plotly</span>
+                <span class="pg-pill">Leaflet</span>
+                <span class="pg-pill">Open Data</span>
+            </div>
+        </aside>
+
+        <main class="pg-main">
+            {% block body %}{% endblock %}
+        </main>
+    </div>
+
+    <footer class="pg-footer">
+        <p>Border Crossing Playground — powered by open government data</p>
+    </footer>
+
+    <!-- Dark mode logic for playground only -->
+    <script>
+        const pgDarkToggle = document.getElementById("pg-dark-toggle");
+        if (pgDarkToggle) {
+            pgDarkToggle.addEventListener("click", () => {
+                const isDark = document.documentElement.classList.toggle("pg-dark");
+                localStorage.setItem("playground-dark-mode", isDark);
+            });
+        }
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+
+
+

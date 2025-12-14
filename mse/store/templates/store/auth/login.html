@@ -1,0 +1,19 @@
+{% extends "store/base.html" %}
+{% block title %}Login{% endblock %}
+{% block body %}
+<section class="st-section">
+  <div class="st-shell st-shell--narrow">
+    <h2 class="st-h2">Login</h2>
+    <form class="st-card st-form" method="post" novalidate>
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <label class="st-label" for="id_username">Username</label>
+      {{ form.username }}
+      <label class="st-label" for="id_password">Password</label>
+      {{ form.password }}
+      <button class="st-btn st-btn--gold" type="submit">Login</button>
+      <p class="st-muted">No account? <a href="{% url 'store:signup' %}">Create one</a>.</p>
+    </form>
+  </div>
+</section>
+{% endblock %}

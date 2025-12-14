@@ -1,0 +1,29 @@
+{% extends "banking/base.html" %}
+{% load banking_extras %}
+{% block title %}Accounts{% endblock %}
+
+{% block body %}
+<section class="bk-pagehead" data-reveal>
+  <h2 class="bk-h2">Accounts</h2>
+  <p class="bk-muted">Tap an account to view transactions, export CSV, and filter activity.</p>
+</section>
+
+<div class="bk-card" data-reveal>
+  <div class="bk-accounts">
+    {% for a in accounts %}
+      <a class="bk-acct" href="{% url 'banking:account_detail' a.public_id %}">
+        <div class="bk-acct-left">
+          <div class="bk-acct-name">{{ a.nickname|default:a.get_account_type_display }}</div>
+          <div class="bk-acct-sub">{{ a.public_id }} • ••••{{ a.last4 }}</div>
+        </div>
+        <div class="bk-acct-right">
+          <div class="bk-acct-bal">{{ a.balance|money }}</div>
+          <div class="bk-acct-avail">Available {{ a.available_balance|money }}</div>
+        </div>
+      </a>
+    {% empty %}
+      <div class="bk-empty">No accounts found.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

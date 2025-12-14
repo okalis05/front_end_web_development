@@ -1,0 +1,13 @@
+{% extends "store/base.html" %}
+{% block title %}Settings{% endblock %}
+{% block body %}
+<section class="st-section">
+  <div class="st-shell st-shell--narrow">
+    <h2 class="st-h2">Settings</h2>
+    <div class="st-card st-float">
+      <p class="st-muted">Theme toggle is stored in localStorage (<code>store_theme</code>).</p>
+      <p class="st-muted">Tenant routing uses header/query/subdomain/session. Recommended for APIs: <code>X-Tenant</code>.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

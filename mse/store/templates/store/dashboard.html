@@ -1,0 +1,44 @@
+{% extends "store/base.html" %}
+{% block title %}Dashboard | Elysian Store{% endblock %}
+{% block body %}
+<section class="st-section">
+  <div class="st-shell">
+    <div class="st-row">
+      <div>
+        <h2 class="st-h2">Dashboard</h2>
+        <p class="st-muted">
+          Tenant: <strong>{{ org.name }}</strong> (<code>{{ org.slug }}</code>) —
+          Role: <strong>{{ membership.role }}</strong>
+        </p>
+      </div>
+      <div class="st-row__actions">
+        <a class="st-btn st-btn--ghost" href="{% url 'store:org_switch' %}">Switch org</a>
+        <a class="st-btn st-btn--gold" href="{% url 'store:billing' %}">Billing</a>
+      </div>
+    </div>
+
+    <div class="st-grid st-grid--2">
+      <article class="st-card st-float">
+        <h3 class="st-h3">Subscription</h3>
+        {% if sub %}
+          <p>Status: <span class="st-pill">{{ sub.status }}</span></p>
+          <p>Plan: <strong>{{ sub.plan.name }}</strong></p>
+          <p class="st-muted">Period end: {{ sub.current_period_end|default:"—" }}</p>
+        {% else %}
+          <p class="st-muted">No subscription yet.</p>
+          <a class="st-btn st-btn--gold" href="{% url 'store:pricing' %}">Choose a plan</a>
+        {% endif %}
+      </article>
+
+      <article class="st-card st-float">
+        <h3 class="st-h3">API</h3>
+        <p class="st-muted">Tenant-aware API requires <code>X-Tenant: {{ org.slug }}</code>.</p>
+        <div class="st-code">
+          <code>GET /store/api/tenant/</code>
+        </div>
+        <p class="st-muted">Docs endpoints are configured in project urls (Swagger/ReDoc).</p>
+      </article>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "playground/base.html" %}
+{% load static %}
+
+{% block title %}Encounters Map{% endblock %}
+
+{% block extra_head %}
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+
+{% block body %}
+<section class="pg-section">
+    <div class="pg-section-header">
+        <h1>Border Encounters Map</h1>
+        <p>
+            Total <strong>Value</strong> per port, aggregated across
+            <strong>2020–2025</strong>. Marker size reflects total Value.
+        </p>
+    </div>
+</section>
+
+<hr>
+
+<div id="border-map"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="module" src="{% static 'playground/js/map-page.js' %}"></script>
+{% endblock %}
