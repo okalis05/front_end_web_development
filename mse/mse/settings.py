@@ -10,11 +10,18 @@ BALLDONTLIE_API_KEY = os.getenv("BALLDONTLIE_API_KEY")
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-e$l7^qljr1%k$%w1*-yf+dax+3p6%)x8u0wkwlu&og4(i-xfb="
 
-DEBUG = True
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-local-dev-only"
+)
 
-ALLOWED_HOSTS: list[str] = []
+
+
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
+
+ALLOWED_HOSTS: list[str] = ["*"]
 
 
 # External API keys
@@ -67,6 +74,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
