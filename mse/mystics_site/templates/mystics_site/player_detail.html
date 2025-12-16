@@ -1,0 +1,69 @@
+{% extends "mystics_site/base.html" %}
+
+{% load static %}
+{% block title %}{{ player.full_name }} • Mystics Insight Hub{% endblock %}
+
+{% block content %}
+<section class="ms-playerpage ms-reveal">
+  <div class="ms-playerhero ms-card-glow">
+    <div class="ms-playerhero-left">
+      <img class="ms-avatar ms-avatar-xl"
+     src="{{ player.headshot_url|default:'' }}"
+     data-fallback="{% static 'mystics_site/img/player-placeholder.svg' %}"
+     alt="{{ player.full_name }}">
+
+
+      <div>
+        <div class="ms-pill">{{ player.team.full_name|default:"Free Agent" }}</div>
+        <h1 class="ms-h1">{{ player.full_name }}</h1>
+        <div class="ms-dim">{{ player.position_abbreviation|default:player.position }} • #{{ player.jersey_number|default:"—" }}</div>
+        <div class="ms-dim">Height: {{ player.height|default:"—" }} • College: {{ player.college|default:"—" }}</div>
+      </div>
+    </div>
+
+    <div class="ms-kpirow">
+      <div class="ms-kpi"><span class="ms-k">{{ agg.g|default:0 }}</span><span class="ms-l">Games</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ agg.ppg|floatformat:1 }}</span><span class="ms-l">PPG</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ agg.rpg|floatformat:1 }}</span><span class="ms-l">RPG</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ agg.apg|floatformat:1 }}</span><span class="ms-l">APG</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ agg.spg|floatformat:1 }}</span><span class="ms-l">SPG</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ agg.bpg|floatformat:1 }}</span><span class="ms-l">BPG</span></div>
+    </div>
+  </div>
+
+  <div class="ms-two">
+    <div class="ms-card">
+      <div class="ms-card-h">
+        <span class="ms-pill">PPG by Month</span>
+        <span class="ms-dim">{{ season }}</span>
+      </div>
+      <canvas id="playerSplits" height="120"></canvas>
+    </div>
+
+    <div class="ms-card">
+      <div class="ms-card-h">
+        <span class="ms-pill">Last 10 Games</span>
+        <span class="ms-dim">{{ season }}</span>
+      </div>
+      <div class="ms-table">
+        <div class="ms-row ms-head">
+          <div>Date</div><div class="ms-right">PTS</div><div class="ms-right">REB</div><div class="ms-right">AST</div>
+        </div>
+        {% for s in last10 %}
+        <div class="ms-row">
+          <div class="ms-dim">{% if s.game.date_utc %}{{ s.game.date_utc|date:"M d" }}{% else %}—{% endif %}</div>
+          <div class="ms-right">{{ s.pts|default:"—" }}</div>
+          <div class="ms-right">{{ s.reb|default:"—" }}</div>
+          <div class="ms-right">{{ s.ast|default:"—" }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  window.MS = window.MS || {};
+  window.MS.playerSplitsUrl = "{% url 'mystics_site:api_player_splits' player.api_id %}";
+</script>
+{% endblock %}

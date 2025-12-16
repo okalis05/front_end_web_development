@@ -1,0 +1,52 @@
+{% extends "mystics_site/base.html" %}
+
+{% load static %}
+{% block title %}Players • Mystics Insight Hub{% endblock %}
+
+{% block content %}
+<section class="ms-section ms-reveal">
+  <div class="ms-section-h">
+    <h2 class="ms-h2">Players</h2>
+
+    <form class="ms-search" method="get">
+      <input name="q" value="{{ q }}" placeholder="Search name…" />
+      <select name="team">
+        <option value="">All teams</option>
+        {% for t in teams %}
+          <option value="{{ t.api_id }}" {% if team|stringformat:"s" == t.api_id|stringformat:"s" %}selected{% endif %}>
+            {{ t.full_name }}
+          </option>
+        {% endfor %}
+      </select>
+      <button class="ms-btn ms-btn-small" type="submit">Filter</button>
+    </form>
+  </div>
+
+  <div class="ms-grid ms-grid-players">
+    {% for p in players %}
+    <a class="ms-card ms-playercard ms-reveal" href="{% url 'mystics_site:player_detail' p.api_id %}">
+      <div class="ms-playercard-top">
+        <img class="ms-avatar ms-avatar-xl"
+     src="{{ player.headshot_url|default:'' }}"
+     alt="{{ player.full_name }}"
+     onerror="this.onerror=null;this.src=window.MS_STATIC_PLAYER_FALLBACK;">
+
+        <div>
+          <div class="ms-player-name">{{ p.full_name }}</div>
+          <div class="ms-dim">{{ p.team.abbreviation|default:"—" }} • {{ p.position_abbreviation|default:p.position }}</div>
+        </div>
+      </div>
+      <div class="ms-playercard-bot">
+        <span class="ms-chip">#{{ p.jersey_number|default:"—" }}</span>
+        <span class="ms-chip">{{ p.height|default:"—" }}</span>
+        <span class="ms-chip">{{ p.college|default:"" }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+<script>
+  window.MS_STATIC_PLAYER_FALLBACK = "{% static 'mystics_site/img/player-placeholder.svg' %}";
+</script>
+
+{% endblock %}

@@ -51,8 +51,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- NOTE: file path matches analytics/static/analytics/mystics.js -->
     <script src="{% static 'analytics/mystics.js' %}"></script>
+    <a href="{% url 'portfolio:about' %}" class="bottom-button">Back to Portfolio&rarr;</a>
 
     {% block extra_js %}{% endblock %}
+    
 </body>
 </html>
 

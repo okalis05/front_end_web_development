@@ -1,0 +1,51 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Mystics Insight Hub{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'mystics_site/css/mystics.css' %}">
+  <script defer src="{% static 'mystics_site/js/mystics.js' %}"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Motion (lightweight) -->
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+</head>
+
+<body class="ms-body">
+  <div class="ms-bg"></div>
+
+  <header class="ms-topbar">
+    <a class="ms-brand" href="{% url 'mystics_site:home' %}">
+      <span class="ms-brand-badge"></span>
+      <span>Mystics Insight Hub</span>
+    </a>
+
+    <nav class="ms-nav">
+      <a href="{% url 'mystics_site:teams' %}">Teams</a>
+      <a href="{% url 'mystics_site:players' %}">Players</a>
+      <a class="ms-chip" href="{% url 'mystics_site:home' %}">2025</a>
+    </nav>
+
+    <button class="ms-toggle" type="button" data-theme-toggle aria-label="Toggle theme">
+      <span class="ms-toggle-dot"></span>
+      <span class="ms-toggle-label">Dark</span>
+    </button>
+  </header>
+
+  <main class="ms-wrap">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="ms-footer">
+    <div class="ms-footer-inner">
+      <span>Built for executive-level storytelling • Data cached locally</span>
+      <span class="ms-dim">WNBA data via BALLDONTLIE</span>
+    </div>
+  </footer>
+</body>
+</html>

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "pipeline",
     "banking",
     "store",
+    "mystics_site",
     "rest_framework",
     "drf_spectacular",
     "django.contrib.admin",

@@ -1,0 +1,81 @@
+{% extends "mystics_site/base.html" %}
+
+{% load static %}
+{% block title %}{{ team.full_name }} • Mystics Insight Hub{% endblock %}
+
+{% block content %}
+<section class="ms-team ms-reveal" style="--a: {{ team.primary_hex }}; --b: {{ team.secondary_hex }};">
+  <div class="ms-team-h">
+    <div>
+      <div class="ms-pill">{{ team.conference }}</div>
+      <h1 class="ms-h1">{{ team.full_name }}</h1>
+      <p class="ms-dim">Roster + 2025 trendline</p>
+    </div>
+    <div class="ms-team-kpis">
+      <div class="ms-kpi"><span class="ms-k">2025</span><span class="ms-l">Season</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ roster|length }}</span><span class="ms-l">Active</span></div>
+    </div>
+  </div>
+
+  <div class="ms-two">
+    <div class="ms-card ms-card-glow">
+      <div class="ms-card-h">
+        <span class="ms-pill">Team Points Trend</span>
+        <span class="ms-dim">per game (reconstructed)</span>
+      </div>
+      <canvas id="teamTrend" height="120"></canvas>
+    </div>
+
+    <div class="ms-card">
+      <div class="ms-card-h">
+        <span class="ms-pill">Latest Games</span>
+        <span class="ms-dim">last 10</span>
+      </div>
+      <div class="ms-table">
+        <div class="ms-row ms-head">
+          <div>Date</div><div>Matchup</div><div class="ms-right">Score</div>
+        </div>
+        {% for g in recent_games %}
+        <div class="ms-row">
+          <div class="ms-dim">{% if g.date_utc %}{{ g.date_utc|date:"M d" }}{% else %}—{% endif %}</div>
+          <div>{{ g.visitor_team.abbreviation }} @ {{ g.home_team.abbreviation }}</div>
+          <div class="ms-right">{{ g.away_score|default:"—" }}–{{ g.home_score|default:"—" }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="ms-card ms-reveal">
+    <div class="ms-card-h">
+      <span class="ms-pill">Roster</span>
+      <span class="ms-dim">tap a player</span>
+    </div>
+    <div class="ms-roster">
+      {% for p in roster %}
+      <a class="ms-player" href="{% url 'mystics_site:player_detail' p.api_id %}">
+        <img class="ms-avatar"
+     src="{{ p.headshot_url|default:'' }}"
+     alt="{{ p.full_name }}"
+     onerror="this.onerror=null;this.src=PLAYER_FALLBACK_IMG;">
+
+        <div class="ms-player-meta">
+          <div class="ms-player-name">{{ p.full_name }}</div>
+          <div class="ms-dim">{{ p.position_abbreviation|default:p.position }} • #{{ p.jersey_number|default:"—" }}</div>
+        </div>
+        <div class="ms-chevron">›</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  window.MS = window.MS || {};
+  window.MS.teamTrendUrl = "{% url 'mystics_site:api_team_trend' team.api_id %}";
+</script>
+<script>
+  const PLAYER_FALLBACK_IMG = "{% static 'mystics_site/img/player-placeholder.svg' %}";
+</script>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "mystics_site/base.html" %}
+{% block title %}Home • Mystics Insight Hub{% endblock %}
+
+{% block content %}
+<section class="ms-hero ms-reveal">
+  <div class="ms-hero-left">
+    <h1 class="ms-h1">
+      A <span class="ms-grad">WNBA 2025</span> command center.
+    </h1>
+    <p class="ms-sub">
+      Teams, rosters, game logs, and interactive stat storytelling—built to feel better than a broadcast package.
+    </p>
+
+    <div class="ms-metrics">
+      <div class="ms-metric">
+        <div class="ms-metric-k">{{ teams_count }}</div>
+        <div class="ms-metric-l">Teams</div>
+      </div>
+      <div class="ms-metric">
+        <div class="ms-metric-k">{{ players_count }}</div>
+        <div class="ms-metric-l">Players</div>
+      </div>
+      <div class="ms-metric">
+        <div class="ms-metric-k">{{ games_count }}</div>
+        <div class="ms-metric-l">{{ season }} Games</div>
+      </div>
+    </div>
+
+    <div class="ms-cta-row">
+      <a class="ms-btn" href="{% url 'mystics_site:teams' %}">Explore Teams</a>
+      <a class="ms-btn ms-btn-ghost" href="{% url 'mystics_site:players' %}">Browse Players</a>
+    </div>
+  </div>
+
+  <div class="ms-hero-right">
+    <div class="ms-card ms-card-glow ms-reveal">
+      <div class="ms-card-h">
+        <span class="ms-pill">Top Scorers</span>
+        <span class="ms-dim">{{ season }} • min 5 games</span>
+      </div>
+
+      <div class="ms-table">
+        <div class="ms-row ms-head">
+          <div>Player</div><div>Team</div><div class="ms-right">PPG</div>
+        </div>
+        {% for r in top_scorers %}
+        <a class="ms-row ms-linkrow" href="{% url 'mystics_site:player_detail' r.player_id %}">
+          <div>{{ r.player__first_name }} {{ r.player__last_name }}</div>
+          <div class="ms-dim">{{ r.player__team__abbreviation }}</div>
+          <div class="ms-right">{{ r.ppg|floatformat:1 }}</div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="ms-orbit ms-reveal" aria-hidden="true">
+      <div class="ms-orb ms-orb-a"></div>
+      <div class="ms-orb ms-orb-b"></div>
+      <div class="ms-orb ms-orb-c"></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

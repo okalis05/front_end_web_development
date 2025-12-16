@@ -1,0 +1,28 @@
+{% extends "mystics_site/base.html" %}
+{% block title %}Teams • Mystics Insight Hub{% endblock %}
+
+{% block content %}
+<section class="ms-section ms-reveal">
+  <div class="ms-section-h">
+    <h2 class="ms-h2">Teams</h2>
+    <form class="ms-search" method="get">
+      <input name="q" value="{{ q }}" placeholder="Search teams…" />
+      <button class="ms-btn ms-btn-small" type="submit">Search</button>
+    </form>
+  </div>
+
+  <div class="ms-grid">
+    {% for t in teams %}
+    <a class="ms-tile ms-reveal" href="{% url 'mystics_site:team_detail' t.api_id %}" style="--a: {{ t.primary_hex }}; --b: {{ t.secondary_hex }};">
+      <div class="ms-tile-top">
+        <div class="ms-badge">{{ t.abbreviation }}</div>
+        <div class="ms-dim">{{ t.conference }}</div>
+      </div>
+      <div class="ms-tile-name">{{ t.full_name }}</div>
+      <div class="ms-tile-sub">{{ t.city }} • {{ t.name }}</div>
+      <div class="ms-tile-bar"></div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
