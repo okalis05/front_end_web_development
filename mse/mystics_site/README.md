@@ -114,7 +114,7 @@ A purpose-built command center for leadership and strategy:
                                 │                              │     │  Note: Core analytics do     │
                                 │                              │     │  NOT depend on premium stats │
                                 └──────────────────────────────┘     └──────────────────────────────┘
-
+```
 ---
 
 ## 🔄 Data Synchronization
@@ -139,7 +139,7 @@ Due to API_Key free tier limitation , stats data cannot be fetched.
 - Shot distribution and efficiency visuals
 - Role-based access (executive vs analyst)
 
-👤 Author
+## 👤 Author
 
 Francoise Elis Mbazoa Okala
 Software Engineer | Data & Sports Analytics

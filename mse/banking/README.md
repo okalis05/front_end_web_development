@@ -157,7 +157,6 @@ Shared state & explainability
 
 ## 📁 Recommended Repository Structure
 
-```text
 mse/
 ├── banking/
 │   ├── ai_auto/
@@ -168,6 +167,7 @@ mse/
 ├── manage.py
 └── README.md
 ---
+
 ## 🧠Author 
 Francoise Elis Okala
 Software Engineer ,Fintech Architect ,Analytics Expert
