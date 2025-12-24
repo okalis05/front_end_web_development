@@ -1,8 +1,7 @@
-
 from __future__ import annotations
 from django.db import models
 
-# Create your models here.
+
 class Team(models.Model):
     api_id = models.IntegerField(unique=True, db_index=True)
     conference = models.CharField(max_length=64, blank=True, default="")
@@ -11,9 +10,16 @@ class Team(models.Model):
     full_name = models.CharField(max_length=128, blank=True, default="")
     abbreviation = models.CharField(max_length=8, blank=True, default="")
 
-    # Optional cosmetics (you can tune per team later)
+    # Cosmetics
     primary_hex = models.CharField(max_length=16, blank=True, default="#1f6fff")
     secondary_hex = models.CharField(max_length=16, blank=True, default="#ff2a3a")
+
+    class Meta:
+        ordering = ["full_name"]
+        indexes = [
+            models.Index(fields=["conference"]),
+            models.Index(fields=["abbreviation"]),
+        ]
 
     def __str__(self) -> str:
         return self.full_name or f"Team {self.api_id}"
@@ -21,7 +27,9 @@ class Team(models.Model):
 
 class Player(models.Model):
     api_id = models.IntegerField(unique=True, db_index=True)
-    team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.SET_NULL, related_name="players")
+    team = models.ForeignKey(
+        Team, null=True, blank=True, on_delete=models.SET_NULL, related_name="players"
+    )
 
     first_name = models.CharField(max_length=64, blank=True, default="")
     last_name = models.CharField(max_length=64, blank=True, default="")
@@ -33,8 +41,13 @@ class Player(models.Model):
     college = models.CharField(max_length=128, blank=True, default="")
     age = models.IntegerField(null=True, blank=True)
 
-    # Headshots: self-contained fallback + optional URL
     headshot_url = models.URLField(blank=True, default="")
+
+    class Meta:
+        ordering = ["last_name", "first_name"]
+        indexes = [
+            models.Index(fields=["last_name", "first_name"]),
+        ]
 
     @property
     def full_name(self) -> str:
@@ -59,10 +72,13 @@ class Game(models.Model):
     away_score = models.IntegerField(null=True, blank=True)
 
     class Meta:
+        ordering = ["-date_utc"]
         indexes = [models.Index(fields=["season", "postseason"])]
 
     def __str__(self) -> str:
-        return f"{self.season} {self.visitor_team.abbreviation}@{self.home_team.abbreviation}"
+        ht = getattr(self.home_team, "abbreviation", "HOME")
+        vt = getattr(self.visitor_team, "abbreviation", "AWAY")
+        return f"{self.season} {vt}@{ht}"
 
 
 class PlayerStat(models.Model):
@@ -95,6 +111,7 @@ class PlayerStat(models.Model):
         indexes = [
             models.Index(fields=["player"]),
             models.Index(fields=["team"]),
+            models.Index(fields=["game"]),
         ]
 
 
@@ -126,4 +143,7 @@ class TeamStat(models.Model):
 
     class Meta:
         unique_together = [("game", "team")]
-        indexes = [models.Index(fields=["team"])]
+        indexes = [
+            models.Index(fields=["team"]),
+            models.Index(fields=["game"]),
+        ]

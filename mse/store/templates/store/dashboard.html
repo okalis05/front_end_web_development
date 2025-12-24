@@ -1,43 +1,60 @@
-{% extends "store/base.html" %}
-{% block title %}Dashboard | Elysian Store{% endblock %}
-{% block body %}
-<section class="st-section">
-  <div class="st-shell">
-    <div class="st-row">
-      <div>
-        <h2 class="st-h2">Dashboard</h2>
-        <p class="st-muted">
-          Tenant: <strong>{{ org.name }}</strong> (<code>{{ org.slug }}</code>) —
-          Role: <strong>{{ membership.role }}</strong>
-        </p>
-      </div>
-      <div class="st-row__actions">
-        <a class="st-btn st-btn--ghost" href="{% url 'store:org_switch' %}">Switch org</a>
-        <a class="st-btn st-btn--gold" href="{% url 'store:billing' %}">Billing</a>
-      </div>
+{% extends "store/base_store.html" %}
+{% block title %}Console • Store{% endblock %}
+{% block content %}
+<section class="heroRow">
+  <div class="hero glass">
+    <div class="kicker">Organization</div>
+    <h1 class="h1">{{ org.name }}</h1>
+    <div class="muted">Role: <b>{{ membership.get_role_display }}</b> • Risk: <b>{{ org.risk_tier }}</b></div>
+  </div>
+
+  <div class="hero glass">
+    <div class="kicker">Subscription</div>
+    <div class="big">{{ sub.plan.name }}</div>
+    <div class="muted">Status: <b>{{ sub.status }}</b> • Period: <b>{{ sub.billing_period }}</b></div>
+    <div class="actions">
+      <a class="btn gold" href="{% url 'store:billing' %}">Manage Billing</a>
+      <a class="btn purple" href="{% url 'store:catalog' %}">Open Catalog</a>
     </div>
+  </div>
+</section>
 
-    <div class="st-grid st-grid--2">
-      <article class="st-card st-float">
-        <h3 class="st-h3">Subscription</h3>
-        {% if sub %}
-          <p>Status: <span class="st-pill">{{ sub.status }}</span></p>
-          <p>Plan: <strong>{{ sub.plan.name }}</strong></p>
-          <p class="st-muted">Period end: {{ sub.current_period_end|default:"—" }}</p>
-        {% else %}
-          <p class="st-muted">No subscription yet.</p>
-          <a class="st-btn st-btn--gold" href="{% url 'store:pricing' %}">Choose a plan</a>
-        {% endif %}
-      </article>
+<section class="grid3">
+  <div class="card glass">
+    <div class="kicker">Products</div>
+    <div class="big">{{ products_count }}</div>
+    <div class="muted">Active SKUs in this tenant.</div>
+  </div>
 
-      <article class="st-card st-float">
-        <h3 class="st-h3">API</h3>
-        <p class="st-muted">Tenant-aware API requires <code>X-Tenant: {{ org.slug }}</code>.</p>
-        <div class="st-code">
-          <code>GET /store/api/tenant/</code>
+  <div class="card glass">
+    <div class="kicker">Recent Orders</div>
+    <div class="list">
+      {% for o in orders %}
+        <div class="li">
+          <div>#{{ o.id }} • {{ o.status|upper }}</div>
+          <div class="muted">${{ o.total }}</div>
         </div>
-        <p class="st-muted">Docs endpoints are configured in project urls (Swagger/ReDoc).</p>
-      </article>
+      {% empty %}
+        <div class="muted">No orders yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card glass">
+    <div class="kicker">Ledger (Audit-grade)</div>
+    <div class="list">
+      {% for l in ledger %}
+        <div class="li">
+          <div>{{ l.event_code }}</div>
+          <div class="muted">{{ l.direction }} ${{ l.amount }}</div>
+        </div>
+      {% empty %}
+        <div class="muted">Ledger empty.</div>
+      {% endfor %}
+    </div>
+    <div class="actions">
+      <a class="btn crimson" href="{% url 'store:audit' %}">Open Audit Log</a>
+      <a class="btn gold" href="{% url 'store:invoices' %}">Invoices</a>
     </div>
   </div>
 </section>

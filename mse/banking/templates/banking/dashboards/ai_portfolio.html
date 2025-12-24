@@ -1,0 +1,46 @@
+{% extends "banking/base.html" %}
+{% block body %}
+<div class="bk-page">
+  <h1>AI Portfolio Dashboard</h1>
+  <p class="bk-muted">Executive KPI view across AI Auto sessions and AI Credit decisions.</p>
+
+  <div class="bk-grid">
+    <div class="bk-card">
+      <h3>AI Auto Sessions</h3>
+      <p>Total: {{ kpi.auto_sessions }}</p>
+      <p>Active: {{ kpi.auto_active }}</p>
+      <p>Messages: {{ kpi.auto_messages }}</p>
+    </div>
+
+    <div class="bk-card">
+      <h3>AI Credit Applications</h3>
+      <p>Total: {{ kpi.credit_apps }}</p>
+      <p>LOW: {{ kpi.low }}</p>
+      <p>MEDIUM: {{ kpi.medium }}</p>
+      <p>HIGH: {{ kpi.high }}</p>
+    </div>
+
+    <div class="bk-card">
+      <h3>Active Model</h3>
+      {% if model %}
+        <p>Version: {{ model.version }}</p>
+        <p>ROC AUC: {{ model.metrics.roc_auc }}</p>
+        <p>Avg Precision: {{ model.metrics.avg_precision }}</p>
+      {% else %}
+        <p>No active model. Train one.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="bk-card" style="margin-top:16px;">
+    <h3>Recent Credit Decisions</h3>
+    <ul>
+      {% for a in recent %}
+        <li>{{ a.created_at }} — {{ a.risk_tier }} — {{ a.decision }} — PD={{ a.prob_default|floatformat:3 }}</li>
+      {% empty %}
+        <li>No decisions yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

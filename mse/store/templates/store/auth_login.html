@@ -1,0 +1,34 @@
+{% extends "store/base_store.html" %}
+{% block title %}Login • Store{% endblock %}
+{% block content %}
+<section class="grid2">
+  <div class="card glass">
+    <h1 class="h1">Executive Login</h1>
+    <p class="muted">Enter your credentials to access your tenant console.</p>
+
+    <form method="post" class="form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <label>Username / Email</label>
+      {{ form.username }}
+      <label>Password</label>
+      {{ form.password }}
+      <button class="btn gold" type="submit">Enter Console</button>
+    </form>
+
+    <div class="hint">
+      New here? <a href="{% url 'store:signup' %}">Create an account</a>
+    </div>
+  </div>
+
+  <div class="hero glass">
+    <h2 class="h2">Luxe Fintech Storefront</h2>
+    <ul class="bullets">
+      <li>Multi-tenant organizations</li>
+      <li>Role-based access</li>
+      <li>Subscription + invoices</li>
+      <li>Ledger + audit events</li>
+    </ul>
+  </div>
+</section>
+{% endblock %}

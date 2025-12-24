@@ -1,18 +1,53 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width , initail-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ei=edge">
-        <title>
-            Pipeline
-        </title>
-        <link href="{% static 'pipelline/style.css' %}" rel="stylesheet">
-    </head>
-    <body>
-        {% block body %}
-        {% endblock %}
-    </body>
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Pipeline{% endblock %}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <link rel="stylesheet" href="{% static 'pipeline/css/pipeline.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="{% static 'pipeline/js/pipeline.js' %}" defer></script>
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="pl-body">
+  <canvas id="pl-particles"></canvas>
+
+  <header class="pl-topbar">
+    <div class="pl-brand">
+      <div class="pl-logo">⚡</div>
+      <div>
+        <div class="pl-title">{% block top_title %}Data Pipeline Command{% endblock %}</div>
+        <div class="pl-subtitle">{% block top_subtitle %}Prefect orchestration + dbt transformations • real-time visibility{% endblock %}</div>
+      </div>
+    </div>
+
+    <div class="pl-actions">
+      <a class="pl-btn pl-btn-ghost" href="{% url 'pipeline:command_center' %}">🏠 Command Center</a>
+      {% if request.user.is_authenticated %}
+        <span class="pl-btn pl-btn-ghost" style="cursor:default;">👤 {{ request.user.username }}</span>
+      {% else %}
+        <span class="pl-btn pl-btn-ghost" style="cursor:default;">Guest</span>
+      {% endif %}
+      <button class="pl-btn pl-btn-ghost" id="themeToggle" type="button">☀️ Light</button>
+    </div>
+  </header>
+
+  {% if messages %}
+    <div class="pipeline-messages">
+      {% for message in messages %}
+        <div class="msg msg-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="pl-grid">
+    {% block body %}{% endblock %}
+  </main>
+
+  {% block extra_js %}{% endblock %}
+</body>
 </html>

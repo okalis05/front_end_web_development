@@ -1,156 +1,205 @@
-
+# Dependencies
 from __future__ import annotations
+
+from decimal import Decimal
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Q
 from django.utils import timezone
-from django.core.exceptions import ValidationError
-
-# Create your models here.
-ROLE_ADMIN = "admin"
-ROLE_BASIC = "basic"
-ROLE_STANDARD = "standard"
-ROLE_PREMIUM = "premium"
-
-ROLE_CHOICES = [
-    (ROLE_ADMIN, "Admin"),
-    (ROLE_BASIC, "Basic"),
-    (ROLE_STANDARD, "Standard"),
-    (ROLE_PREMIUM, "Premium"),
-]
-
-PLAN_BASIC = "basic"
-PLAN_STANDARD = "standard"
-PLAN_PREMIUM = "premium"
-
-PLAN_CHOICES = [
-    (PLAN_BASIC, "Basic"),
-    (PLAN_STANDARD, "Standard"),
-    (PLAN_PREMIUM, "Premium"),
-]
-
-SUB_ACTIVE = "active"
-SUB_INCOMPLETE = "incomplete"
-SUB_PAST_DUE = "past_due"
-SUB_CANCELED = "canceled"
-SUB_TRIALING = "trialing"
-
-SUB_STATUS_CHOICES = [
-    (SUB_ACTIVE, "Active"),
-    (SUB_INCOMPLETE, "Incomplete"),
-    (SUB_PAST_DUE, "Past Due"),
-    (SUB_CANCELED, "Canceled"),
-    (SUB_TRIALING, "Trialing"),
-]
 
 
-class Organization(models.Model):
-    """
-    Multi-tenant anchor. Single DB, scoped by current tenant (middleware).
-    """
-    name = models.CharField(max_length=180)
-    slug = models.SlugField(max_length=80, unique=True)
-    created_at = models.DateTimeField(default=timezone.now)
+User = settings.AUTH_USER_MODEL
 
-    # Stripe mappings
-    stripe_customer_id = models.CharField(max_length=255, blank=True, default="")
-
-    # If you want tenant selection by subdomain:
-    # tenant.yourdomain.com => slug == tenant
-    allow_subdomain_routing = models.BooleanField(default=True)
+# Create your models here
+class TimeStampedModel(models.Model):
+    created_at = models.DateTimeField(default=timezone.now, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        indexes = [
-            models.Index(fields=["slug"]),
-        ]
+        abstract = True
+
+
+class Organization(TimeStampedModel):
+    name = models.CharField(max_length=180, unique=True)
+    slug = models.SlugField(max_length=120, unique=True)
+    is_active = models.BooleanField(default=True)
+
+    # “Fintech” touch: compliance / metadata
+    legal_name = models.CharField(max_length=220, blank=True)
+    country = models.CharField(max_length=2, blank=True)  # ISO-2
+    risk_tier = models.CharField(max_length=24, default="standard")  # standard/high
+    notes = models.TextField(blank=True)
 
     def __str__(self) -> str:
-        return f"{self.name} ({self.slug})"
+        return self.name
 
 
-class OrgMembership(models.Model):
+class Membership(TimeStampedModel):
+    OWNER = "owner"
+    ADMIN = "admin"
+    ANALYST = "analyst"
+    MEMBER = "member"
+
+    ROLE_CHOICES = [
+        (OWNER, "Owner"),
+        (ADMIN, "Admin"),
+        (ANALYST, "Analyst"),
+        (MEMBER, "Member"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="store_memberships")
     org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="memberships")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="store_memberships")
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ROLE_BASIC)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=MEMBER)
     is_active = models.BooleanField(default=True)
-    joined_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        unique_together = [("org", "user")]
-        indexes = [
-            models.Index(fields=["org", "user"]),
-            models.Index(fields=["user", "role"]),
-        ]
+        unique_together = [("user", "org")]
+        indexes = [models.Index(fields=["org", "role", "is_active"])]
 
     def __str__(self) -> str:
         return f"{self.user} @ {self.org} ({self.role})"
 
 
-class Plan(models.Model):
-    """
-    Represents plan tiers. Stripe price_id binds pricing.
-    """
-    code = models.CharField(max_length=32, choices=PLAN_CHOICES, unique=True)
+class Plan(TimeStampedModel):
+    # You can map this to Stripe price_id or run manual mode.
     name = models.CharField(max_length=80)
-    description = models.TextField(blank=True, default="")
-    monthly_price_usd = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    code = models.SlugField(max_length=64, unique=True)
+    description = models.TextField(blank=True)
+    monthly_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
+    annual_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
+    currency = models.CharField(max_length=8, default="USD")
 
-    # Stripe Price ID (recurring)
-    stripe_price_id = models.CharField(max_length=255, blank=True, default="")
+    stripe_monthly_price_id = models.CharField(max_length=120, blank=True)
+    stripe_annual_price_id = models.CharField(max_length=120, blank=True)
 
-    # Feature flags
-    seats_included = models.PositiveIntegerField(default=1)
-    api_access = models.BooleanField(default=True)
-    priority_support = models.BooleanField(default=False)
-
+    # Executive toggles
+    is_public = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
+    tier = models.PositiveSmallIntegerField(default=1)  # 1..N
 
     def __str__(self) -> str:
-        return f"{self.name} ({self.code})"
+        return self.name
 
 
-class Subscription(models.Model):
-    """
-    One subscription per org (typical SaaS).
-    """
+class Subscription(TimeStampedModel):
+    TRIALING = "trialing"
+    ACTIVE = "active"
+    PAST_DUE = "past_due"
+    CANCELED = "canceled"
+
+    STATUS_CHOICES = [
+        (TRIALING, "Trialing"),
+        (ACTIVE, "Active"),
+        (PAST_DUE, "Past Due"),
+        (CANCELED, "Canceled"),
+    ]
+
     org = models.OneToOneField(Organization, on_delete=models.CASCADE, related_name="subscription")
-    plan = models.ForeignKey(Plan, on_delete=models.PROTECT, related_name="subscriptions")
-    status = models.CharField(max_length=20, choices=SUB_STATUS_CHOICES, default=SUB_INCOMPLETE)
-
-    current_period_start = models.DateTimeField(null=True, blank=True)
+    plan = models.ForeignKey(Plan, on_delete=models.PROTECT)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=TRIALING)
+    billing_period = models.CharField(max_length=16, default="monthly")  # monthly/annual
+    trial_ends_at = models.DateTimeField(null=True, blank=True)
     current_period_end = models.DateTimeField(null=True, blank=True)
 
-    # Stripe IDs
-    stripe_subscription_id = models.CharField(max_length=255, blank=True, default="")
-    stripe_checkout_session_id = models.CharField(max_length=255, blank=True, default="")
-
-    cancel_at_period_end = models.BooleanField(default=False)
-    updated_at = models.DateTimeField(default=timezone.now)
+    # Stripe identifiers
+    stripe_customer_id = models.CharField(max_length=120, blank=True)
+    stripe_subscription_id = models.CharField(max_length=120, blank=True)
 
     def __str__(self) -> str:
-        return f"{self.org.slug}: {self.plan.code} ({self.status})"
-
-    @property
-    def is_paid(self) -> bool:
-        return self.status in {SUB_ACTIVE, SUB_TRIALING}
+        return f"{self.org} → {self.plan} ({self.status})"
 
 
-class AuditEvent(models.Model):
-    """
-    Lightweight audit trail. Useful for compliance & debugging.
-    """
-    org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="audit_events")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
-    action = models.CharField(max_length=120)
-    meta = models.JSONField(default=dict, blank=True)
-    created_at = models.DateTimeField(default=timezone.now)
+class Product(TimeStampedModel):
+    org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="products")
+    name = models.CharField(max_length=180)
+    slug = models.SlugField(max_length=180)
+    description = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
+    currency = models.CharField(max_length=8, default="USD")
+    is_active = models.BooleanField(default=True)
+
+    accent = models.CharField(max_length=32, default="purple")  # purple/gold/red
+    image_url = models.URLField(blank=True)
 
     class Meta:
-        indexes = [
-            models.Index(fields=["org", "created_at"]),
-            models.Index(fields=["action"]),
-        ]
+        unique_together = [("org", "slug")]
+        indexes = [models.Index(fields=["org", "is_active"])]
 
     def __str__(self) -> str:
-        return f"{self.created_at:%Y-%m-%d %H:%M} {self.org.slug} {self.action}"
+        return f"{self.name} ({self.org})"
+
+
+class Order(TimeStampedModel):
+    DRAFT = "draft"
+    SUBMITTED = "submitted"
+    PAID = "paid"
+    FAILED = "failed"
+    CANCELED = "canceled"
+
+    STATUS_CHOICES = [
+        (DRAFT, "Draft"),
+        (SUBMITTED, "Submitted"),
+        (PAID, "Paid"),
+        (FAILED, "Failed"),
+        (CANCELED, "Canceled"),
+    ]
+
+    org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="orders")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DRAFT)
+    currency = models.CharField(max_length=8, default="USD")
+
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    tax = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    total = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+
+    external_payment_id = models.CharField(max_length=140, blank=True)
+    failure_reason = models.CharField(max_length=220, blank=True)
+
+    def __str__(self) -> str:
+        return f"Order {self.id} ({self.org}) {self.status}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    qty = models.PositiveIntegerField(default=1)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
+    line_total = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+
+    class Meta:
+        indexes = [models.Index(fields=["order"])]
+
+    def __str__(self) -> str:
+        return f"{self.product} x{self.qty}"
+
+
+class LedgerEntry(TimeStampedModel):
+    """
+    Fintech-grade: minimal ledger lines for auditing money movement.
+    """
+    org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="ledger")
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
+    direction = models.CharField(max_length=8, default="credit")  # credit/debit
+    amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    currency = models.CharField(max_length=8, default="USD")
+    memo = models.CharField(max_length=220, blank=True)
+    event_code = models.CharField(max_length=80, default="order_payment")
+
+    class Meta:
+        indexes = [models.Index(fields=["org", "created_at", "event_code"])]
+
+    def __str__(self) -> str:
+        return f"{self.org}: {self.direction} {self.amount} {self.currency}"
+
+
+class AuditEvent(TimeStampedModel):
+    org = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="audit_events")
+    actor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    action = models.CharField(max_length=80)
+    detail = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["org", "created_at", "action"])]
+
+    def __str__(self) -> str:
+        return f"{self.org} {self.action} @ {self.created_at:%Y-%m-%d}"

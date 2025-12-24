@@ -1,0 +1,24 @@
+{% extends "store/base_store.html" %}
+{% block title %}Invoices • Store{% endblock %}
+{% block content %}
+<h1 class="h1">Invoices</h1>
+<div class="muted">Paid orders for <b>{{ org.name }}</b></div>
+
+<div class="card glass">
+  <div class="table">
+    <div class="tHead">
+      <div>ID</div><div>Date</div><div>Status</div><div>Total</div>
+    </div>
+    {% for o in orders %}
+    <div class="tRow">
+      <div>#{{ o.id }}</div>
+      <div class="muted">{{ o.created_at|date:"Y-m-d H:i" }}</div>
+      <div><b>{{ o.status|upper }}</b></div>
+      <div><b>${{ o.total }}</b></div>
+    </div>
+    {% empty %}
+      <div class="muted">No invoices yet.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

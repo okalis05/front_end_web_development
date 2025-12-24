@@ -5,7 +5,7 @@
 <section class="ms-hero ms-reveal">
   <div class="ms-hero-left">
     <h1 class="ms-h1">
-      A <span class="ms-grad">WNBA 2025</span> command center.
+      A <span class="ms-grad">WNBA {{ season }}</span> command center.
     </h1>
     <p class="ms-sub">
       Teams, rosters, game logs, and interactive stat storytelling—built to feel better than a broadcast package.
@@ -26,9 +26,23 @@
       </div>
     </div>
 
+    <div class="ms-kpirow ms-reveal">
+      {% for p in top_players %}
+      <div class="ms-kpi">
+        <span class="ms-k">
+          {{ p.player__first_name }} {{ p.player__last_name }}
+        </span>
+        <span class="ms-l">{{ p.ppg|floatformat:1 }} PPG</span>
+      </div>
+      {% empty %}
+      <div class="ms-dim">No scoring leaders yet for {{ season }}.</div>
+      {% endfor %}
+    </div>
+
     <div class="ms-cta-row">
       <a class="ms-btn" href="{% url 'mystics_site:teams' %}">Explore Teams</a>
       <a class="ms-btn ms-btn-ghost" href="{% url 'mystics_site:players' %}">Browse Players</a>
+      <a class="ms-btn ms-btn-ghost" href="{% url 'mystics_site:dashboard' %}">Dashboard</a>
     </div>
   </div>
 
@@ -43,13 +57,20 @@
         <div class="ms-row ms-head">
           <div>Player</div><div>Team</div><div class="ms-right">PPG</div>
         </div>
-        {% for r in top_scorers %}
-        <a class="ms-row ms-linkrow" href="{% url 'mystics_site:player_detail' r.player_id %}">
-          <div>{{ r.player__first_name }} {{ r.player__last_name }}</div>
-          <div class="ms-dim">{{ r.player__team__abbreviation }}</div>
-          <div class="ms-right">{{ r.ppg|floatformat:1 }}</div>
-        </a>
-        {% endfor %}
+
+        {% if top_scorers %}
+          {% for r in top_scorers %}
+          <a class="ms-row ms-linkrow" href="{% url 'mystics_site:player_detail' r.player__api_id %}">
+            <div>{{ r.player__first_name }} {{ r.player__last_name }}</div>
+            <div class="ms-dim">{{ r.player__team__abbreviation|default:"—" }}</div>
+            <div class="ms-right">{{ r.ppg|floatformat:1 }}</div>
+          </a>
+          {% endfor %}
+        {% else %}
+          <div class="ms-empty">
+            No stats yet. Run <span class="ms-code">python manage.py mystics_sync</span> to seed data.
+          </div>
+        {% endif %}
       </div>
     </div>
 

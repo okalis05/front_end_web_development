@@ -1,0 +1,64 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>{% block title %}Store • Luxe SaaS{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'store/css/store_luxe.css' %}">
+  <script defer src="{% static 'store/js/store_luxe.js' %}"></script>
+</head>
+<body class="luxe">
+  <div class="flora"></div>
+  <div class="aura aura-1"></div>
+  <div class="aura aura-2"></div>
+  <div class="aura aura-3"></div>
+
+  <header class="topbar glass">
+    <div class="brand">
+      <div class="sigil">✶</div>
+      <div class="brandtext">
+        <div class="name">STORE</div>
+        <div class="sub">Executive Fintech Commerce • Multi-Tenant</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="{% url 'store:dashboard' %}">Console</a>
+      <a href="{% url 'store:catalog' %}">Catalog</a>
+      <a href="{% url 'store:pricing' %}">Plans</a>
+      <a href="{% url 'store:billing' %}">Billing</a>
+      <a href="{% url 'store:cart' %}">Cart</a>
+      <a href="{% url 'store:org_switch' %}" class="pill">Org</a>
+
+      <button class="theme" type="button" data-theme-toggle aria-label="Toggle theme">☾</button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    {% if messages %}
+      <div class="toaststack">
+        {% for m in messages %}
+          <div class="toast glass tone-{{ m.tags|default:'info' }}">{{ m }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer glass">
+    <div class="foot-left">
+      <div class="foot-title">Luxury • Precision • Auditability</div>
+      <div class="foot-sub">Purple • Gold • Crimson — floral glassmorphism.</div>
+    </div>
+    <div class="foot-right">
+      <a href="{% url 'portfolio:about' %}" class="pill badge"><span>Back to Portfolio &rarr;</span></a>
+      <span class="badge">SOC-ready patterns</span>
+      <span class="badge">Ledger-backed</span>
+      <span class="badge">Tenant-scoped</span>
+    </div>
+  </footer>
+</body>
+</html>

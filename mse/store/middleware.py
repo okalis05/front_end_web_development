@@ -1,67 +1,59 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import Optional
 
+import threading
+from django.conf import settings
 from django.http import HttpRequest
-from django.utils.deprecation import MiddlewareMixin
+from .models import Organization, Membership
 
-from .models import Organization
+_local = threading.local()
 
-TENANT_ATTR = "store_tenant"
+def get_current_org():
+    return getattr(_local, "org", None)
 
-@dataclass
-class TenantContext:
-    org: Optional[Organization] = None
-    source: str = ""  # header/subdomain/query/session
+def set_current_org(org):
+    _local.org = org
 
-def _parse_subdomain(host: str) -> Optional[str]:
-    if not host:
-        return None
-    host = host.split(":")[0]
-    parts = host.split(".")
-    # tenant.example.com -> ["tenant","example","com"]
-    if len(parts) >= 3:
-        return parts[0]
-    return None
-
-class TenantMiddleware(MiddlewareMixin):
+class TenantMiddleware:
     """
-    Resolves current tenant Organization:
-    Priority:
-      1) X-Tenant header (slug)
-      2) ?tenant=slug
-      3) subdomain (tenant.example.com)
-      4) session "store_tenant"
+    Row-level multi-tenancy.
+    Resolves tenant by:
+      1) cookie STORE_TENANT_COOKIE
+      2) querystring ?org=slug (and sets cookie)
     """
-    def process_request(self, request: HttpRequest):
-        ctx = TenantContext()
-
-        slug = request.headers.get("X-Tenant", "").strip()
-        if slug:
-            ctx.source = "header"
-        if not slug:
-            slug = (request.GET.get("tenant") or "").strip()
-            if slug:
-                ctx.source = "query"
-        if not slug:
-            sub = _parse_subdomain(request.get_host())
-            if sub:
-                slug = sub
-                ctx.source = "subdomain"
-        if not slug:
-            slug = (request.session.get("store_tenant") or "").strip()
-            if slug:
-                ctx.source = "session"
-
-        if slug:
-            try:
-                ctx.org = Organization.objects.get(slug=slug)
-            except Organization.DoesNotExist:
-                ctx.org = None
-
-        setattr(request, TENANT_ATTR, ctx)
 
     @staticmethod
-    def get_org(request: HttpRequest) -> Optional[Organization]:
-        ctx = getattr(request, TENANT_ATTR, None)
-        return getattr(ctx, "org", None) if ctx else None
+    def _cookie_name() -> str:
+        return getattr(settings, "STORE_TENANT_COOKIE", "store_org")
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest):
+        request.store_org = None
+        request.store_membership = None
+
+        slug = request.GET.get("org") or request.COOKIES.get(self._cookie_name())
+        org = None
+        if slug:
+            org = Organization.objects.filter(slug=slug, is_active=True).first()
+
+        # If authenticated, ensure membership exists for resolved org
+        if org and request.user.is_authenticated:
+            ms = Membership.objects.filter(user=request.user, org=org, is_active=True).first()
+            if not ms:
+                org = None  # forbid tenant hijack
+
+        request.store_org = org
+        if org and request.user.is_authenticated:
+            request.store_membership = Membership.objects.filter(
+                user=request.user, org=org, is_active=True
+            ).first()
+
+        set_current_org(org)
+        response = self.get_response(request)
+
+        # persist tenant selection if came from querystring
+        if request.GET.get("org") and org:
+            response.set_cookie(self._cookie_name(), org.slug, samesite="Lax")
+
+        return response

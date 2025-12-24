@@ -1,0 +1,15 @@
+name: "mse_pipeline"
+version: "1.0.0"
+config-version: 2
+
+profile: "mse_pipeline"
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+models:
+  mse_pipeline:
+    +materialized: view
+    marts:
+      +materialized: table

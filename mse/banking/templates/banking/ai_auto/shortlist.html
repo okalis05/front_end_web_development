@@ -1,0 +1,128 @@
+{% extends "banking/base.html" %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'banking/css/ai_common.css' %}">
+<link rel="stylesheet" href="{% static 'banking/css/ai_auto.css' %}">
+{% endblock %}
+
+{% block body %}
+<section class="ai-shell">
+  <div class="ai-wrap">
+
+    <!-- Header -->
+    <div class="ai-topbar">
+      <div>
+        <h1 class="ai-title">Executive Shortlist</h1>
+        <p class="ai-subtitle">
+          Risk-aware recommendations aligned with your credit profile and budget.
+        </p>
+      </div>
+      <span class="ai-badge">Session {{ session.id }}</span>
+    </div>
+
+    <!-- Credit Snapshot -->
+    {% if session.credit_snapshot %}
+    {% with tier=session.credit_snapshot.risk_tier|lower %}
+    <div class="ai-card risk-{{ tier }}">
+      <div class="ai-card-hd ai-collapse-toggle" data-target="credit-snap">
+        <strong>Credit Intelligence Snapshot</strong>
+        <div class="right">
+          <span class="ai-badge">{{ session.credit_snapshot.risk_tier }}</span>
+          <span class="chev">▾</span>
+        </div>
+      </div>
+      <div id="credit-snap" class="ai-card-bd ai-collapse open">
+        <div class="ai-kv"><span>Decision</span><strong>{{ session.credit_snapshot.decision }}</strong></div>
+        <div class="ai-kv"><span>APR</span><strong>{{ session.credit_snapshot.apr }}%</strong></div>
+        <div class="ai-kv"><span>Max Loan</span><strong>${{ session.credit_snapshot.max_amount }}</strong></div>
+      </div>
+    </div>
+
+    <!-- Explainability -->
+    {% if session.credit_snapshot.explainability %}
+    <div class="ai-card risk-{{ tier }}" style="margin-top:12px;">
+      <div class="ai-card-hd ai-collapse-toggle" data-target="why-panel">
+        <strong>Why this decision?</strong>
+        <span class="chev">▸</span>
+      </div>
+      <div id="why-panel" class="ai-card-bd ai-collapse">
+        <p>{{ session.credit_snapshot.explainability.summary }}</p>
+        <h4>Key Drivers</h4>
+        <ul>
+          {% for d in session.credit_snapshot.explainability.drivers %}
+          <li>{{ d }}</li>
+          {% endfor %}
+        </ul>
+        <h4>Policy Notes</h4>
+        <ul>
+          {% for p in session.credit_snapshot.explainability.policy_notes %}
+          <li>{{ p }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+    {% else %}
+    <div class="ai-card">
+      <div class="ai-card-hd"><strong>Credit Intelligence</strong></div>
+      <div class="ai-card-bd">
+        <p>Run a credit analysis to unlock risk-adjusted recommendations.</p>
+        <a href="{% url 'banking:ai_credit' %}" class="ai-btn primary">Run Credit Check</a>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Recommendations -->
+    <div class="ai-grid-3" style="margin-top:18px;">
+      {% for car in recommendations %}
+      <div class="ai-card">
+        <div class="ai-card-hd">
+          <strong>{{ car.make }} {{ car.model }}</strong>
+          {% if car.badge %}
+          <span class="badge {{ car.badge|lower }}">{{ car.badge }}</span>
+          {% endif %}
+        </div>
+        <div class="ai-card-bd">
+          <p class="ai-muted">{{ car.why }}</p>
+          <p><strong>Tier:</strong> {{ car.tier }}</p>
+          <p><strong>Target:</strong> {{ car.target_budget_note }}</p>
+
+          <form method="post" action="{% url 'banking:ai_auto_add_vehicle' %}">
+            {% csrf_token %}
+            <input type="hidden" name="make" value="{{ car.make }}">
+            <input type="hidden" name="model" value="{{ car.model }}">
+            <input type="hidden" name="est_price" value="{{ car.est_price }}">
+            <input type="hidden" name="badge" value="{{ car.badge }}">
+            <button class="ai-btn ghost" type="submit">Save to Buyer Plan</button>
+          </form>
+        </div>
+      </div>
+      {% empty %}
+      <p>No recommendations yet. Generate a shortlist first.</p>
+      {% endfor %}
+    </div>
+
+    <div style="margin-top:20px;">
+      <a href="{% url 'banking:ai_auto_buyer_plan' %}" class="ai-btn primary">
+        Open Buyer Plan
+      </a>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+document.querySelectorAll(".ai-collapse-toggle").forEach(t=>{
+  t.addEventListener("click",()=>{
+    const id=t.dataset.target;
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.classList.toggle("open");
+  });
+});
+</script>
+{% endblock %}

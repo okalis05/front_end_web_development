@@ -1,5 +1,4 @@
 {% extends "mystics_site/base.html" %}
-
 {% load static %}
 {% block title %}{{ player.full_name }} • Mystics Insight Hub{% endblock %}
 
@@ -8,10 +7,9 @@
   <div class="ms-playerhero ms-card-glow">
     <div class="ms-playerhero-left">
       <img class="ms-avatar ms-avatar-xl"
-     src="{{ player.headshot_url|default:'' }}"
-     data-fallback="{% static 'mystics_site/img/player-placeholder.svg' %}"
-     alt="{{ player.full_name }}">
-
+           src="{{ player.headshot_url|default:'' }}"
+           data-fallback="{% static 'mystics_site/img/player-placeholder.svg' %}"
+           alt="{{ player.full_name }}">
 
       <div>
         <div class="ms-pill">{{ player.team.full_name|default:"Free Agent" }}</div>
@@ -23,11 +21,11 @@
 
     <div class="ms-kpirow">
       <div class="ms-kpi"><span class="ms-k">{{ agg.g|default:0 }}</span><span class="ms-l">Games</span></div>
-      <div class="ms-kpi"><span class="ms-k">{{ agg.ppg|floatformat:1 }}</span><span class="ms-l">PPG</span></div>
-      <div class="ms-kpi"><span class="ms-k">{{ agg.rpg|floatformat:1 }}</span><span class="ms-l">RPG</span></div>
-      <div class="ms-kpi"><span class="ms-k">{{ agg.apg|floatformat:1 }}</span><span class="ms-l">APG</span></div>
-      <div class="ms-kpi"><span class="ms-k">{{ agg.spg|floatformat:1 }}</span><span class="ms-l">SPG</span></div>
-      <div class="ms-kpi"><span class="ms-k">{{ agg.bpg|floatformat:1 }}</span><span class="ms-l">BPG</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ agg.ppg|default:0|floatformat:1 }}</span><span class="ms-l">PPG</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ agg.rpg|default:0|floatformat:1 }}</span><span class="ms-l">RPG</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ agg.apg|default:0|floatformat:1 }}</span><span class="ms-l">APG</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ agg.spg|default:0|floatformat:1 }}</span><span class="ms-l">SPG</span></div>
+      <div class="ms-kpi"><span class="ms-k">{{ agg.bpg|default:0|floatformat:1 }}</span><span class="ms-l">BPG</span></div>
     </div>
   </div>
 
@@ -37,7 +35,10 @@
         <span class="ms-pill">PPG by Month</span>
         <span class="ms-dim">{{ season }}</span>
       </div>
-      <canvas id="playerSplits" height="120"></canvas>
+      <div class="ms-chartwrap">
+        <canvas id="playerSplits" height="120"></canvas>
+        <div class="ms-charthint ms-dim">If empty, sync player_stats.</div>
+      </div>
     </div>
 
     <div class="ms-card">
@@ -49,14 +50,18 @@
         <div class="ms-row ms-head">
           <div>Date</div><div class="ms-right">PTS</div><div class="ms-right">REB</div><div class="ms-right">AST</div>
         </div>
-        {% for s in last10 %}
-        <div class="ms-row">
-          <div class="ms-dim">{% if s.game.date_utc %}{{ s.game.date_utc|date:"M d" }}{% else %}—{% endif %}</div>
-          <div class="ms-right">{{ s.pts|default:"—" }}</div>
-          <div class="ms-right">{{ s.reb|default:"—" }}</div>
-          <div class="ms-right">{{ s.ast|default:"—" }}</div>
-        </div>
-        {% endfor %}
+        {% if last10 %}
+          {% for s in last10 %}
+          <div class="ms-row">
+            <div class="ms-dim">{% if s.game.date_utc %}{{ s.game.date_utc|date:"M d" }}{% else %}—{% endif %}</div>
+            <div class="ms-right">{{ s.pts|default:"—" }}</div>
+            <div class="ms-right">{{ s.reb|default:"—" }}</div>
+            <div class="ms-right">{{ s.ast|default:"—" }}</div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="ms-empty">No game logs found for this player.</div>
+        {% endif %}
       </div>
     </div>
   </div>

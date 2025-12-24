@@ -7,13 +7,11 @@
   <title>{% block title %}Mystics Insight Hub{% endblock %}</title>
 
   <link rel="stylesheet" href="{% static 'mystics_site/css/mystics.css' %}">
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
   <script defer src="{% static 'mystics_site/js/mystics.js' %}"></script>
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-  <!-- Motion (lightweight) -->
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  {% block head_extra %}{% endblock %}
 </head>
 
 <body class="ms-body">
@@ -25,10 +23,11 @@
       <span>Mystics Insight Hub</span>
     </a>
 
-    <nav class="ms-nav">
+    <nav class="ms-nav" aria-label="Primary">
       <a href="{% url 'mystics_site:teams' %}">Teams</a>
       <a href="{% url 'mystics_site:players' %}">Players</a>
-      <a class="ms-chip" href="{% url 'mystics_site:home' %}">2025</a>
+      <a href="{% url 'mystics_site:dashboard' %}">Dashboard</a>
+      <a class="ms-chip" href="{% url 'mystics_site:executive_dashboard' %}">Executive</a>
     </nav>
 
     <button class="ms-toggle" type="button" data-theme-toggle aria-label="Toggle theme">
@@ -43,9 +42,26 @@
 
   <footer class="ms-footer">
     <div class="ms-footer-inner">
-      <span>Built for executive-level storytelling • Data cached locally</span>
-      <span class="ms-dim">WNBA data via BALLDONTLIE</span>
+      <div>
+        <div>Built for executive-level storytelling • Cached APIs</div>
+        <div class="ms-dim">WNBA data via BALLDONTLIE</div>
+      </div>
+
+      <div class="ms-footer-actions">
+        <a class="ms-btn ms-btn-ghost ms-btn-small" href="{% url 'portfolio:about' %}">
+          Back to Portfolio →
+        </a>
+      </div>
     </div>
   </footer>
+<script>
+  window.MS = window.MS || {};
+  window.MS.season = Number(
+    "{{ season|default_if_none:'2025' }}"
+  ) || 2025;
+  window.MS.staticPlayerFallback = "{% static 'mystics_site/img/player-placeholder.svg' %}";
+  window.MS_STATIC_PLAYER_FALLBACK = window.MS.staticPlayerFallback;
+</script>
+  {% block body_extra %}{% endblock %}
 </body>
 </html>

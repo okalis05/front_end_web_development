@@ -1,0 +1,31 @@
+{% extends "store/base_store.html" %}
+{% block title %}{{ product.name }} • Store{% endblock %}
+{% block content %}
+<section class="grid2">
+  <div class="card glass productDetail" data-accent="{{ product.accent }}">
+    <div class="img bigimg">
+      {% if product.image_url %}
+        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+      {% else %}
+        <div class="imgPh">✶</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card glass">
+    <div class="kicker">Tenant: {{ org.name }}</div>
+    <h1 class="h1">{{ product.name }}</h1>
+    <p class="muted">{{ product.description }}</p>
+    <div class="priceHuge">${{ product.price }} <span>{{ product.currency }}</span></div>
+
+    <form method="post" action="{% url 'store:cart_add' product.id %}" class="form">
+      {% csrf_token %}
+      <label>Quantity</label>
+      <input type="number" name="qty" min="1" value="1"/>
+      <button class="btn gold" type="submit">Add to Cart</button>
+    </form>
+
+    <div class="hint">This is tenant-scoped. No cross-org leakage.</div>
+  </div>
+</section>
+{% endblock %}

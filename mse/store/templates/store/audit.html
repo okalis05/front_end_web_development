@@ -1,0 +1,19 @@
+{% extends "store/base_store.html" %}
+{% block title %}Audit • Store{% endblock %}
+{% block content %}
+<h1 class="h1">Audit Log</h1>
+<div class="muted">Immutable-style event trail for <b>{{ org.name }}</b></div>
+
+<div class="card glass">
+  <div class="list">
+    {% for e in events %}
+      <div class="li">
+        <div><b>{{ e.action }}</b> <span class="muted">— {{ e.created_at|date:"Y-m-d H:i" }}</span></div>
+        <pre class="json">{{ e.detail|safe }}</pre>
+      </div>
+    {% empty %}
+      <div class="muted">No audit events yet.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

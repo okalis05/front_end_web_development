@@ -41,7 +41,6 @@ body.ms-body{
     radial-gradient(700px 300px at 20% 80%, rgba(255,255,255,.05), transparent 60%),
     radial-gradient(900px 340px at 70% 70%, rgba(255,255,255,.04), transparent 60%);
   pointer-events: none;
-  filter: blur(0px);
   opacity: .9;
 }
 
@@ -84,6 +83,7 @@ body.ms-body{
   color: var(--txt);
   cursor: pointer;
 }
+.ms-toggle:focus-visible{ outline: 2px solid color-mix(in srgb, var(--a) 55%, transparent); outline-offset: 3px; }
 .ms-toggle-dot{
   width: 10px; height: 10px; border-radius: 999px;
   background: linear-gradient(135deg, var(--a), var(--b));
@@ -119,6 +119,7 @@ body.ms-body{
   background: linear-gradient(135deg, color-mix(in srgb, var(--a) 55%, transparent), rgba(255,255,255,.05));
   color: var(--txt); text-decoration:none; font-weight:700;
   box-shadow: 0 14px 40px rgba(0,0,0,.25);
+  transition: transform .15s ease;
 }
 .ms-btn:hover{ transform: translateY(-1px); }
 .ms-btn-ghost{ background: rgba(255,255,255,.04); }
@@ -165,7 +166,7 @@ body.ms-body{
 .ms-right{ text-align:right; }
 
 .ms-orbit{ position: relative; height: 220px; }
-.ms-orb{ position:absolute; border-radius: 999px; filter: blur(0px); opacity:.9; }
+.ms-orb{ position:absolute; border-radius: 999px; opacity:.9; }
 .ms-orb-a{ width: 160px; height: 160px; left: 10%; top: 20%; background: color-mix(in srgb, var(--a) 40%, transparent); }
 .ms-orb-b{ width: 220px; height: 220px; right: 5%; top: 0%; background: color-mix(in srgb, var(--b) 25%, transparent); }
 .ms-orb-c{ width: 120px; height: 120px; right: 30%; top: 55%; background: rgba(255,255,255,.06); }
@@ -181,6 +182,10 @@ body.ms-body{
   padding: 10px 12px;
   color: var(--txt);
   outline: none;
+}
+.ms-search input:focus-visible, .ms-search select:focus-visible{
+  outline: 2px solid color-mix(in srgb, var(--a) 55%, transparent);
+  outline-offset: 2px;
 }
 html[data-theme="light"] .ms-search input,
 html[data-theme="light"] .ms-search select{ background: rgba(0,0,0,.03); }
@@ -200,6 +205,7 @@ html[data-theme="light"] .ms-search select{ background: rgba(0,0,0,.03); }
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
+  transition: transform .15s ease;
 }
 .ms-tile:hover{ transform: translateY(-2px); }
 .ms-tile-top{ display:flex; justify-content:space-between; align-items:center; }
@@ -234,10 +240,10 @@ html[data-theme="light"] .ms-search select{ background: rgba(0,0,0,.03); }
   border: 1px solid transparent;
   background: rgba(255,255,255,.03);
   text-decoration:none; color: var(--txt);
+  transition: transform .15s ease;
 }
 .ms-player:hover{ border-color: var(--line); transform: translateY(-1px); }
 .ms-avatar{ width: 44px; height: 44px; border-radius: 14px; object-fit: cover; border: 1px solid var(--line); background: rgba(255,255,255,.04); }
-.ms-avatar-lg{ width: 54px; height: 54px; border-radius: 16px; }
 .ms-avatar-xl{ width: 84px; height: 84px; border-radius: 22px; }
 .ms-player-meta{ flex:1; min-width: 0; }
 .ms-player-name{ font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -272,8 +278,180 @@ html[data-theme="light"] .ms-search select{ background: rgba(0,0,0,.03); }
 .ms-k{ font-weight: 950; font-size: 18px; display:block; }
 .ms-l{ color: var(--dim); font-size: 12px; display:block; margin-top: 2px; }
 
-.ms-footer{ border-top: 1px solid var(--line); padding: 18px 4vw; color: var(--dim); }
-.ms-footer-inner{ width:min(1200px, 92vw); margin: 0 auto; display:flex; justify-content:space-between; gap: 12px; flex-wrap: wrap; }
+/* Team header helpers (used by team_detail) */
+.ms-team-h{ display:flex; align-items:flex-start; justify-content:space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; }
+.ms-team-kpis{ display:flex; gap: 10px; flex-wrap: wrap; }
 
+/* Chart + table polish */
+.ms-chartwrap{ position: relative; }
+.ms-charthint{ margin-top: 8px; }
+.ms-tablewrap{ overflow:auto; border-radius: 16px; border: 1px solid var(--line); }
+.ms-table2{ width:100%; border-collapse: collapse; }
+.ms-table2 th, .ms-table2 td{ padding: 10px 12px; border-bottom: 1px solid var(--line); text-align:left; }
+.ms-table2 th{ color: var(--dim); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.ms-table2 tr:hover td{ background: rgba(255,255,255,.03); }
+
+/* Empty / code */
+.ms-empty{
+  padding: 12px;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.03);
+  color: var(--dim);
+}
+.ms-code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+.ms-codeblock{
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+}
+
+/* Footer */
+.ms-footer{ border-top: 1px solid var(--line); padding: 18px 4vw; color: var(--dim); }
+.ms-footer-inner{ width:min(1200px, 92vw); margin: 0 auto; display:flex; justify-content:space-between; gap: 12px; flex-wrap: wrap; align-items:center; }
+.ms-footer-actions{ display:flex; gap: 10px; align-items:center; }
+
+/* Reveal */
 .ms-reveal{ opacity: 0; transform: translateY(10px); }
 .ms-revealed{ opacity: 1; transform: translateY(0); transition: .7s ease; }
+
+@media (prefers-reduced-motion: reduce){
+  .ms-btn, .ms-tile, .ms-player{ transition: none !important; }
+  .ms-reveal, .ms-revealed{ transition: none !important; transform: none !important; }
+}
+.ms-kpirow {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  overflow-x: auto;
+}
+
+.chart-card {
+    position: relative;
+    height: 360px;          /* ✅ key fix */
+    max-height: 360px;
+    width: 100%;
+    overflow: hidden;       /* prevents runaway growth */
+    margin-bottom: 2rem;
+}
+/* -----------------------------
+   Chart containment (global)
+   ----------------------------- */
+.ms-chartbox{
+  position: relative;
+  width: 100%;
+  height: 360px;      /* fixed, prevents runaway page height */
+  max-height: 360px;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.ms-chartbox canvas{
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+canvas {
+  max-height: 100%;
+}
+
+/* =========================================================
+   Executive Dashboard ADD-ONS ONLY
+   Safe to append to existing mystics.css
+   ========================================================= */
+
+/* -------------------------
+   Chart containment fix
+   (prevents infinite vertical stretching)
+   ------------------------- */
+.ms-chartbox {
+  position: relative;
+  height: 360px;              /* hard cap */
+  max-height: 360px;
+  min-height: 260px;
+  overflow: hidden;
+}
+
+.ms-chartbox canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* -------------------------
+   AI Executive Summary card
+   ------------------------- */
+.ms-ai-card {
+  border: 1px solid var(--line, rgba(255,255,255,.12));
+  border-radius: 18px;
+  padding: 16px;
+  background:
+    radial-gradient(
+      800px 260px at 18% 12%,
+      color-mix(in srgb, var(--a, #4f46e5) 18%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      700px 240px at 85% 5%,
+      color-mix(in srgb, var(--b, #ef4444) 14%, transparent),
+      transparent 60%
+    ),
+    var(--card, rgba(255,255,255,.06));
+}
+
+/* Summary text formatting */
+.ms-ai-text {
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.ms-ai-text p {
+  margin: 0 0 12px;
+}
+
+/* Positive signal highlight */
+.ms-ai-good {
+  color: #22c55e;
+  font-weight: 700;
+}
+
+/* Muted / explanatory text */
+.ms-ai-dim {
+  color: var(--dim, rgba(255,255,255,.65));
+  font-size: 13px;
+}
+
+/* -------------------------
+   Executive dashboard spacing polish
+   ------------------------- */
+#compareHint {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+#aiSummaryCard {
+  animation: ms-fade-up 0.4s ease-out both;
+}
+
+/* -------------------------
+   Micro animation (isolated)
+   ------------------------- */
+@keyframes ms-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.ms-ai-dim{
+  color: #ef4444;
+
+}
+

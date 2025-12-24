@@ -14,6 +14,9 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 
   {% block extra_head %}{% endblock %}
+  {% block page_styles %}{% endblock page_styles %}
+  {% block page_scripts %}{% endblock page_scripts %}
+
 </head>
 
 <body class="bk-body">
@@ -35,10 +38,15 @@
         <a class="bk-navlink {% if request.resolver_match.url_name == 'cards' %}is-active{% endif %}" href="{% url 'banking:cards' %}">Cards</a>
         <a class="bk-navlink {% if request.resolver_match.url_name == 'quick_cash' %}is-active{% endif %}" href="{% url 'banking:quick_cash' %}">Cash Tools</a>
         <a class="bk-navlink" href="{% url 'banking:scheduled' %}">Scheduled</a>
-        <a class="bk-navlink" href="{% url 'banking:scheduled' %}">Scheduled</a>
         <a class="bk-navlink" href="{% url 'banking:statements' %}">Statements</a>
         <a class="bk-navlink" href="{% url 'banking:card_activity' %}">Card Activity</a>
         <a class="bk-navlink" href="{% url 'banking:spending' %}">Spending</a>
+        {% if BANKING_AI_ENABLED %}
+          <a class="bk-navlink" href="{% url 'banking:ai_auto' %}">Auto Loan</a>
+          <a class="bk-navlink" href="{% url 'banking:ai_credit' %}">Credit Loan</a>
+          <a class="bk-navlink" href="{% url 'banking:ai_portfolio' %}">AI Portfolio</a>
+        {% endif %}
+
 
 
         

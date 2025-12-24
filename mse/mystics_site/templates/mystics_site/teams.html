@@ -13,7 +13,9 @@
 
   <div class="ms-grid">
     {% for t in teams %}
-    <a class="ms-tile ms-reveal" href="{% url 'mystics_site:team_detail' t.api_id %}" style="--a: {{ t.primary_hex }}; --b: {{ t.secondary_hex }};">
+    <a class="ms-tile ms-reveal"
+       href="{% url 'mystics_site:team_detail' t.api_id %}"
+       style="--a: {{ t.primary_hex }}; --b: {{ t.secondary_hex }};">
       <div class="ms-tile-top">
         <div class="ms-badge">{{ t.abbreviation }}</div>
         <div class="ms-dim">{{ t.conference }}</div>

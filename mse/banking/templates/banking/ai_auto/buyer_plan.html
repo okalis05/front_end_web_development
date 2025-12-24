@@ -1,0 +1,47 @@
+{% extends "banking/base.html" %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'banking/css/ai_common.css' %}">
+<link rel="stylesheet" href="{% static 'banking/css/ai_auto.css' %}">
+{% endblock %}
+
+{% block body %}
+<section class="ai-shell">
+  <div class="ai-wrap">
+    <h1 class="ai-title">Buyer Plan</h1>
+    <p class="ai-subtitle">Your structured path from shortlist to keys-in-hand.</p>
+
+    <div class="ai-card">
+      <div class="ai-card-hd"><strong>Checklist</strong></div>
+      <div class="ai-card-bd">
+        <ul>
+          {% for item in plan.checklist %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="ai-card" style="margin-top:14px;">
+      <div class="ai-card-hd"><strong>Saved Vehicles</strong></div>
+      <div class="ai-card-bd">
+        <ul>
+          {% for v in plan.vehicles.all %}
+          <li>
+            {{ v.year }} {{ v.make }} {{ v.model }} {{ v.trim }}
+            <span class="badge {{ v.badge|lower }}">{{ v.badge }}</span>
+          </li>
+          {% empty %}
+          <li>No vehicles saved yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <a href="{% url 'banking:ai_auto_buyer_plan_pdf' %}" class="ai-btn primary" style="margin-top:18px;">
+      Export Buyer Plan (PDF)
+    </a>
+  </div>
+</section>
+{% endblock %}

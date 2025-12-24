@@ -1,28 +1,33 @@
 from django.urls import path
 from .views import (
-    landing, pricing, dashboard, org_switch, signup,
-    start_checkout, checkout_return, billing, open_portal, settings_page,
-    stripe_webhook, StoreLoginView,app_dashboard
+    StoreLoginView, signup,
+    org_switch, org_create,
+    dashboard, pricing,
+    catalog, product_detail,
+    cart, cart_add,
+    checkout, billing,
+    invoices, audit_log,
 )
 
 app_name = "store"
 
 urlpatterns = [
-    path("", landing, name="landing"),
-    path("pricing/", pricing, name="pricing"),
-    path("signup/", signup, name="signup"),
     path("login/", StoreLoginView.as_view(), name="login"),
+    path("signup/", signup, name="signup"),
 
     path("org/", org_switch, name="org_switch"),
-    path("dashboard/", dashboard, name="dashboard"),
+    path("org/create/", org_create, name="org_create"),
+
+    path("", dashboard, name="dashboard"),
+    path("pricing/", pricing, name="pricing"),
+    path("catalog/", catalog, name="catalog"),
+    path("product/<slug:slug>/", product_detail, name="product_detail"),
+
+    path("cart/", cart, name="cart"),
+    path("cart/add/<int:product_id>/", cart_add, name="cart_add"),
+
+    path("checkout/", checkout, name="checkout"),
     path("billing/", billing, name="billing"),
-    path("billing/portal/", open_portal, name="open_portal"),
-    path("settings/", settings_page, name="settings"),
-    path("app/", app_dashboard , name="app"),
-    path("checkout/<str:plan_code>/", start_checkout, name="start_checkout"),
-    path("checkout/return/", checkout_return, name="checkout_return"),
-
-    path("stripe/webhook/", stripe_webhook, name="stripe_webhook"),
-    
-
+    path("invoices/", invoices, name="invoices"),
+    path("audit/", audit_log, name="audit"),
 ]

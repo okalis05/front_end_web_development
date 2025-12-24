@@ -1,0 +1,83 @@
+{% extends "pipeline/base.html" %}
+{% load static %}
+
+{% block title %}Run #{{ run.id }}{% endblock %}
+{% block top_title %}Run #{{ run.id }}{% endblock %}
+{% block top_subtitle %}{{ run.pipeline.name }} • Prefect: {{ run.prefect_flow_run_id|default:"LOCAL" }}{% endblock %}
+
+{% block body %}
+<section class="pl-card pl-card-wide">
+  <div class="pl-card-head">
+    <h2 class="pl-h2">Status</h2>
+    <span class="pl-status pl-status-{{ run.status|lower }}" id="runStatus">{{ run.status }}</span>
+  </div>
+
+  <div class="pl-kv">
+    <div class="pl-kv-item">
+      <div class="pl-kv-k">Prefect state</div>
+      <div class="pl-kv-v pl-mono" id="prefectState">{{ run.prefect_state|default:"UNKNOWN" }}</div>
+    </div>
+    <div class="pl-kv-item">
+      <div class="pl-kv-k">Created</div>
+      <div class="pl-kv-v">{{ run.created_at|date:"M d, Y H:i" }}</div>
+    </div>
+    <div class="pl-kv-item">
+      <div class="pl-kv-k">Started</div>
+      <div class="pl-kv-v">{% if run.started_at %}{{ run.started_at|date:"M d, Y H:i" }}{% else %}—{% endif %}</div>
+    </div>
+    <div class="pl-kv-item">
+      <div class="pl-kv-k">Duration</div>
+      <div class="pl-kv-v" id="runDuration">{% if run.duration_seconds %}{{ run.duration_seconds }}{% else %}—{% endif %}</div>
+    </div>
+  </div>
+
+  <div class="pl-inline" style="margin-top:12px;">
+    <a class="pl-btn pl-btn-ghost" href="{% url 'pipeline:detail' run.pipeline.slug %}">← Pipeline</a>
+    <button class="pl-btn pl-btn-solid" id="refreshRunBtn" data-run="{{ run.id }}" type="button">Refresh Status</button>
+  </div>
+</section>
+
+<section class="pl-card">
+  <div class="pl-card-head">
+    <h2 class="pl-h2">🧪 dbt test failures</h2>
+    <span class="pl-chip">{% if dbt_failures %}{{ dbt_failures|length }} found{% else %}none{% endif %}</span>
+  </div>
+
+  {% if dbt_failures %}
+    <div class="pl-artifacts">
+      {% for f in dbt_failures %}
+        <div class="pl-artifact">
+          <div class="pl-art-key">{{ f.key }}</div>
+          <pre class="pl-pre">{{ f.message }}</pre>
+          <div class="pl-muted">status: {{ f.status }}{% if f.failures %} • failures: {{ f.failures }}{% endif %}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="pl-muted">✅ No dbt test failures detected for this run.</div>
+  {% endif %}
+</section>
+
+<section class="pl-card">
+  <div class="pl-card-head">
+    <h2 class="pl-h2">Artifacts</h2>
+    <span class="pl-chip">{{ artifacts|length }} items</span>
+  </div>
+
+  <div class="pl-artifacts">
+    {% for a in artifacts %}
+      <div class="pl-artifact">
+        <div class="pl-art-key">{{ a.key }}</div>
+        {% if a.value %}
+          <pre class="pl-pre">{{ a.value }}</pre>
+        {% else %}
+          <div class="pl-muted">—</div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="pl-empty">No artifacts saved for this run yet.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+

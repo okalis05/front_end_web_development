@@ -1,213 +1,195 @@
-
 from __future__ import annotations
-import json
-import logging
-import stripe
 
-from django.conf import settings
+from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
-from django.shortcuts import redirect, render
-from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Organization, Membership, Plan, Product, Order, Subscription
+from .decorators import tenant_required, analyst_required, admin_required
+from .forms import LuxeLoginForm, LuxeSignupForm, OrgCreateForm
+from .services import add_to_cart, compute_order_totals, ensure_subscription, mark_order_paid, audit
 
-from .forms import SignupForm, LuxuryAuthForm
-from .middleware import TenantMiddleware
-from .models import (
-    Organization, OrgMembership, Plan, Subscription, AuditEvent,
-    ROLE_ADMIN, PLAN_BASIC, PLAN_STANDARD, PLAN_PREMIUM
-)
-from .selectors import get_user_orgs, get_membership
-from .services.stripe_service import create_checkout_session, create_billing_portal, handle_webhook
-
-log = logging.getLogger("store")
-
+# Create your views here.
 class StoreLoginView(LoginView):
-    template_name = "store/auth/login.html"
-    authentication_form = LuxuryAuthForm
+    template_name = "store/auth_login.html"
+    authentication_form = LuxeLoginForm
 
-def landing(request: HttpRequest):
-    return render(request, "store/landing.html")
-
-def pricing(request: HttpRequest):
-    plans = Plan.objects.filter(is_active=True).order_by("monthly_price_usd")
-    org = TenantMiddleware.get_org(request)
-    return render(request, "store/pricing.html", {"plans": plans, "org": org})
 
 def signup(request: HttpRequest):
     if request.method == "POST":
-        form = SignupForm(request.POST)
+        form = LuxeSignupForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.email = form.cleaned_data["email"]
-            user.save()
-
-            org = Organization.objects.create(
-                name=form.cleaned_data["org_name"],
-                slug=form.cleaned_data["org_slug"],
-            )
-            OrgMembership.objects.create(org=org, user=user, role=ROLE_ADMIN, is_active=True)
-
-            # default plan rows should exist; if not, seed command can create them
-            # set tenant in session for convenience
-            request.session["store_tenant"] = org.slug
-
-            AuditEvent.objects.create(org=org, user=user, action="signup", meta={"org": org.slug})
-
+            user = form.save()
             login(request, user)
-            messages.success(request, "Welcome — your luxury SaaS store is ready.")
-            return redirect("store:pricing")
+            messages.success(request, "Welcome — your executive workspace is ready.")
+            return redirect("store:org_switch")
     else:
-        form = SignupForm()
-    return render(request, "store/auth/signup.html", {"form": form})
+        form = LuxeSignupForm()
+    return render(request, "store/auth_signup.html", {"form": form})
+
 
 @login_required
 def org_switch(request: HttpRequest):
-    orgs = get_user_orgs(request.user)
+    orgs = Organization.objects.filter(memberships__user=request.user, memberships__is_active=True, is_active=True).distinct()
     if request.method == "POST":
-        slug = (request.POST.get("slug") or "").strip()
-        if orgs.filter(slug=slug).exists():
-            request.session["store_tenant"] = slug
-            return redirect("store:dashboard")
-        messages.error(request, "You don’t have access to that organization.")
-    return render(request, "store/org_switch.html", {"orgs": orgs})
+        slug = request.POST.get("org")
+        org = Organization.objects.filter(slug=slug, is_active=True).first()
+        if not org:
+            messages.error(request, "Organization not found.")
+            return redirect("store:org_switch")
+
+        ms = Membership.objects.filter(user=request.user, org=org, is_active=True).first()
+        if not ms:
+            messages.error(request, "You don’t have access to that organization.")
+            return redirect("store:org_switch")
+
+        resp = redirect("store:dashboard")
+        resp.set_cookie("store_org", org.slug, samesite="Lax")
+        return resp
+
+    return render(request, "store/org_switch.html", {"orgs": orgs, "create_form": OrgCreateForm()})
+
 
 @login_required
+def org_create(request: HttpRequest):
+    form = OrgCreateForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        org = form.save()
+        Membership.objects.create(user=request.user, org=org, role=Membership.OWNER, is_active=True)
+        ensure_subscription(org)
+        audit(org, request.user, "org_created", {"org": org.slug})
+        messages.success(request, "Organization created. Welcome to the Luxe console.")
+        resp = redirect("store:dashboard")
+        resp.set_cookie("store_org", org.slug, samesite="Lax")
+        return resp
+    messages.error(request, "Unable to create organization.")
+    return redirect("store:org_switch")
+
+
+@login_required
+@tenant_required
 def dashboard(request: HttpRequest):
-    org = TenantMiddleware.get_org(request)
+    org = request.store_org
+    sub = ensure_subscription(org)
 
-    if not org:
-        messages.error(request, "Please select an organization.")
-        return redirect("store:org_switch")
+    products_count = Product.objects.filter(org=org, is_active=True).count()
+    orders = Order.objects.filter(org=org).order_by("-created_at")[:8]
+    ledger = org.ledger.order_by("-created_at")[:8]
 
-    membership = get_membership(request.user, org)
-    if not membership:
-        messages.error(request, "You don’t have access to this organization.")
-        return redirect("store:org_switch")
+    return render(request, "store/dashboard.html", {
+        "org": org, "sub": sub,
+        "products_count": products_count,
+        "orders": orders, "ledger": ledger,
+        "membership": request.store_membership
+    })
 
-    # 🔐 Lock dashboard until subscription exists
-    sub = getattr(org, "subscription", None)
-    if not sub or not sub.is_active:
-        messages.info(request, "Choose a plan to activate your store.")
-        return redirect("store:pricing")
 
-    return render(
-        request,
-        "store/dashboard.html",
-        {
-            "org": org,
-            "membership": membership,
-            "sub": sub,
-        },
-    )
-@login_required
-def app_dashboard(request):
-    ctx = request.store_tenant
-    org = ctx.org
-
-    membership = get_membership(request.user, org)
-
-    return render(
-        request,
-        "store/app/dashboard.html",
-        {
-            "org": org,
-            "membership": membership,
-        },
-    )
+def pricing(request: HttpRequest):
+    plans = Plan.objects.filter(is_active=True, is_public=True).order_by("tier")
+    return render(request, "store/pricing.html", {"plans": plans})
 
 
 @login_required
-def start_checkout(request: HttpRequest, plan_code: str):
-    org = TenantMiddleware.get_org(request)
-    if not org:
-        return redirect("store:org_switch")
+@tenant_required
+def catalog(request: HttpRequest):
+    org = request.store_org
+    products = Product.objects.filter(org=org, is_active=True).order_by("-created_at")
+    return render(request, "store/catalog.html", {"org": org, "products": products})
 
-    membership = get_membership(request.user, org)
-    if not membership or membership.role != ROLE_ADMIN:
-        messages.error(request, "Only org admins can manage billing.")
-        return redirect("store:dashboard")
-
-    plan = Plan.objects.filter(code=plan_code, is_active=True).first()
-    if not plan or not plan.stripe_price_id:
-        messages.error(request, "That plan is not available (Stripe price_id missing).")
-        return redirect("store:pricing")
-
-    try:
-        res = create_checkout_session(org=org, plan=plan, request=request)
-        AuditEvent.objects.create(org=org, user=request.user, action="checkout_started", meta={"plan": plan_code})
-        return redirect(res.url)
-    except Exception as e:
-        log.exception("checkout_failed")
-        messages.error(request, "Checkout failed. Check server logs.")
-        return redirect("store:pricing")
 
 @login_required
-def checkout_return(request: HttpRequest):
-    return render(request, "store/checkout_return.html", {"status": request.GET.get("status", "")})
+@tenant_required
+def product_detail(request: HttpRequest, slug: str):
+    org = request.store_org
+    product = get_object_or_404(Product, org=org, slug=slug, is_active=True)
+    return render(request, "store/product_detail.html", {"org": org, "product": product})
+
 
 @login_required
+@tenant_required
+def cart(request: HttpRequest):
+    org = request.store_org
+    order = Order.objects.filter(org=org, user=request.user, status=Order.DRAFT).order_by("-created_at").first()
+    if order:
+        compute_order_totals(order)
+    return render(request, "store/cart.html", {"org": org, "order": order})
+
+
+@login_required
+@tenant_required
+def cart_add(request: HttpRequest, product_id: int):
+    org = request.store_org
+    product = get_object_or_404(Product, org=org, id=product_id, is_active=True)
+    qty = int(request.POST.get("qty") or "1")
+    add_to_cart(org, request.user, product, max(1, qty))
+    messages.success(request, f"Added {product.name} to your cart.")
+    return redirect("store:cart")
+
+
+@login_required
+@tenant_required
+def checkout(request: HttpRequest):
+    org = request.store_org
+    order = Order.objects.filter(org=org, user=request.user, status=Order.DRAFT).order_by("-created_at").first()
+    if not order or order.total <= 0:
+        messages.info(request, "Your cart is empty.")
+        return redirect("store:catalog")
+
+    compute_order_totals(order)
+
+    if request.method == "POST":
+        # “Works now” mode: simulate payment instantly
+        order.status = Order.SUBMITTED
+        order.save(update_fields=["status"])
+        mark_order_paid(order, actor=request.user, external_payment_id="manual_demo_payment")
+        messages.success(request, "Payment confirmed. Executive receipt issued.")
+        return redirect("store:invoices")
+
+    return render(request, "store/checkout.html", {"org": org, "order": order})
+
+
+@login_required
+@tenant_required
 def billing(request: HttpRequest):
-    org = TenantMiddleware.get_org(request)
-    if not org:
-        return redirect("store:org_switch")
-    membership = get_membership(request.user, org)
-    if not membership:
-        return redirect("store:org_switch")
-    sub = getattr(org, "subscription", None)
-    return render(request, "store/billing.html", {"org": org, "membership": membership, "sub": sub})
+    org = request.store_org
+    sub = ensure_subscription(org)
+    plans = Plan.objects.filter(is_active=True, is_public=True).order_by("tier")
 
-@login_required
-def open_portal(request: HttpRequest):
-    org = TenantMiddleware.get_org(request)
-    if not org:
-        return redirect("store:org_switch")
-    membership = get_membership(request.user, org)
-    if not membership or membership.role != ROLE_ADMIN:
-        messages.error(request, "Only org admins can access billing portal.")
+    if request.method == "POST":
+        plan_code = request.POST.get("plan")
+        period = request.POST.get("period") or "monthly"
+        plan = Plan.objects.filter(code=plan_code, is_active=True).first()
+        if plan:
+            sub.plan = plan
+            sub.billing_period = period if period in ("monthly", "annual") else "monthly"
+            sub.status = Subscription.ACTIVE if hasattr(__import__("store.models"), "Subscription") else sub.status  # safe
+            sub.save(update_fields=["plan", "billing_period", "status"])
+            audit(org, request.user, "plan_changed", {"plan": plan.code, "period": sub.billing_period})
+            messages.success(request, f"Plan upgraded to {plan.name} ({sub.billing_period}).")
+            return redirect("store:billing")
+
+        messages.error(request, "Plan not found.")
         return redirect("store:billing")
 
-    try:
-        url = create_billing_portal(org=org, request=request)
-        AuditEvent.objects.create(org=org, user=request.user, action="billing_portal_opened")
-        return redirect(url)
-    except Exception:
-        log.exception("portal_failed")
-        messages.error(request, "Billing portal failed. Check server logs.")
-        return redirect("store:billing")
+    return render(request, "store/billing.html", {"org": org, "sub": sub, "plans": plans})
+
 
 @login_required
-def settings_page(request: HttpRequest):
-    org = TenantMiddleware.get_org(request)
-    if not org:
-        return redirect("store:org_switch")
-    membership = get_membership(request.user, org)
-    return render(request, "store/settings.html", {"org": org, "membership": membership})
+@tenant_required
+@analyst_required
+def invoices(request: HttpRequest):
+    org = request.store_org
+    orders = Order.objects.filter(org=org, status=Order.PAID).order_by("-created_at")[:50]
+    return render(request, "store/invoices.html", {"org": org, "orders": orders})
 
-@csrf_exempt
-def stripe_webhook(request: HttpRequest):
-    """
-    Stripe webhook endpoint.
-    Add STRIPE_WEBHOOK_SECRET in settings.
-    """
-    secret = getattr(settings, "STRIPE_WEBHOOK_SECRET", "")
-    if not secret:
-        return HttpResponseBadRequest("Missing STRIPE_WEBHOOK_SECRET")
 
-    payload = request.body
-    sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
-    try:
-        event = stripe.Webhook.construct_event(payload=payload, sig_header=sig_header, secret=secret)
-    except Exception as e:
-        return HttpResponseBadRequest("Invalid signature")
-
-    try:
-        handle_webhook(event)
-    except Exception:
-        log.exception("webhook_handler_failed")
-        return HttpResponse(status=500)
-
-    return HttpResponse(status=200)
+@login_required
+@tenant_required
+@analyst_required
+def audit_log(request: HttpRequest):
+    org = request.store_org
+    events = org.audit_events.order_by("-created_at")[:80]
+    return render(request, "store/audit.html", {"org": org, "events": events})

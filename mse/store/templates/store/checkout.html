@@ -1,0 +1,38 @@
+{% extends "store/base_store.html" %}
+{% block title %}Checkout • Store{% endblock %}
+{% block content %}
+<section class="grid2">
+  <div class="card glass">
+    <h1 class="h1">Checkout</h1>
+    <p class="muted">Instant demo payment is enabled so this is fully functional immediately.</p>
+
+    <div class="priceHuge">${{ order.total }} <span>{{ order.currency }}</span></div>
+
+    <form method="post">
+      {% csrf_token %}
+      <button class="btn gold" type="submit">Confirm Payment</button>
+    </form>
+
+    <div class="hint">Stripe can be wired next via `STORE_STRIPE_ENABLED`.</div>
+  </div>
+
+  <div class="card glass">
+    <div class="kicker">Order #{{ order.id }}</div>
+    {% for i in order.items.all %}
+      <div class="li">
+        <div>{{ i.product.name }} × {{ i.qty }}</div>
+        <div class="muted">${{ i.line_total }}</div>
+      </div>
+    {% endfor %}
+    <div class="li">
+      <div class="muted">Subtotal</div><div class="muted">${{ order.subtotal }}</div>
+    </div>
+    <div class="li">
+      <div class="muted">Tax</div><div class="muted">${{ order.tax }}</div>
+    </div>
+    <div class="li">
+      <div><b>Total</b></div><div><b>${{ order.total }}</b></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

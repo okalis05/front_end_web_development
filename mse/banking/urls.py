@@ -1,5 +1,7 @@
-from django.urls import path
+from django.urls import path , include
+from django.conf import settings
 from . import views
+from . import views_ai
 
 app_name = "banking"
 
@@ -16,6 +18,9 @@ urlpatterns = [
     path("statements/", views.statements, name="statements"),
     path("cards/activity/", views.card_activity, name="card_activity"),
     path("spending/", views.spending, name="spending"),
+    path("ai-auto/", include("banking.ai_auto.urls")),
+    path("ai-credit/", include("banking.ai_credit.urls")),
+    path("ai-portfolio/", views_ai.ai_portfolio_dashboard, name="ai_portfolio"),
 
 
 

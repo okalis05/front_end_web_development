@@ -1,0 +1,30 @@
+{% extends "store/base_store.html" %}
+{% block title %}Catalog • Store{% endblock %}
+{% block content %}
+<div class="titleRow">
+  <h1 class="h1">Catalog</h1>
+  <p class="muted">Tenant: <b>{{ org.name }}</b> — curated executive products.</p>
+</div>
+
+<section class="grid3">
+  {% for p in products %}
+  <article class="card glass product" data-accent="{{ p.accent }}">
+    <div class="img">
+      {% if p.image_url %}
+        <img src="{{ p.image_url }}" alt="{{ p.name }}">
+      {% else %}
+        <div class="imgPh">✶</div>
+      {% endif %}
+    </div>
+    <div class="big">{{ p.name }}</div>
+    <div class="muted clamp">{{ p.description }}</div>
+    <div class="rowBetween">
+      <div class="price">${{ p.price }}</div>
+      <a class="btn purple" href="{% url 'store:product_detail' p.slug %}">Open</a>
+    </div>
+  </article>
+  {% empty %}
+    <div class="muted">No products in this tenant. Add them in admin.</div>
+  {% endfor %}
+</section>
+{% endblock %}

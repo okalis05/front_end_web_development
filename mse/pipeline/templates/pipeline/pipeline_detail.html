@@ -1,0 +1,85 @@
+{% extends "pipeline/base.html" %}
+
+{% block title %}Pipeline — {{ pipeline.name }}{% endblock %}
+
+{% block top_title %}{{ pipeline.name }}{% endblock %}
+{% block top_subtitle %}{{ pipeline.description|default:"Executive pipeline visibility & control" }}{% endblock %}
+
+{% block body %}
+<section class="pl-card pl-card-wide">
+  <div class="pl-card-head">
+    <h2 class="pl-h2">Pipeline Overview</h2>
+    <span class="pl-chip">{{ pipeline.slug }}</span>
+  </div>
+
+  <div class="pl-kv">
+    <div class="pl-kv-item">
+      <div class="pl-kv-k">Active</div>
+      <div class="pl-kv-v">{% if pipeline.is_active %}Yes{% else %}No{% endif %}</div>
+    </div>
+    <div class="pl-kv-item">
+      <div class="pl-kv-k">SLA</div>
+      <div class="pl-kv-v">{{ pipeline.sla_minutes }} min</div>
+    </div>
+    <div class="pl-kv-item">
+      <div class="pl-kv-k">Health Grade</div>
+      <div class="pl-kv-v">{{ health.grade|default:"—" }} ({{ health.score|default:"—" }})</div>
+    </div>
+    <div class="pl-kv-item">
+      <div class="pl-kv-k">Success Rate</div>
+      <div class="pl-kv-v">{{ health.success_rate_pct|default:"—" }}%</div>
+    </div>
+  </div>
+</section>
+
+<section class="pl-card">
+  <div class="pl-card-head">
+    <h2 class="pl-h2">Trigger Run</h2>
+    <span class="pl-chip">Control</span>
+  </div>
+
+  <form class="pl-form" method="post" action="{% url 'pipeline:trigger_pipeline' pipeline.slug %}">
+    {% csrf_token %}
+    <div class="pl-field">
+      <label class="pl-label">dbt select (optional)</label>
+      <input class="pl-input" type="text" name="select" placeholder="e.g. +marts, stg_example, tag:daily" />
+      <div class="pl-hint">Leave blank to run full build.</div>
+    </div>
+
+    <input type="hidden" id="generate_docs" name="generate_docs" value="true" />
+    <div class="pl-inline">
+      <button class="pl-toggle" type="button" data-toggle="docs">Docs: ON</button>
+      <button class="pl-btn pl-btn-solid" type="submit">Trigger</button>
+    </div>
+  </form>
+</section>
+
+<section class="pl-card">
+  <div class="pl-card-head">
+    <h2 class="pl-h2">Recent Runs</h2>
+    <span class="pl-chip">Live</span>
+  </div>
+
+  <div id="runsTable" class="pl-table" data-pipeline="{{ pipeline.slug }}">
+    <div class="pl-tr pl-th">
+      <div>ID</div>
+      <div>Status</div>
+      <div>Prefect</div>
+      <div>Created</div>
+      <div></div>
+    </div>
+
+    {% for r in runs %}
+      <div class="pl-tr">
+        <div class="pl-mono">#{{ r.id }}</div>
+        <div><span class="pl-status pl-status-{{ r.status|lower }}">{{ r.status }}</span></div>
+        <div class="pl-mono">{{ r.prefect_state }}</div>
+        <div class="pl-muted">{{ r.created_at|date:"M d, Y H:i" }}</div>
+        <div><a class="pl-link" href="{% url 'pipeline:run_detail' r.id %}">View</a></div>
+      </div>
+    {% empty %}
+      <div class="pl-empty">No runs yet.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "mystics_site/base.html" %}
+{% block title %}Dashboard • Mystics Insight Hub{% endblock %}
+
+{% block content %}
+<section class="ms-section ms-reveal">
+  <div class="ms-section-h">
+    <h2 class="ms-h2">Dashboard</h2>
+    <div class="ms-dim">Live UI over locally cached data • season {{ season }}</div>
+  </div>
+
+  {% if error %}
+    <div class="ms-card ms-empty">{{ error }}</div>
+  {% endif %}
+
+  <div class="ms-two">
+    <div class="ms-card ms-card-glow">
+      <div class="ms-card-h">
+        <span class="ms-pill">Roster Quick View</span>
+        <span class="ms-dim">from /api/players</span>
+      </div>
+
+      <div class="ms-tablewrap">
+        <table class="ms-table2" id="playersTable">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Pos</th>
+              <th>Team</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="3" class="ms-dim">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="ms-card">
+      <div class="ms-card-h">
+        <span class="ms-pill">How to Refresh Data</span>
+        <span class="ms-dim">local</span>
+      </div>
+      <div class="ms-dim" style="line-height:1.7">
+        Run:
+        <div class="ms-codeblock">
+          python manage.py mystics_sync --season {{ season }}
+        </div>
+        If charts/tables are empty, it means games/stats haven’t been synced yet.
+      </div>
+    </div>
+  </div>
+
+  <div class="ms-card ms-card-glow ms-reveal" style="margin-top:12px;">
+    <div class="ms-card-h">
+      <span class="ms-pill">Mystics Scoring Trend</span>
+      <span class="ms-dim">points per game</span>
+    </div>
+
+    <div class="ms-chartbox">
+      <canvas id="teamTrend"></canvas>
+    </div>
+
+    <div class="ms-charthint ms-dim">If empty, sync games for this season.</div>
+  </div>
+</section>
+
+<script>
+  window.MS = window.MS || {};
+  window.MS.teamTrendUrl = "{% url 'mystics_site:api_mystics_trend' %}";
+  window.MS.playersApiUrl = "{% url 'mystics_site:players_api' %}";
+</script>
+{% endblock %}

@@ -1,0 +1,208 @@
+/* =========================================
+   AI AUTO — EXECUTIVE RED / GOLD EXPERIENCE
+   ========================================= */
+
+.ai-auto{
+  position:relative;
+  color: rgba(255,255,255,.93);
+  background:
+    radial-gradient(900px 520px at 14% 18%, rgba(193,18,31,.45), transparent 58%),
+    radial-gradient(820px 520px at 86% 22%, rgba(212,175,55,.20), transparent 60%),
+    radial-gradient(900px 600px at 60% 90%, rgba(255,45,75,.18), transparent 55%),
+    linear-gradient(180deg, #070A12, #0b1020 55%, #070A12);
+  overflow:hidden;
+}
+
+/* Floating gold texture layer */
+.ai-auto::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  opacity:.10;
+  filter:saturate(1.15) contrast(1.08);
+  transform:scale(1.05);
+  pointer-events:none;
+}
+
+/* Depth overlay */
+.ai-auto::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(800px 420px at 20% 20%, rgba(212,175,55,.20), transparent 60%),
+    radial-gradient(650px 420px at 85% 25%, rgba(193,18,31,.30), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.15));
+  pointer-events:none;
+}
+
+/* Floating accent images */
+.ai-auto .float-img{
+  position:absolute;
+  width:340px;
+  max-width:46vw;
+  border-radius:22px;
+  opacity:.22;
+  filter:saturate(1.2) contrast(1.1);
+  box-shadow:0 40px 120px rgba(0,0,0,.55);
+  border:1px solid rgba(212,175,55,.22);
+  pointer-events:none;
+}
+
+.ai-auto .f1{ top:86px; left:-40px; animation:floaty 10s ease-in-out infinite; }
+.ai-auto .f2{ top:160px; right:-60px; animation:floaty 12s ease-in-out infinite; }
+.ai-auto .f3{ bottom:40px; left:22%; animation:floaty 14s ease-in-out infinite; }
+
+@keyframes floaty{
+  0%,100%{ transform:translateY(0) rotate(-1deg) scale(1); }
+  50%{ transform:translateY(-18px) rotate(1deg) scale(1.02); }
+}
+
+/* Cards */
+.ai-auto .ai-card{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(212,175,55,.18);
+}
+
+.ai-auto .ai-card-hd{
+  background:linear-gradient(90deg, rgba(193,18,31,.30), rgba(212,175,55,.16));
+  border-bottom:1px solid rgba(212,175,55,.18);
+}
+
+/* Typography accents */
+.ai-auto .gold{ color:#ffde7a; }
+
+/* Buttons */
+.ai-auto .ai-btn.primary{
+  background:linear-gradient(180deg, #ffde7a, #d4af37);
+  color:#111;
+  box-shadow:0 18px 60px rgba(212,175,55,.22);
+}
+.ai-auto .ai-btn.primary:hover{ filter:brightness(1.05); }
+
+.ai-auto .ai-btn.ghost{
+  background:rgba(255,255,255,.08);
+  color:rgba(255,255,255,.92);
+  border:1px solid rgba(255,255,255,.16);
+}
+
+/* Pills */
+.ai-auto .seg{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.ai-auto .pill{
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.06);
+  border-radius:999px;
+  padding:8px 12px;
+  font-weight:700;
+}
+
+/* Chat */
+.ai-auto .chat{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  height:420px;
+  overflow:auto;
+  padding-right:8px;
+}
+
+.ai-auto .bubble{
+  max-width:76%;
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.07);
+}
+
+.ai-auto .bubble.me{
+  margin-left:auto;
+  background:rgba(193,18,31,.18);
+  border-color:rgba(193,18,31,.30);
+}
+
+/* Inputs */
+.ai-auto .input-row{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+
+.ai-auto input[type="text"],
+.ai-auto select{
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.22);
+  color:rgba(255,255,255,.92);
+  outline:none;
+}
+
+/* Layout grids */
+.ai-auto .form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.ai-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.ai-grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+
+@media (max-width:720px){
+  .ai-auto .form-grid,
+  .ai-grid,
+  .ai-grid-3{ grid-template-columns:1fr; }
+}
+
+/* ===============================
+   CREDIT RISK ACCENTS (AI AUTO)
+   =============================== */
+
+.risk-low{
+  border-color:rgba(46,204,113,.45)!important;
+}
+.risk-low .ai-card-hd{
+  background:linear-gradient(90deg, rgba(46,204,113,.35), rgba(46,204,113,.10));
+}
+
+.risk-medium{
+  border-color:rgba(212,175,55,.55)!important;
+}
+.risk-medium .ai-card-hd{
+  background:linear-gradient(90deg, rgba(212,175,55,.40), rgba(212,175,55,.12));
+}
+
+.risk-high{
+  border-color:rgba(193,18,31,.55)!important;
+}
+.risk-high .ai-card-hd{
+  background:linear-gradient(90deg, rgba(193,18,31,.45), rgba(193,18,31,.15));
+}
+
+/* ===============================
+   COLLAPSIBLE PANELS (MATCH JS)
+   =============================== */
+
+.ai-collapse{ display:none; }
+.ai-collapse.open{ display:block; }
+
+.ai-collapse-toggle{
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+
+/* REMOVE ALL BACKGROUND IMAGES */
+.banking,
+.banking-app,
+.banking *,
+body.banking {
+  background-image: none !important;
+}

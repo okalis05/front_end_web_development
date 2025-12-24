@@ -1,22 +1,18 @@
-from rest_framework.permissions import BasePermission
-from .middleware import TenantMiddleware
-from .selectors import is_org_admin
-from .models import OrgMembership
+from __future__ import annotations
+from .models import Membership
 
-class HasTenant(BasePermission):
-    def has_permission(self, request, view):
-        return TenantMiddleware.get_org(request) is not None
+def require_org(request):
+    if not getattr(request, "store_org", None):
+        return False
+    if not request.user.is_authenticated:
+        return False
+    if not getattr(request, "store_membership", None):
+        return False
+    return True
 
-class IsOrgMember(BasePermission):
-    def has_permission(self, request, view):
-        org = TenantMiddleware.get_org(request)
-        if not org or not request.user.is_authenticated:
-            return False
-        return OrgMembership.objects.filter(org=org, user=request.user, is_active=True).exists()
+def has_role(request, roles: set[str]) -> bool:
+    ms = getattr(request, "store_membership", None)
+    return bool(ms and ms.role in roles)
 
-class IsOrgAdmin(BasePermission):
-    def has_permission(self, request, view):
-        org = TenantMiddleware.get_org(request)
-        if not org or not request.user.is_authenticated:
-            return False
-        return is_org_admin(request.user, org)
+ROLE_ADMIN_SET = {Membership.OWNER, Membership.ADMIN}
+ROLE_ANALYST_SET = {Membership.OWNER, Membership.ADMIN, Membership.ANALYST}

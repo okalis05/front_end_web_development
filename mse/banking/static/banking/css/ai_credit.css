@@ -1,0 +1,112 @@
+
+.ai-credit{
+  position:relative;
+  color: rgba(255,255,255,.93);
+  background:
+    radial-gradient(1000px 600px at 18% 18%, rgba(80,140,255,.18), transparent 60%),
+    radial-gradient(900px 520px at 85% 20%, rgba(255,255,255,.10), transparent 62%),
+    linear-gradient(180deg, #070A12, #0b1020 55%, #070A12);
+  overflow:hidden;
+}
+
+/* Depth overlay */
+.ai-credit::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,.06),
+    rgba(0,0,0,.22)
+  );
+  pointer-events:none;
+}
+
+/* Glass utility (used for executive panels if needed) */
+.ai-credit .glass{
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 24px;
+  box-shadow: 0 30px 120px rgba(0,0,0,.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Cards (override common with softer glass) */
+.ai-credit .ai-card{
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.ai-credit .ai-card-hd{
+  background: rgba(255,255,255,.06);
+}
+
+/* Buttons */
+.ai-credit .ai-btn.primary{
+  background: linear-gradient(
+    180deg,
+    rgba(80,140,255,.95),
+    rgba(80,140,255,.70)
+  );
+  color:#071022;
+  box-shadow: 0 18px 60px rgba(80,140,255,.18);
+}
+.ai-credit .ai-btn.primary:hover{
+  filter: brightness(1.05);
+}
+
+.ai-credit .ai-btn.ghost{
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.92);
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+/* Metric grid (credit outputs) */
+.ai-credit .metric{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 720px){
+  .ai-credit .metric{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Metric tiles */
+.ai-credit .tile{
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+}
+
+.ai-credit .tile .label{
+  color: rgba(255,255,255,.75);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+
+.ai-credit .tile .value{
+  margin-top: 6px;
+  font-size: 22px;
+  font-weight: 800;
+  color: rgba(255,255,255,.96);
+}
+
+/* Risk tier emphasis (optional helpers) */
+.ai-credit .risk-low .tile{
+  border-color: rgba(46,204,113,.45);
+}
+.ai-credit .risk-medium .tile{
+  border-color: rgba(212,175,55,.45);
+}
+.ai-credit .risk-high .tile{
+  border-color: rgba(193,18,31,.55);
+}

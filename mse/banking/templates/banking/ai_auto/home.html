@@ -1,0 +1,279 @@
+{% extends "banking/base.html" %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'banking/css/ai_common.css' %}">
+<link rel="stylesheet" href="{% static 'banking/css/ai_auto.css' %}">
+{% endblock %}
+
+{% block body %}
+<section class="ai-auto ai-shell">
+  <div class="ai-wrap">
+
+    <!-- ===============================
+         Header
+         =============================== -->
+    <div class="ai-topbar">
+      <div>
+        <h1 class="ai-title">AI Auto <span class="gold">Concierge</span></h1>
+        <p class="ai-subtitle">Executive discovery with risk-aware affordability.</p>
+      </div>
+      <span class="ai-badge">Session #{{ session_id }}</span>
+    </div>
+
+    <div class="ai-grid">
+
+      <!-- ===============================
+           CHAT
+           =============================== -->
+      <div class="ai-card">
+        <div class="ai-card-hd"><strong>Conversation</strong></div>
+        <div class="ai-card-bd">
+
+          <div id="chatBox" class="chat">
+            {% for m in messages %}
+              <div class="bubble {% if m.role == 'user' %}me{% endif %}">
+                {{ m.content }}
+              </div>
+            {% empty %}
+              <div class="bubble">
+                Tell me your budget, body style, and whether you prefer new or used.
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="input-row">
+            <input id="chatInput" type="text" placeholder="Type your message…">
+            <button id="chatSend" class="ai-btn primary" type="button">Send</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===============================
+           INTAKE FORM
+           =============================== -->
+      <div class="ai-card">
+        <div class="ai-card-hd"><strong>Executive Intake</strong></div>
+        <div class="ai-card-bd">
+
+          <div class="form-grid">
+            <div>
+              <label class="ai-k">Max Monthly Payment</label>
+              <input id="monthly_target" type="text" placeholder="$650">
+            </div>
+            <div>
+              <label class="ai-k">Down Payment</label>
+              <input id="down_payment" type="text" placeholder="$3,000">
+            </div>
+            <div>
+              <label class="ai-k">Loan Term (months)</label>
+              <select id="term_months">
+                <option value="36">36</option>
+                <option value="48">48</option>
+                <option value="60" selected>60</option>
+                <option value="72">72</option>
+              </select>
+            </div>
+            <div>
+              <label class="ai-k">ZIP Code</label>
+              <input id="zip_code" type="text" placeholder="20019">
+            </div>
+          </div>
+
+          <div class="ai-sep"></div>
+
+          <button
+            id="genBtn"
+            class="ai-btn primary"
+            type="button"
+            style="width:100%;">
+            Generate My Executive Shortlist
+          </button>
+
+          <div id="aiStatus" class="ai-muted" style="margin-top:10px;"></div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===============================
+         SHORTLIST
+         =============================== -->
+    <div id="shortlistPanel" class="ai-card" style="display:none; margin-top:20px;">
+      <div class="ai-card-hd"><strong>Your Shortlist</strong></div>
+      <div class="ai-card-bd">
+        <ul id="shortlistList"></ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{{ session_id|json_script:"ai-auto-session" }}
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+  window.AI_AUTO_SESSION_ID =
+    JSON.parse(document.getElementById("ai-auto-session").textContent);
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* -------------------------------
+     Helpers
+     ------------------------------- */
+  const byId = id => document.getElementById(id);
+
+  function getCookie(name){
+    const v = `; ${document.cookie}`;
+    const p = v.split(`; ${name}=`);
+    if (p.length === 2) return p.pop().split(';').shift();
+  }
+
+  const csrfToken = getCookie("csrftoken");
+  const SESSION_ID = window.AI_AUTO_SESSION_ID;
+
+  /* -------------------------------
+     Chat
+     ------------------------------- */
+  const chatBox   = byId("chatBox");
+  const chatInput = byId("chatInput");
+  const chatSend  = byId("chatSend");
+
+  function appendBubble(text, mine=false){
+    const div = document.createElement("div");
+    div.className = "bubble" + (mine ? " me" : "");
+    div.textContent = text;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  async function sendChat(){
+    if (!chatInput.value.trim()) return;
+    const text = chatInput.value.trim();
+    chatInput.value = "";
+
+    appendBubble(text, true);
+
+    const res = await fetch("/banking/ai-auto/api/message/", {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json",
+        "X-CSRFToken": csrfToken,
+      },
+      body: JSON.stringify({
+        session_id: SESSION_ID,
+        text: text,
+      }),
+    });
+
+    const data = await res.json();
+    if (data.reply) appendBubble(data.reply);
+  }
+
+  chatSend.addEventListener("click", sendChat);
+  chatInput.addEventListener("keydown", e=>{
+    if (e.key === "Enter") sendChat();
+  });
+
+  /* -------------------------------
+     Generate Shortlist
+     ------------------------------- */
+  const genBtn = byId("genBtn");
+  const status = byId("aiStatus");
+
+  function val(id){
+    return byId(id)?.value || null;
+  }
+
+  genBtn.addEventListener("click", async () => {
+    status.textContent = "Generating recommendations…";
+
+    const payload = {
+      session_id: SESSION_ID,
+      monthly_target: val("monthly_target"),
+      down_payment: val("down_payment"),
+      term_months: val("term_months"),
+      zip_code: val("zip_code"),
+    };
+
+    const res = await fetch("/banking/ai-auto/api/recommend/", {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json",
+        "X-CSRFToken": csrfToken,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    status.textContent = "";
+
+    if (!data.ok){
+      alert(data.error || "Recommendation failed");
+      return;
+    }
+
+    const panel = byId("shortlistPanel");
+    const list  = byId("shortlistList");
+
+    list.innerHTML = "";
+    panel.style.display = "block";
+
+    data.payload.recommendations.forEach(car => {
+      const li = document.createElement("li");
+
+      const title = document.createElement("strong");
+      title.textContent = `${car.year} ${car.make} ${car.model}`;
+
+      const btn = document.createElement("button");
+      btn.className = "ai-btn ghost";
+      btn.textContent = "Add to Buyer Plan";
+
+      btn.addEventListener("click", async () => {
+        const r = await fetch(
+          "/banking/ai-auto/buyer-plan/api/add-vehicle/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":"application/json",
+              "X-CSRFToken": csrfToken,
+            },
+            body: JSON.stringify({
+              session_id: SESSION_ID,
+              vehicle: {
+                make: car.make,
+                model: car.model,
+                year: car.year,
+                price: car.price,
+                badge: car.badge,
+                inventory_id: car.id,
+              }
+            }),
+          }
+        );
+
+        const resp = await r.json();
+        if (!resp.ok){
+          alert(resp.error || "Could not add vehicle");
+          return;
+        }
+
+        btn.textContent = "Added ✓";
+        btn.disabled = true;
+      });
+
+      li.appendChild(title);
+      li.appendChild(document.createTextNode(" "));
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+  });
+
+});
+</script>
+{% endblock page_scripts %}

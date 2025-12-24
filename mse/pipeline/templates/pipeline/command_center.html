@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pipeline Command Center</title>
+
+  <link rel="stylesheet" href="{% static 'pipeline/css/pipeline.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="{% static 'pipeline/js/pipeline.js' %}" defer></script>
+</head>
+
+<body class="pl-body">
+  <canvas id="pl-particles"></canvas>
+
+  <header class="pl-topbar">
+    <div class="pl-brand">
+      <div class="pl-logo">⚡</div>
+      <div>
+        <div class="pl-title">Data Pipeline Command Center</div>
+        <div class="pl-subtitle">Prefect orchestration + dbt transformations • executive visibility • real-time control</div>
+      </div>
+    </div>
+
+    <div class="pl-actions">
+      <a class="pl-btn pl-btn-ghost" href="{% url 'portfolio:about' %}">← Back to Portfolio</a>
+      <a class="pl-btn pl-btn-solid" href="{% url 'pipeline:command_center' %}">Refresh</a>
+      <button class="pl-btn pl-btn-ghost" id="themeToggle" type="button">☀️ Light</button>
+    </div>
+  </header>
+
+  <main class="pl-grid">
+    <section class="pl-card pl-card-hero">
+      <div class="pl-hero-left">
+        <div class="pl-kicker">AUTOMATION AT FULL POWER</div>
+        <h1 class="pl-h1">Raw → Analytics-Ready in one click.</h1>
+        <p class="pl-p">
+          Automated ETL flows transforming raw data into analytics-ready models using Prefect orchestration and dbt transformations.
+          Run builds, track status, ship insights—with executive-grade clarity.
+        </p>
+
+        <div class="pl-metrics">
+          <div class="pl-metric">
+            <div class="pl-metric-num">{{ pipelines|length }}</div>
+            <div class="pl-metric-label">Active Pipelines</div>
+          </div>
+          <div class="pl-metric">
+            <div class="pl-metric-num">{{ recent_runs|length }}</div>
+            <div class="pl-metric-label">Recent Runs</div>
+          </div>
+          <div class="pl-metric">
+            <div class="pl-metric-num">∞</div>
+            <div class="pl-metric-label">Scale Potential</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pl-hero-right">
+        <div class="pl-dag">
+          <svg viewBox="0 0 560 260" class="pl-dag-svg">
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="6" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <path class="pl-dag-path" d="M70 60 C170 60, 170 60, 260 60 C340 60, 340 60, 430 60" />
+            <path class="pl-dag-path" d="M260 60 C260 120, 260 120, 260 180 C260 220, 260 220, 430 220" />
+            <circle class="pl-dag-node n1" cx="70" cy="60" r="18"/>
+            <circle class="pl-dag-node n2" cx="260" cy="60" r="18"/>
+            <circle class="pl-dag-node n3" cx="260" cy="180" r="18"/>
+            <circle class="pl-dag-node n4" cx="430" cy="60" r="18"/>
+            <circle class="pl-dag-node n5" cx="430" cy="220" r="18"/>
+
+            <text x="70" y="35" class="pl-dag-label" text-anchor="middle">Extract</text>
+            <text x="260" y="35" class="pl-dag-label" text-anchor="middle">Load Raw</text>
+            <text x="260" y="155" class="pl-dag-label" text-anchor="middle">dbt Build</text>
+            <text x="430" y="35" class="pl-dag-label" text-anchor="middle">Tests</text>
+            <text x="430" y="195" class="pl-dag-label" text-anchor="middle">Models</text>
+          </svg>
+        </div>
+
+        <div class="pl-mini-charts">
+          <div class="pl-chart-card">
+            <div class="pl-chart-title">Success Trend</div>
+            <canvas id="chartSuccess"></canvas>
+          </div>
+          <div class="pl-chart-card">
+            <div class="pl-chart-title">Runtime (sec)</div>
+            <canvas id="chartRuntime"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pl-card">
+      <div class="pl-card-head">
+        <h2 class="pl-h2">Pipelines</h2>
+        <div class="pl-chip">Live</div>
+      </div>
+
+      <div class="pl-pipeline-list">
+        {% for p in pipelines %}
+          <a class="pl-pipeline-row" href="{% url 'pipeline:detail' p.slug %}" data-accent="{{ p.accent }}">
+            <div class="pl-dot"></div>
+            <div class="pl-pipe-meta">
+              <div class="pl-pipe-name">{{ p.name }}</div>
+              <div class="pl-pipe-desc">{{ p.description|default:"Executive-ready ETL with full observability." }}</div>
+            </div>
+            <div class="pl-pipe-right">
+              <div class="pl-pill">Open</div>
+              <div class="pl-arrow">→</div>
+            </div>
+          </a>
+        {% empty %}
+          <div class="pl-empty">No pipelines yet. Create one in Django admin.</div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="pl-card">
+      <div class="pl-card-head">
+        <h2 class="pl-h2">Recent Runs</h2>
+        <div class="pl-chip">Audit Trail</div>
+      </div>
+
+      <div class="pl-table">
+        <div class="pl-tr pl-th">
+          <div>Pipeline</div>
+          <div>Status</div>
+          <div>Prefect</div>
+          <div>Created</div>
+          <div></div>
+        </div>
+
+        {% for r in recent_runs %}
+          <div class="pl-tr">
+            <div class="pl-strong">{{ r.pipeline.name }}</div>
+            <div><span class="pl-status pl-status-{{ r.status|lower }}">{{ r.status }}</span></div>
+            <div class="pl-mono">{{ r.prefect_state }}</div>
+            <div class="pl-muted">{{ r.created_at }}</div>
+            <div><a class="pl-link" href="{% url 'pipeline:run_detail' r.id %}">View</a></div>
+          </div>
+        {% empty %}
+          <div class="pl-empty">No runs yet. Trigger a pipeline.</div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+</body>
+</html>
+

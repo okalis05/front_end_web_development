@@ -1,0 +1,208 @@
+{% extends "banking/base.html" %}
+{% load static %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'banking/css/ai_common.css' %}">
+<link rel="stylesheet" href="{% static 'banking/css/ai_credit.css' %}">
+{% endblock %}
+
+{% block body %}
+<section class="ai-shell ai-credit">
+  <div class="ai-wrap">
+
+    <h1 class="ai-title">AI Credit Assessment</h1>
+    <p class="ai-subtitle">
+      Explainable underwriting, risk scoring, and term recommendations.
+    </p>
+
+    <!-- CREDIT FORM -->
+     {% if prefill.loan_amnt %}
+        <p class="ai-muted">
+          Pre-filled from your AI Auto session. You can edit any field before submitting.
+        </p>
+      {% endif %}
+    <div class="ai-card">
+      <div class="ai-card-hd">
+        <strong>Credit Application</strong>
+      </div>
+
+      <div class="ai-card-bd">
+        <div class="form-grid">
+
+          <div>
+            <label class="ai-k">Requested Loan Amount</label>
+            <input id="loan_amnt" placeholder="$28,000" value="{{ prefill.loan_amnt|default:'' }}">
+          </div>
+
+          <div>
+            <label class="ai-k">Annual Income</label>
+            <input id="annual_inc" placeholder="$95,000" value="{{ prefill.annual_inc|default:'' }}">
+          </div>
+
+          <div>
+            <label class="ai-k">Debt-to-Income Ratio (DTI)</label>
+            <input id="dti" placeholder="18" value="{{ prefill.dti|default:'' }}">
+          </div>
+
+          <div>
+            <label class="ai-k">Term</label>
+            <select id="term">
+              <option value="36 months" {% if prefill.term == "36 months" %}selected{% endif %}>36 months</option>
+              <option value="48 months" {% if prefill.term == "48 months" %}selected{% endif %}>48 months</option>
+              <option value="60 months" {% if prefill.term == "60 months" %}selected{% endif %}>60 months</option>
+              <option value="72 months" {% if prefill.term == "72 months" %}selected{% endif %}>72 months</option>
+            </select>
+
+          </div>
+
+          <div>
+            <label class="ai-k">Employment Length</label>
+            <select id="emp_length">
+              <option>10+ years</option>
+              <option>5-9 years</option>
+              <option>2-4 years</option>
+              <option>1 year</option>
+              <option>&lt; 1 year</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="ai-k">Home Ownership</label>
+            <select id="home_ownership">
+              <option>RENT</option>
+              <option>OWN</option>
+              <option>MORTGAGE</option>
+            </select>
+          </div>
+
+        </div>
+
+        <button id="runCreditBtn" class="ai-btn primary" style="margin-top:14px;width:100%;">
+          Run Credit Analysis
+        </button>
+
+        <!-- RESULT -->
+        <div id="creditResult" style="display:none;margin-top:18px;">
+          <h3>Decision</h3>
+          <p><strong>Risk Tier:</strong> <span id="riskTier"></span></p>
+          <p><strong>Decision:</strong> <span id="decision"></span></p>
+          <p><strong>APR:</strong> <span id="apr"></span></p>
+          <p><strong>Max Amount:</strong> <span id="maxAmount"></span></p>
+
+          <div class="ai-card" style="margin-top:12px;">
+            <div class="ai-card-hd ai-collapse-toggle" data-target="whyCredit">
+              <strong>Why this decision?</strong>
+            </div>
+            <div id="whyCredit" class="ai-card-bd ai-collapse open">
+              <p id="explainSummary"></p>
+              <ul id="explainDrivers"></ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="ai-card" style="margin-top:20px;">
+      <div class="ai-card-hd">
+        <strong>Recent Credit Decisions</strong>
+      </div>
+      <div class="ai-card-bd">
+        <ul>
+          {% for a in recent %}
+          <li>
+            {{ a.created_at }} —
+            {{ a.risk_tier }} —
+            {{ a.decision }} —
+            PD={{ a.prob_default|floatformat:3 }}
+          </li>
+          {% empty %}
+          <li>No applications yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  function getCookie(name){
+    const v = `; ${document.cookie}`;
+    const p = v.split(`; ${name}=`);
+    if (p.length === 2) return p.pop().split(';').shift();
+  }
+  const csrfToken = getCookie("csrftoken");
+
+  const runBtn = document.getElementById("runCreditBtn");
+  if (!runBtn) {
+    console.warn("AI Credit submit button not found");
+    return;
+  }
+
+  function money(v){
+    return parseInt(String(v || "").replace(/[^0-9]/g,'')) || 0;
+  }
+
+  runBtn.addEventListener("click", async () => {
+
+    console.log("Credit submit clicked");
+
+    const payload = {
+      loan_amnt: money(document.getElementById("loan_amnt")?.value),
+      annual_inc: money(document.getElementById("annual_inc")?.value),
+      dti: parseFloat(document.getElementById("dti")?.value || 0),
+      term: document.getElementById("term")?.value,
+      emp_length: document.getElementById("emp_length")?.value,
+      home_ownership: document.getElementById("home_ownership")?.value,
+      purpose: "car",
+    };
+
+    console.log("Credit payload:", payload);
+
+    const res = await fetch("/banking/ai-credit/api/score/", {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json",
+        "X-CSRFToken": csrfToken,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    console.log("Credit response status:", res.status);
+
+    const data = await res.json();
+    console.log("Credit response:", data);
+
+    if (!data.ok && !data.risk_tier){
+      alert(data.error || "Credit analysis failed");
+      return;
+    }
+
+    document.getElementById("creditResult").style.display = "block";
+    document.getElementById("riskTier").textContent = data.risk_tier;
+    document.getElementById("decision").textContent = data.decision;
+    document.getElementById("apr").textContent = data.apr || "N/A";
+    document.getElementById("maxAmount").textContent = data.max_amount || "—";
+
+    document.getElementById("explainSummary").textContent =
+      data.explainability?.summary || "";
+
+    const ul = document.getElementById("explainDrivers");
+    ul.innerHTML = "";
+    (data.explainability?.drivers || []).forEach(d=>{
+      const li = document.createElement("li");
+      li.textContent = d;
+      ul.appendChild(li);
+    });
+  });
+
+});
+
+</script>
+{% endblock %}

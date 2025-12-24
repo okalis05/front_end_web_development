@@ -1,0 +1,218 @@
+.ai-auto{
+  position:relative;
+  color: rgba(255,255,255,.93);
+  background:
+    radial-gradient(900px 520px at 14% 18%, rgba(193,18,31,.45), transparent 58%),
+    radial-gradient(820px 520px at 86% 22%, rgba(212,175,55,.20), transparent 60%),
+    radial-gradient(900px 600px at 60% 90%, rgba(255,45,75,.18), transparent 55%),
+    linear-gradient(180deg, #070A12, #0b1020 55%, #070A12);
+  overflow:hidden;
+}
+
+.ai-auto::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    url("../img/ai_auto/goldbar_1.jpg") center/cover no-repeat;
+  opacity:.10;
+  filter: saturate(1.15) contrast(1.08);
+  transform: scale(1.05);
+  pointer-events:none;
+}
+
+.ai-auto::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(800px 420px at 20% 20%, rgba(212,175,55,.20), transparent 60%),
+    radial-gradient(650px 420px at 85% 25%, rgba(193,18,31,.30), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.15));
+  pointer-events:none;
+}
+
+.ai-auto .float-img{
+  position:absolute;
+  width: 340px;
+  max-width: 46vw;
+  border-radius: 22px;
+  opacity:.22;
+  filter: saturate(1.2) contrast(1.1);
+  box-shadow: 0 40px 120px rgba(0,0,0,.55);
+  border: 1px solid rgba(212,175,55,.22);
+  transform: translateZ(0);
+  pointer-events:none;
+}
+
+.ai-auto .f1{ top: 86px; left: -40px; animation: floaty 10s ease-in-out infinite; }
+.ai-auto .f2{ top: 160px; right: -60px; animation: floaty 12s ease-in-out infinite; }
+.ai-auto .f3{ bottom: 40px; left: 22%; animation: floaty 14s ease-in-out infinite; }
+
+@keyframes floaty{
+  0%,100%{ transform: translateY(0) rotate(-1deg) scale(1); }
+  50%{ transform: translateY(-18px) rotate(1deg) scale(1.02); }
+}
+
+.ai-auto .ai-card{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(212,175,55,.18);
+}
+
+.ai-auto .ai-card .ai-card-hd{
+  background: linear-gradient(90deg, rgba(193,18,31,.30), rgba(212,175,55,.16));
+  border-bottom-color: rgba(212,175,55,.18);
+}
+
+.ai-auto .gold{
+  color: #ffde7a;
+}
+
+.ai-auto .ai-btn.primary{
+  background: linear-gradient(180deg, #ffde7a, #d4af37);
+  color: #111;
+  box-shadow: 0 18px 60px rgba(212,175,55,.22);
+}
+.ai-auto .ai-btn.primary:hover{ filter: brightness(1.05); }
+
+.ai-auto .ai-btn.ghost{
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.92);
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+.ai-auto .seg{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.ai-auto .pill{
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.06);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight:700;
+  color: rgba(255,255,255,.88);
+}
+
+.ai-auto .chat{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  height: 420px;
+  overflow:auto;
+  padding-right: 8px;
+}
+
+.ai-auto .bubble{
+  max-width: 76%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.07);
+  color: rgba(255,255,255,.92);
+}
+
+.ai-auto .bubble.me{
+  margin-left:auto;
+  background: rgba(193,18,31,.18);
+  border-color: rgba(193,18,31,.30);
+}
+
+.ai-auto .input-row{
+  display:flex;
+  gap:10px;
+  margin-top: 12px;
+}
+
+.ai-auto input[type="text"], .ai-auto select{
+  width:100%;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.22);
+  color: rgba(255,255,255,.92);
+  outline:none;
+}
+
+.ai-auto .form-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 720px){
+  .ai-auto .form-grid{ grid-template-columns: 1fr; }
+}
+
+/* ===============================
+   Credit Risk Accents (AI Auto)
+   =============================== */
+
+.risk-low{
+  border-color: rgba(46, 204, 113, .45) !important;
+}
+.risk-low .ai-card-hd{
+  background: linear-gradient(90deg, rgba(46,204,113,.35), rgba(46,204,113,.10));
+}
+.risk-low .ai-badge{
+  background: rgba(46,204,113,.20);
+  border-color: rgba(46,204,113,.45);
+}
+
+.risk-medium{
+  border-color: rgba(212,175,55,.55) !important;
+}
+.risk-medium .ai-card-hd{
+  background: linear-gradient(90deg, rgba(212,175,55,.40), rgba(212,175,55,.12));
+}
+.risk-medium .ai-badge{
+  background: rgba(212,175,55,.22);
+  border-color: rgba(212,175,55,.55);
+}
+
+.risk-high{
+  border-color: rgba(193,18,31,.55) !important;
+}
+.risk-high .ai-card-hd{
+  background: linear-gradient(90deg, rgba(193,18,31,.45), rgba(193,18,31,.15));
+}
+.risk-high .ai-badge{
+  background: rgba(193,18,31,.25);
+  border-color: rgba(193,18,31,.55);
+}
+
+/* Collapsible behavior */
+.ai-collapse-toggle{
+  cursor: pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+}
+
+.ai-collapse-content{
+  display:none;
+}
+.ai-collapse-content.open{
+  display:block;
+}
+
+.ai-collapse-icon{
+  font-size: 14px;
+  opacity:.85;
+}
+
+.ai-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.ai-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+
+.chat { max-height:280px; overflow:auto; }
+.bubble { padding:10px 14px; margin:6px 0; border-radius:14px; background:rgba(255,255,255,.1); }
+.bubble.me { background:rgba(212,175,55,.35); }
+
+.input-row { display:flex; gap:8px; margin-top:10px; }
+.input-row input { flex:1; }
+
+.risk-low { border-color:rgba(46,204,113,.6); }
+.risk-medium { border-color:rgba(212,175,55,.6); }
+.risk-high { border-color:rgba(193,18,31,.6); }

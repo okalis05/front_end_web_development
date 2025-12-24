@@ -1,0 +1,38 @@
+{% extends "store/base_store.html" %}
+{% block title %}Cart • Store{% endblock %}
+{% block content %}
+<h1 class="h1">Cart</h1>
+<div class="muted">Tenant: <b>{{ org.name }}</b></div>
+
+<div class="card glass">
+  {% if order %}
+    <div class="table">
+      <div class="tHead">
+        <div>Product</div><div>Qty</div><div>Unit</div><div>Total</div>
+      </div>
+      {% for i in order.items.all %}
+      <div class="tRow">
+        <div>{{ i.product.name }}</div>
+        <div>{{ i.qty }}</div>
+        <div>${{ i.unit_price }}</div>
+        <div>${{ i.line_total }}</div>
+      </div>
+      {% endfor %}
+      <div class="tFoot">
+        <div></div><div></div><div class="muted">Subtotal</div><div>${{ order.subtotal }}</div>
+        <div></div><div></div><div class="muted">Tax</div><div>${{ order.tax }}</div>
+        <div></div><div></div><div class="muted">Total</div><div><b>${{ order.total }}</b></div>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn purple" href="{% url 'store:catalog' %}">Continue Shopping</a>
+      <a class="btn gold" href="{% url 'store:checkout' %}">Checkout</a>
+    </div>
+  {% else %}
+    <div class="muted">Cart empty. Browse the catalog.</div>
+    <div class="actions">
+      <a class="btn purple" href="{% url 'store:catalog' %}">Open Catalog</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

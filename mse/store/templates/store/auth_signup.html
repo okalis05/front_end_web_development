@@ -1,0 +1,23 @@
+{% extends "store/base_store.html" %}
+{% block title %}Sign Up • Store{% endblock %}
+{% block content %}
+<section class="grid2">
+  <div class="card glass">
+    <h1 class="h1">Create Executive Account</h1>
+    <form method="post" class="form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <label>Username</label>{{ form.username }}
+      <label>Email</label>{{ form.email }}
+      <label>Password</label>{{ form.password1 }}
+      <label>Confirm</label>{{ form.password2 }}
+      <button class="btn purple" type="submit">Create Account</button>
+    </form>
+    <div class="hint">Already have one? <a href="{% url 'store:login' %}">Login</a></div>
+  </div>
+  <div class="hero glass">
+    <h2 class="h2">Floral Luxury UI</h2>
+    <p class="muted">Glass panels, neon auras, and gold edges — built for boardroom-grade polish.</p>
+  </div>
+</section>
+{% endblock %}
