@@ -1,15 +1,15 @@
-from __future__ import annotations
-from sklearn.pipeline import Pipeline
+# banking/ai_credit/ml.py
+
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.linear_model import LogisticRegression
 
-NUMERIC = [
+NUMERIC_FEATURES = [
     "loan_amnt",
-    "int_rate",
     "annual_inc",
     "dti",
+    "int_rate",
     "open_acc",
     "revol_bal",
     "total_acc",
@@ -17,26 +17,39 @@ NUMERIC = [
     "pub_rec",
 ]
 
-CATEGORICAL = [
-    "term",
-    "emp_length",
-    "home_ownership",
-    "purpose",
+CATEGORICAL_FEATURES = [
+    "term",           # e.g. "36 months", "60 months"
+    "purpose",        # e.g. "car", "credit_card"
+    "home_ownership", # RENT / OWN / MORTGAGE
+    "emp_length",     # "10+ years"
 ]
 
 def build_pipeline() -> Pipeline:
-    num_pipe = Pipeline([
-        ("imputer", SimpleImputer(strategy="median")),
-    ])
-    cat_pipe = Pipeline([
-        ("imputer", SimpleImputer(strategy="most_frequent")),
-        ("onehot", OneHotEncoder(handle_unknown="ignore")),
-    ])
+    """
+    Builds a production-safe credit scoring pipeline.
+    Handles numeric + categorical features correctly.
+    """
 
-    pre = ColumnTransformer([
-        ("num", num_pipe, NUMERIC),
-        ("cat", cat_pipe, CATEGORICAL),
-    ])
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("num", StandardScaler(), NUMERIC_FEATURES),
+            ("cat", OneHotEncoder(handle_unknown="ignore"), CATEGORICAL_FEATURES),
+        ],
+        remainder="drop",
+    )
 
-    model = LogisticRegression(max_iter=2500, n_jobs=None)
-    return Pipeline([("prep", pre), ("model", model)])
+    pipeline = Pipeline(
+        steps=[
+            ("preprocess", preprocessor),
+            (
+                "model",
+                LogisticRegression(
+                    max_iter=1000,
+                    class_weight="balanced",
+                    n_jobs=None,
+                ),
+            ),
+        ]
+    )
+
+    return pipeline

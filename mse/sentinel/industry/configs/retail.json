@@ -1,0 +1,23 @@
+{
+  "key": "retail",
+  "label": "Retail",
+  "tagline": "Demand, conversion, and fulfillment intelligence in real time.",
+  "narrative": "Track conversion, cart abandonment, out-of-stock risk, and fulfillment delays. Detect anomalies before they appear in revenue and customer sentiment.",
+  "kpis": [
+    {"key": "conversion_rate", "label": "Conversion Rate", "unit": "%", "baseline": 3.2},
+    {"key": "cart_abandonment", "label": "Cart Abandonment", "unit": "%", "baseline": 68},
+    {"key": "oos_risk", "label": "Out-of-Stock Risk", "unit": "idx", "baseline": 31},
+    {"key": "fulfillment_delay", "label": "Fulfillment Delay", "unit": "hrs", "baseline": 14},
+    {"key": "refund_rate", "label": "Refund Rate", "unit": "%", "baseline": 4.1}
+  ],
+  "recommended_actions": [
+    {"title": "Inventory reroute", "detail": "Shift stock between nodes when OOS risk anomaly persists > 2 cycles."},
+    {"title": "Checkout friction audit", "detail": "Investigate abandonment spike; deploy simplified checkout flow flag."},
+    {"title": "Fulfillment surge plan", "detail": "Activate carrier diversification when delay z-score exceeds threshold."}
+  ],
+  "alerts_catalog": [
+    {"type": "conversion_drop", "severity": 4, "description": "Conversion drops sharply vs baseline."},
+    {"type": "abandonment_spike", "severity": 4, "description": "Cart abandonment rising quickly."},
+    {"type": "oos_spike", "severity": 5, "description": "Out-of-stock risk critical spike."}
+  ]
+}

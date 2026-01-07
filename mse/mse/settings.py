@@ -17,9 +17,12 @@ INSTALLED_APPS = [
     "banking",
     "pipeline",
     "channels",
+    "dashboard",
     "rest_framework",
     "drf_spectacular",
     "store",
+    "csp", 
+    "sentinel",
     "mystics_site",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -39,6 +42,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "store.middleware.TenantMiddleware",
+    "csp.middleware.CSPMiddleware",
 
 ]
 
@@ -146,16 +150,6 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 
-# Celery (optional)
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
-CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
-
-CELERY_BEAT_SCHEDULE = {
-    "refresh_mystics_stats_every_15_min": {
-        "task": "analytics.tasks.refresh_mystics_data",
-        "schedule": 15 * 60,
-    },
-}
 
 # Pipeline defaults (dbt)
 PIPELINE_DBT_PROJECT_DIR = os.getenv("PIPELINE_DBT_PROJECT_DIR", str(BASE_DIR / "pipeline" / "dbt_project"))
@@ -168,3 +162,53 @@ PREFECT_HTTP_TIMEOUT = os.getenv("PREFECT_HTTP_TIMEOUT", "10")
 
 
 BANKING_AI_ENABLED = True
+
+# Celery (optional)
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://127.0.0.1:6379/0")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", CELERY_BROKER_URL)
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
+
+CELERY_BEAT_SCHEDULE = {
+    "sentinel-tick-sports": {"task": "sentinel.tick_industry", "schedule": 5.0, "args": ("sports",)},
+    "sentinel-tick-mortgage": {"task": "sentinel.tick_industry", "schedule": 5.0, "args": ("mortgage",)},
+    "sentinel-tick-retail": {"task": "sentinel.tick_industry", "schedule": 5.0, "args": ("retail",)},
+    "sentinel-tick-healthcare": {"task": "sentinel.tick_industry", "schedule": 5.0, "args": ("healthcare",)},
+    "refresh_mystics_stats_every_15_min": {
+        "task": "analytics.tasks.refresh_mystics_data",
+        "schedule": 15 * 60,
+    },
+}
+
+TABLEAU_EMBED_ALLOWED_HOSTS = os.getenv(
+    "TABLEAU_EMBED_ALLOWED_HOSTS",
+    "public.tableau.com,prod-useast-a.online.tableau.com"
+)
+
+TABLEAU_VIEWS = {
+    "executive_overview": os.getenv("TABLEAU_VIEW_EXECUTIVE_OVERVIEW", ""),
+    "readmissions": os.getenv("TABLEAU_VIEW_READMISSIONS", ""),
+    "cost_impact": os.getenv("TABLEAU_VIEW_COST_IMPACT", ""),
+    "hospital_profile": os.getenv("TABLEAU_VIEW_HOSPITAL_PROFILE", ""),
+}
+
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+X_FRAME_OPTIONS = "DENY"  # protect YOUR site from being framed elsewhere
+
+CONTENT_SECURITY_POLICY = {
+    "DIRECTIVES": {
+        "default-src": ("'self'",),
+        "script-src": ("'self'", "'unsafe-inline'", "https:"),
+        "style-src": ("'self'", "'unsafe-inline'", "https:"),
+        "img-src": ("'self'", "data:", "https:"),
+        "font-src": ("'self'", "data:", "https:"),
+        "connect-src": ("'self'", "https:"),
+        "frame-src": (
+            "'self'",
+            "https://public.tableau.com",
+            "https://prod-useast-a.online.tableau.com",
+        ),
+    }
+}

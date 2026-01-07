@@ -1,0 +1,19 @@
+{% extends 'analytics/base.html' %}
+
+
+{% block body %}
+        <div id="powerbiContainer" style="height:600px"></div>
+
+        <script src="https://cdn.jsdelivr.net/npm/powerbi-client/dist/powerbi.js"></script>
+        <script>
+        const models = window['powerbi-client'].models;
+
+        powerbi.embed(document.getElementById('powerbiContainer'), {
+            type: 'report',
+            id: '{{ report_id }}',
+            embedUrl: '{{ embed_url }}',
+            accessToken: '{{ embed_token }}',
+            tokenType: models.TokenType.Embed
+        });
+    </script>
+{% endblock %}

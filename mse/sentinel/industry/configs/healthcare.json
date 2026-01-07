@@ -1,0 +1,23 @@
+{
+  "key": "healthcare",
+  "label": "Healthcare",
+  "tagline": "Capacity, safety, and throughput intelligence for clinical operations.",
+  "narrative": "Monitor ED wait times, bed occupancy, staffing strain, and safety signals. Detect anomalies early and recommend capacity and staffing interventions.",
+  "kpis": [
+    {"key": "ed_wait_time", "label": "ED Wait Time", "unit": "min", "baseline": 46},
+    {"key": "bed_occupancy", "label": "Bed Occupancy", "unit": "%", "baseline": 84},
+    {"key": "staffing_strain", "label": "Staffing Strain", "unit": "idx", "baseline": 52},
+    {"key": "readmission_risk", "label": "Readmission Risk", "unit": "idx", "baseline": 33},
+    {"key": "incident_rate", "label": "Safety Incident Rate", "unit": "per1k", "baseline": 2.1}
+  ],
+  "recommended_actions": [
+    {"title": "Surge staffing", "detail": "Trigger surge staffing protocol when strain index > 2σ sustained."},
+    {"title": "Bed management action", "detail": "Recommend transfers/discharge acceleration when occupancy spikes."},
+    {"title": "Safety review", "detail": "If incident rate spikes, initiate rapid safety huddle and root-cause capture."}
+  ],
+  "alerts_catalog": [
+    {"type": "wait_time_spike", "severity": 4, "description": "ED wait time spike indicates throughput breakdown."},
+    {"type": "occupancy_critical", "severity": 5, "description": "Bed occupancy critical threshold exceeded."},
+    {"type": "incident_spike", "severity": 5, "description": "Safety incidents rising above baseline."}
+  ]
+}

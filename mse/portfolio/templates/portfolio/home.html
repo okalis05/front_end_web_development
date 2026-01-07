@@ -1,0 +1,316 @@
+{% extends "portfolio/base.html" %}
+{% block title %}Francoise Elis — Minimal / Cinematic / Futuristic{% endblock %}
+
+{% block content %}
+  <section id="top" class="hero reveal">
+    <p class="eyebrow">EXECUTIVE-GRADE SOFTWARE ENGINEERING</p>
+
+    <h1 class="hero__title">
+      I build <span class="glow">intelligent systems</span><br/>
+      that turn data into decisions.
+    </h1>
+
+    <p class="hero__subtitle">
+      Full-stack engineering (Django/APIs), analytics platforms, and production pipelines—designed with
+      clarity, reliability, and leadership-level storytelling.
+    </p>
+
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="#work">View flagship work <span class="arrow">→</span></a>
+      <a class="btn btn--ghost" href="#contact">Let’s collaborate <span class="arrow">→</span></a>
+    </div>
+
+    <div class="hero__proof">
+      <div class="stat">
+        <div class="stat__k">Systems</div>
+        <div class="stat__v">Django • APIs • Pipelines</div>
+      </div>
+      <div class="stat">
+        <div class="stat__k">Focus</div>
+        <div class="stat__v">Analytics • FinTech • Sports Tech</div>
+      </div>
+      <div class="stat">
+        <div class="stat__k">Strength</div>
+        <div class="stat__v">Executive dashboards + clean UX</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" class="section">
+    <div class="section__head reveal">
+      <h2>Flagship Work</h2>
+      <p>Six projects that demonstrate senior-level scope: product thinking, data integrity, and scalable delivery.</p>
+    </div>
+
+    <div class="cards">
+        <!--------------------------------------//Project 1//------------------------------------>
+      <article class="card reveal" data-tilt>
+        <div class="card__top">
+          <div class="pill">FinTech Intelligence</div>
+          <a href="{%url 'sentinel:portal' %}"><div class="card__meta">Sentinel</div></a>
+        </div>
+        <h3>Executive risk & performance intelligence</h3>
+        <p>
+          A leadership-facing platform for KPI monitoring, anomaly signals, and narrative-ready reporting.
+          Built for clarity, governance, and decision velocity.
+        </p>
+        <ul class="bullets">
+          <li>Signals + metrics model designed for auditability</li>
+          <li>Fast dashboards with cache-friendly endpoints</li>
+          <li>Clean UX: minimal UI, high readability</li>
+        </ul>
+        <div class="card__actions">
+          <a class="link" href="{% url 'sentinel:portal' %}">View Sentinel App →</a>
+          <span class="muted">Django • SQLite/Postgres-ready • JSON APIs</span>
+        </div>
+      </article>
+     <!--------------------------------//Project2//------------------------------------------>
+      <article class="card reveal" data-tilt>
+        <div class="card__top">
+          <div class="pill pill--violet">Data Engineering</div>
+          <div class="card__meta">Pipeline</div>
+        </div>
+        <h3>Production pipelines with repeatable delivery</h3>
+        <p>
+          A structured pipeline hub: ingestion, transforms, validations, and run history—built for operational
+          trust and clean observability.
+        </p>
+        <ul class="bullets">
+          <li>Pipeline registry + run lifecycle patterns</li>
+          <li>Validation-first design (quality gates)</li>
+          <li>Docs-friendly: runbooks + dashboards</li>
+        </ul>
+        <div class="card__actions">
+          <a class="link" href="{% url 'pipeline:command_center' %}">View Pipeline App →</a>
+          <span class="muted">Django • ETL patterns • DBT/Airflow-ready</span>
+        </div>
+      </article>
+<!-----------------------------------//Project 3//--------------------------------------->
+      <article class="card reveal" data-tilt>
+        <div class="card__top">
+          <div class="pill pill--cyan">Sports Analytics</div>
+          <div class="card__meta">Mystics Analytics</div>
+        </div>
+        <h3>Team analytics built for leaders & coaches</h3>
+        <p>
+          Executive-grade dashboards and player/team insights designed to stay functional under API limits,
+          with caching and resilient rendering.
+        </p>
+        <ul class="bullets">
+          <li>Team/player/game views + KPI summaries</li>
+          <li>API caching + server-render fallback UX</li>
+          <li>Readable charts that don’t over-stretch layouts</li>
+        </ul>
+        <div class="card__actions">
+          <a class="link" href="{% url 'mystics_site:home' %}">View Sports App →</a>
+          <span class="muted">Django • Chart.js/D3 • Caching</span>
+        </div>
+      </article>
+<!-------------------------------------------//Project 4//------------------------->
+ <article class="card reveal" data-tilt>
+  <div class="card__top">
+    <div class="pill pill--violet">SaaS e-Commerce</div>
+    <a href="{% url 'store:dashboard' %}">
+      <div class="card__meta">Elysian Store</div>
+    </a>
+  </div>
+
+  <h3>Subscription-first commerce platform</h3>
+
+  <p>
+    A multi-tenant, membership-driven commerce system designed for premium services,
+    recurring revenue, and operational clarity.
+  </p>
+
+  <ul class="bullets">
+    <li>Multi-organization tenancy with role-based access</li>
+    <li>Subscription tiers, pricing plans, and upgrade flows</li>
+    <li>Admin-first design for scalable operations</li>
+  </ul>
+
+  <div class="card__actions">
+    <a class="link" href="{% url 'store:login' %}">View Store App→</a>
+    <span class="muted">Django • SaaS Patterns • Stripe-ready</span>
+  </div>
+</article>
+
+<!-------------------------------------//project 5//--------------------------------->
+  <article class="card reveal" data-tilt>
+  <div class="card__top">
+    <div class="pill pill--cyan">Financial Systems</div>
+    <a href="{% url 'banking:dashboard' %}">
+      <div class="card__meta">Banking Core</div>
+    </a>
+  </div>
+
+  <h3>Core banking operations & financial integrity</h3>
+
+  <p>
+    A full-stack banking platform modeling real-world financial workflows,
+    transaction integrity, and risk-aware decision logic.
+  </p>
+
+  <ul class="bullets">
+    <li>Account, transaction, and balance integrity models</li>
+    <li>Risk scoring and rule-based financial evaluation</li>
+    <li>Audit-friendly flows with deterministic outcomes</li>
+  </ul>
+
+  <div class="card__actions">
+    <a class="link" href="{% url 'banking:dashboard' %}">View Banking App →</a>
+    <span class="muted">Django • Financial Models • Secure Logic</span>
+  </div>
+</article>
+
+<!--------------------------------------//Project 6--------------------------->
+     <article class="card reveal" data-tilt>
+  <div class="card__top">
+    <div class="pill">Decision Analytics</div>
+    <a href="#">
+      <div class="card__meta">Analytics</div>
+    </a>
+  </div>
+
+  <h3>Executive analytics & insight delivery</h3>
+
+  <p>
+    A centralized analytics platform transforming raw data into
+    fast, interpretable insights designed for leadership review
+    and operational decision-making.
+  </p>
+
+  <ul class="bullets">
+    <li>Unified metrics layer with consistent KPI definitions</li>
+    <li>Interactive dashboards optimized for executive scan</li>
+    <li>Cached, server-rendered views for resilient performance</li>
+  </ul>
+
+  <div class="card__actions">
+    <a class="link" href="{% url 'analytics:playground' %}">View Analytics App →</a>
+    <span class="muted">Django • Metrics Modeling • Chart.js/D3</span>
+  </div>
+</article>
+
+<!------------------------------------------------------------------------------------->
+    </div>
+  </section>
+
+  <section id="systems" class="section section--wide">
+    <div class="section__head reveal">
+      <h2>System Thinking</h2>
+      <p>A senior engineer lens: reliability, observability, and product outcomes.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="panel reveal">
+        <h3>Architecture principles</h3>
+        <div class="kvs">
+          <div class="kv">
+            <div class="kv__k">Reliability</div>
+            <div class="kv__v">Validate inputs, protect invariants, design safe defaults.</div>
+          </div>
+          <div class="kv">
+            <div class="kv__k">Performance</div>
+            <div class="kv__v">Cache read paths, paginate heavy views, keep render stable.</div>
+          </div>
+          <div class="kv">
+            <div class="kv__k">Observability</div>
+            <div class="kv__v">Run history, error boundaries, and clear operational signals.</div>
+          </div>
+          <div class="kv">
+            <div class="kv__k">Clarity</div>
+            <div class="kv__v">Design for executive scan: hierarchy, whitespace, narrative UX.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel reveal">
+        <h3>Delivery mindset</h3>
+        <p class="panel__lead">
+          I prioritize business outcomes: faster decisions, fewer incidents, and clean handoffs.
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step__n">01</div>
+            <div class="step__t">Define the decision</div>
+            <div class="step__d">What action should this system enable? Who owns it?</div>
+          </div>
+          <div class="step">
+            <div class="step__n">02</div>
+            <div class="step__t">Design the data contract</div>
+            <div class="step__d">Schemas, validation rules, and failure behavior.</div>
+          </div>
+          <div class="step">
+            <div class="step__n">03</div>
+            <div class="step__t">Ship with guardrails</div>
+            <div class="step__d">Tests, caching, sane defaults, and instrumentation.</div>
+          </div>
+        </div>
+
+        <a class="btn btn--ghost btn--full" href="#contact">
+          Discuss a system<span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="section__head reveal">
+      <h2>About</h2>
+      <p>Minimal words. Maximum signal.</p>
+    </div>
+
+    <div class="about reveal">
+      <p>
+        Full-stack engineer focused on analytics ,data-driven systems and Web Development. I build clean Django platforms,
+        resilient APIs, and executive-grade dashboards where every pixel supports decision-making.
+      </p>
+      <div class="chips">
+        <span class="chip">Django</span>
+        <span class="chip">REST / JSON</span>
+        <span class="chip">Caching</span>
+        <span class="chip">ETL Patterns</span>
+        <span class="chip">SQL</span>
+        <span class="chip">Chart.js / D3</span>
+        <span class="chip">Python</span>
+        <span class="chip">JavaScript</span>
+        <span class="chip"> R</span>
+        <span class="chip">Machine Learning</span>
+        <span class="chip">TypeScript</span>
+        <span class="chip">AI</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section section--contact">
+    <div class="contact reveal">
+      <h2>Let’s build something exceptional.</h2>
+      <p>Prefer a simple start: one problem, one decision, one clean system.</p>
+
+      <div class="contact__actions">
+        <a class="btn btn--ghost" href="https://github.com/okalis05/" target="_blank" rel="noreferrer">
+          GitHub <span class="arrow">↗</span>
+        </a>
+        <a class="btn btn--ghost" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
+          LinkedIn <span class="arrow">↗</span>
+        </a>
+        <a class="btn btn--primary" href="mailto:okalis05@yahoo.com">
+          Email me <span class="arrow">→</span>
+        </a>
+        <a class="btn btn--primary" href="tel:15135109397" title="Call">
+          Call me <span class="arrow">→</span>
+        </a>
+         <a class="btn btn--primary" href="https://www.google.com/maps/search/?api=1&query=Washington,DC+20029"
+          target="_blank"
+          rel="noopener"
+          title="Washington, DC 20029">
+          Locate me<span class="arrow">→</span>
+        </a>
+      </div>
+
+      <p class="fineprint">© <span id="year"></span> Francoise Elis</p>
+    </div>
+  </section>
+{% endblock %}
+

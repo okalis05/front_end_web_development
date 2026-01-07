@@ -53,7 +53,6 @@ def map_prefect_state_to_exec_status(state_name: str | None) -> str:
 # =========================
 # COMMAND CENTER
 # =========================
-@permission_required("pipeline.can_view_pipeline", raise_exception=False)
 def command_center(request):
     pipelines = Pipeline.objects.filter(is_active=True).order_by("name")
     recent_runs = PipelineRun.objects.select_related("pipeline").order_by("-created_at")[:15]

@@ -1,0 +1,10 @@
+{% extends "dashboard/_layout.html" %}
+{% block title %}Executive Overview{% endblock %}
+
+{% block content %}
+{% include "dashboard/_embed_panel.html" with
+  title="Executive Overview"
+  subtitle="Board-level KPIs · risk concentration · top priority facilities"
+  view_key=view_key
+%}
+{% endblock %}

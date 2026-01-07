@@ -1,0 +1,31 @@
+{% extends "sentinel/base.html" %}
+{% load static %}
+
+{% block title %}Sentinel — Wave Portal{% endblock %}
+
+{% block head %}
+<script defer src="{% static 'sentinel/js/portal.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+<!-- Landing page MUST be ONLY: sand + ocean wave animation + hover option -->
+<main class="portal">
+  <canvas id="waveCanvas" class="portal-canvas"></canvas>
+
+  <!-- ONLY visible UI element: the revealed option (changes per wave flip) -->
+  <div class="portal-center">
+    <div id="portalOption" class="portal-option" data-active="sports">
+      <div class="portal-kicker">ENTER</div>
+      <div id="portalLabel" class="portal-label">Sports</div>
+      <div class="portal-sub">Hover to breach the portal — the world unfolds inside.</div>
+    </div>
+  </div>
+
+  <div class="portal-signature">Sentinel // wave-portal</div>
+
+  <!-- Hidden data for industries (no extra UI shown) -->
+  <script id="industriesData" type="application/json">
+    {{ industries|safe }}
+  </script>
+</main>
+{% endblock %}

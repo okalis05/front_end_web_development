@@ -1,0 +1,61 @@
+{% extends "dashboard/_layout.html" %}
+{% load static %}
+{% block title %}Hospital Profile{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel__header">
+    <div class="panel__heading">
+      <h2 class="panel__title">Hospital Profile</h2>
+      <p class="panel__subtitle">
+        Facility drill-through view for: <span class="pill-inline">{{ facility_id }}</span>
+      </p>
+    </div>
+
+    <div class="panel__kpis">
+      <div class="kpi">
+        <div class="kpi__label">Facility ID</div>
+        <div class="kpi__value">{{ facility_id }}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Mode</div>
+        <div class="kpi__value">Operational</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Action</div>
+        <div class="kpi__value">Prioritize</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel__body">
+    {% if embed %}
+      <div class="viz">
+        <iframe
+          class="viz__frame"
+          src="{{ embed.url }}"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          allow="fullscreen"
+          title="Tableau Hospital Profile">
+        </iframe>
+      </div>
+      <div class="viz__note">
+        <span class="dot dot--ok"></span>
+        Tip: if your Tableau workbook supports parameters, map <code class="code">facility_id</code> to a filter/parameter.
+      </div>
+    {% else %}
+      <div class="empty">
+        <div class="empty__left">
+          <h3 class="empty__title">Hospital profile visualization not connected yet</h3>
+          <p class="empty__desc">Set <code class="code">TABLEAU_VIEW_HOSPITAL_PROFILE</code> to activate.</p>
+        </div>
+        <div class="empty__right">
+          <img src="{% static 'dashboard/img/hospital-profile.svg' %}" alt="" class="empty__art">
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

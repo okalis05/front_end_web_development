@@ -1,0 +1,31 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>{% block title %}Sentinel{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'sentinel/css/sentinel.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <!-- Terminal HUD -->
+  <div class="hud" aria-hidden="true">
+    <div class="hud-left">
+      <div class="hud-brand">SENTINEL</div>
+      <div class="hud-dot" id="liveDot"></div>
+      <div class="hud-live" id="liveLabel">OFFLINE</div>
+      <div class="hud-time" id="liveTime"></div>
+    </div>
+
+    <div class="hud-right">
+      <div class="siren" id="siren" title="Alert legend (severity-aware)">
+        <div class="siren-core"></div>
+        <div class="siren-ring"></div>
+      </div>
+    </div>
+  </div>
+
+  {% block body %}{% endblock %}
+</body>
+</html>

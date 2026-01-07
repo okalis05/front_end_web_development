@@ -1,0 +1,86 @@
+{% extends "sentinel/base.html" %}
+{% load static %}
+
+{% block title %}Sentinel — {{ cfg.label }}{% endblock %}
+
+{% block head %}
+<script defer src="{% static 'sentinel/js/industry.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+<main class="world" data-industry="{{ cfg.key }}">
+  <section class="world-header">
+    <div class="world-kicker">SENTINEL WORLD</div>
+    <h1 class="world-title">{{ cfg.label }}</h1>
+    <p class="world-narrative">{{ cfg.narrative }}</p>
+
+    <div class="world-actions">
+      {% for a in cfg.recommended_actions|slice:":3" %}
+      <div class="glass-card action-card">
+        <div class="action-title">{{ a.title }}</div>
+        <div class="action-detail">{{ a.detail }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="world-grid">
+    <div class="glass-card">
+      <div class="section-kicker">LIVE KPIs</div>
+      <div id="kpiGrid" class="kpi-grid"></div>
+    </div>
+
+    <div class="glass-card">
+      <div class="section-kicker">ALERT STREAM</div>
+      <div id="alertStream" class="alert-stream"></div>
+    </div>
+
+    <div class="glass-card world-scope">
+      <div class="section-kicker">FULL SCOPE UNLEASHED</div>
+
+      <div class="scope-block">
+        <div class="scope-title">MVP Capabilities</div>
+        <ul>
+          <li>Signal ingestion (Celery tick) + metric storage</li>
+          <li>Anomaly detection (rolling z-score) + severity scoring</li>
+          <li>Event feed for executive visibility</li>
+          <li>Industry config-driven KPIs, alerts, recommended actions</li>
+        </ul>
+      </div>
+
+      <div class="scope-block">
+        <div class="scope-title">Enterprise Expansion</div>
+        <ul>
+          <li>Streaming: Kafka + exactly-once consumers</li>
+          <li>Realtime: SSE/WebSockets via Django Channels</li>
+          <li>Models: Isolation Forest + seasonal decomposition</li>
+          <li>LLM Insights: RAG over incidents + policies + playbooks</li>
+          <li>RBAC: exec-read, operator-write, approvals, audit logs</li>
+          <li>Interventions: feature flags + causal impact measurement</li>
+        </ul>
+      </div>
+
+      <div class="scope-block">
+        <div class="scope-title">Industry-specific alerts</div>
+        <ul>
+          {% for x in cfg.alerts_catalog|slice:":3" %}
+          <li><strong>{{ x.type }}</strong> — {{ x.description }} (sev {{ x.severity }})</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="scope-block">
+        <div class="scope-title">Senior SWE Job Mapping</div>
+        <ul>
+          <li><strong>System design:</strong> clear boundaries (UI → APIs → worker → DB).</li>
+          <li><strong>Reliability:</strong> deterministic seeding + idempotent inserts.</li>
+          <li><strong>Product thinking:</strong> config-driven domains, executive narrative.</li>
+          <li><strong>Scaling path:</strong> Postgres + Channels + Kafka documented.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <a href="{% url 'portfolio:home' %}" id="portfolio">Back to portfolio&rarr;</a>
+</main>
+{% endblock %}

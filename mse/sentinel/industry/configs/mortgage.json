@@ -1,0 +1,23 @@
+{
+  "key": "mortgage",
+  "label": "Mortgage",
+  "tagline": "Pipeline, risk, and underwriting intelligence that prevents silent losses.",
+  "narrative": "Watch the loan funnel, rate-lock fallout, underwriting cycle times, and early delinquency risk signals. Detect anomalies that indicate leakage or adverse selection.",
+  "kpis": [
+    {"key": "applications_per_day", "label": "Applications/Day", "unit": "apps", "baseline": 520},
+    {"key": "approval_rate", "label": "Approval Rate", "unit": "%", "baseline": 61},
+    {"key": "underwriting_cycle_time", "label": "UW Cycle Time", "unit": "hrs", "baseline": 28},
+    {"key": "rate_lock_fallout", "label": "Rate-Lock Fallout", "unit": "%", "baseline": 12},
+    {"key": "early_risk_score", "label": "Early Risk Score", "unit": "idx", "baseline": 37}
+  ],
+  "recommended_actions": [
+    {"title": "Rebalance underwriting capacity", "detail": "Shift queue to reduce UW cycle time spikes; auto-assign by complexity bands."},
+    {"title": "Fallout intervention", "detail": "Trigger outreach + pricing review when rate-lock fallout jumps > 2σ."},
+    {"title": "Risk tightening", "detail": "If early risk score rises, recommend policy review for top contributing segments."}
+  ],
+  "alerts_catalog": [
+    {"type": "cycle_time_spike", "severity": 4, "description": "Underwriting cycle time exceeds baseline sharply."},
+    {"type": "approval_drop", "severity": 3, "description": "Approval rate falling vs baseline."},
+    {"type": "fallout_spike", "severity": 5, "description": "Rate-lock fallout spike indicates revenue leakage."}
+  ]
+}

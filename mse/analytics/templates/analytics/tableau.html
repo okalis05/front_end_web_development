@@ -1,0 +1,24 @@
+{% extends 'analytics/base.html' %}
+
+{% block body %}
+<div id="tableauViz" style="width:100%; height:100vh;"></div>
+
+<script src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("tableauViz");
+
+    const viz = new tableau.Viz(
+        container,
+        "https://public.tableau.com/views/YOUR_DASHBOARD",
+        {
+            width: "100%",
+            height: "100vh",
+            hideTabs: true,
+            hideToolbar: true
+        }
+    );
+});
+</script>
+{% endblock %}
+

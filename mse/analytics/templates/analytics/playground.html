@@ -1,0 +1,98 @@
+{% extends 'analytics/base.html' %}
+{% block body %}
+  <header class="topbar">
+    <!-- Tiny executive navbar -->
+    <nav class="mini-nav" aria-label="Tool navigation">
+      <a class="brand" href="#" aria-label="Playground Home">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span class="brand-text">Playground</span>
+      </a>
+
+      <div class="tool-links" aria-label="Tool links">
+        <!-- Using external icons for now (you can swap to local static files later) -->
+        <a class="tool tool-js" href="/analytics/javascript/" title="JavaScript (future page)" aria-label="JavaScript">
+          <img alt="JavaScript" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg">
+        </a>
+
+        <a class="tool tool-tableau" href="/analytics/tableau/" title="Tableau (future page)" aria-label="Tableau">
+          <img alt="Tableau" src="https://img.icons8.com/color/1200/tableau-software.jpg">
+        </a>
+
+        <a class="tool tool-powerbi" href="/analytics/powerbi/" title="Power BI (future page)" aria-label="Power BI">
+          <img alt="Power BI" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_47kqI2c3woqREr2q4tEcBalGbkB3r_8RdA&s">
+        </a>
+        <a class="tool tool-powerbi" href="/analytics/jupyter/" title="Jupyter(future page)" aria-label="Jupyter">
+          <img alt="Power BI" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Jupyter_logo.svg/1767px-Jupyter_logo.svg.png">
+        </a>
+      </div>
+    </nav>
+
+    <div class="controls">
+      <button id="btnNight" type="button" class="glass-btn" aria-pressed="false">🌙 Night</button>
+      <button id="btnAudio" type="button" class="glass-btn">🎤 Enable Sound</button>
+    </div>
+  </header>
+
+  
+
+  <!-- Atmosphere -->
+  <div class="sky" aria-hidden="true"></div>
+  <div class="sun" aria-hidden="true"></div>
+  <div class="sun-glare" aria-hidden="true"></div>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="moon" aria-hidden="true"></div>
+  <div class="moon-reflection" aria-hidden="true"></div>
+
+  <!-- Parallax sand layers -->
+  <div class="sand-layer sand-back" aria-hidden="true"></div>
+  <div class="sand-layer sand-mid" aria-hidden="true"></div>
+  <div class="sand-layer sand-front" aria-hidden="true"></div>
+
+  <!-- Water -->
+  <div class="wave" aria-hidden="true">
+    <div class="wave-specular" aria-hidden="true"></div>
+
+    <!-- SVG foam edge -->
+    <svg class="foam" viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="foamGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="rgba(255,255,255,0.90)"/>
+          <stop offset="0.5" stop-color="rgba(255,255,255,0.32)"/>
+          <stop offset="1" stop-color="rgba(255,255,255,0.86)"/>
+        </linearGradient>
+        <filter id="foamBlur">
+          <feGaussianBlur stdDeviation="1.7"/>
+        </filter>
+      </defs>
+
+      <path class="foam-edge" fill="url(#foamGrad)" filter="url(#foamBlur)"
+        d="M0,140 C120,105 240,165 360,130 C480,95 600,170 720,132 C840,98 960,170 1080,132 C1140,116 1170,124 1200,120 L1200,220 L0,220 Z">
+        <animate attributeName="d" dur="2.2s" repeatCount="indefinite"
+          values="
+          M0,140 C120,105 240,165 360,130 C480,95 600,170 720,132 C840,98 960,170 1080,132 C1140,116 1170,124 1200,120 L1200,220 L0,220 Z;
+          M0,128 C120,168 240,110 360,146 C480,184 600,104 720,152 C840,182 960,112 1080,154 C1140,172 1170,138 1200,162 L1200,220 L0,220 Z;
+          M0,140 C120,105 240,165 360,130 C480,95 600,170 720,132 C840,98 960,170 1080,132 C1140,116 1170,124 1200,120 L1200,220 L0,220 Z
+          " />
+      </path>
+
+      <g class="foam-bubbles">
+        <circle cx="120" cy="148" r="6"/>
+        <circle cx="240" cy="132" r="4"/>
+        <circle cx="360" cy="154" r="5"/>
+        <circle cx="520" cy="140" r="7"/>
+        <circle cx="720" cy="152" r="5.5"/>
+        <circle cx="920" cy="136" r="4"/>
+        <circle cx="1060" cy="156" r="6"/>
+      </g>
+    </svg>
+  </div>
+
+  <main class="content">
+    <nav id="canfun" class="options" aria-label="Playground options">
+      <a class="opt opt-1" href="/first/">JavaScript</a>
+      <a class="opt opt-2" href="/second/">Tableau</a>
+      <a class="opt opt-3" href="/third/">PowerBI</a>
+    <a class="opt opt-3" href="/fourth/">Jupyter</a>
+    </nav>
+  </main>
+{% endblock %}

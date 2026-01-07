@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Landing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* =========================
+   BASE
+========================= */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #8b2c4a; /* dark pink */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+}
+
+/* =========================
+   WIND / DUST
+========================= */
+.dust {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(139, 94, 60, 0.45);
+    border-radius: 50%;
+    animation: blow linear infinite;
+}
+
+@keyframes blow {
+    from {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    10% { opacity: 1; }
+    to {
+        transform: translate(120vw, -120vh) scale(0.6);
+        opacity: 0;
+    }
+}
+
+/* =========================
+   BUTTONS (MINIMALIST)
+========================= */
+.toggle,
+.unlock {
+    position: absolute;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.toggle:hover,
+.unlock:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Trash-looking button */
+.toggle {
+    width: 22px;
+    height: 26px;
+    border-radius: 3px;
+}
+
+.toggle::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 4px;
+    width: 14px;
+    height: 4px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Tiny mysterious object */
+.unlock {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+/* =========================
+   UNLOCK OVERLAY
+========================= */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s;
+}
+.overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Unlock transition -->
+<div class="overlay" id="overlay">UNLOCKING DATA FLOW…</div>
+
+<!-- Buttons -->
+<button class="toggle" id="trash"></button>
+<button class="unlock" id="unlock"></button>
+
+<script>
+/* =========================
+   RANDOM POSITIONING
+========================= */
+function randomPos(el) {
+    el.style.left = Math.random() * 90 + "vw";
+    el.style.top  = Math.random() * 90 + "vh";
+}
+randomPos(document.getElementById("trash"));
+randomPos(document.getElementById("unlock"));
+
+/* =========================
+   DUST GENERATOR
+========================= */
+function createDust() {
+    const d = document.createElement("div");
+    d.className = "dust";
+    d.style.left = Math.random() * 10 + "vw";
+    d.style.bottom = Math.random() * 10 + "vh";
+    d.style.animationDuration = 6 + Math.random() * 6 + "s";
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 12000);
+}
+
+setInterval(createDust, 120);
+
+/* =========================
+   INTERACTIONS
+========================= */
+document.getElementById("trash").onclick = () => {
+    document.body.style.filter = "blur(1px) contrast(0.9)";
+    setTimeout(() => document.body.style.filter = "", 400);
+};
+
+document.getElementById("unlock").onclick = () => {
+    const o = document.getElementById("overlay");
+    o.classList.add("active");
+
+    setTimeout(() => {
+        window.location.href = "/tableau/";
+    }, 1800);
+};
+</script>
+
+</body>
+</html>

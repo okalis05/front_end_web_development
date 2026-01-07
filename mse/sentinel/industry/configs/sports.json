@@ -1,0 +1,23 @@
+{
+  "key": "sports",
+  "label": "Sports",
+  "tagline": "Front-office decision intelligence for performance, risk, and readiness.",
+  "narrative": "Monitor performance signals, fatigue risk, lineup efficiency, and travel load. Detect anomalies early and recommend actions aligned with competitive advantage.",
+  "kpis": [
+    {"key": "team_ppg", "label": "Team PPG", "unit": "pts", "baseline": 82},
+    {"key": "opp_ppg", "label": "Opponent PPG", "unit": "pts", "baseline": 79},
+    {"key": "turnover_rate", "label": "Turnover Rate", "unit": "%", "baseline": 13},
+    {"key": "injury_risk_index", "label": "Injury Risk Index", "unit": "idx", "baseline": 42},
+    {"key": "lineup_net_rating", "label": "Lineup Net Rating", "unit": "rtg", "baseline": 4.5}
+  ],
+  "recommended_actions": [
+    {"title": "Adjust rotation", "detail": "Reduce high-load minutes for flagged players; prioritize bench efficiency lineups."},
+    {"title": "Travel recovery protocol", "detail": "Trigger sleep + recovery plan when travel-load anomaly persists > 24h."},
+    {"title": "Defensive scheme tweak", "detail": "If opp_ppg rises sharply, switch to higher pressure coverage for next 2 games."}
+  ],
+  "alerts_catalog": [
+    {"type": "performance_drop", "severity": 4, "description": "Sustained drop in team scoring vs baseline."},
+    {"type": "fatigue_spike", "severity": 5, "description": "Injury risk index spikes beyond threshold."},
+    {"type": "turnover_spike", "severity": 3, "description": "Turnover rate rising rapidly."}
+  ]
+}

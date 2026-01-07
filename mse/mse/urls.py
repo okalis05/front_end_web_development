@@ -6,9 +6,8 @@ from django.shortcuts import redirect
 
 
 urlpatterns = [
-    path("", lambda request: redirect("mystics_site:home")),
     path("admin/", admin.site.urls),
-    path("portfolio/", include("portfolio.urls")),
+    path("", include("portfolio.urls")),
     path("analytics/", include("analytics.urls")),
     path("pipeline/", include("pipeline.urls")),
     path("mystics_site/", include("mystics_site.urls")),
@@ -19,4 +18,7 @@ urlpatterns = [
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema")),
+    path("sentinel/", include("sentinel.urls")),
+     path("dashboard/", include("dashboard.urls")),
+
 ]

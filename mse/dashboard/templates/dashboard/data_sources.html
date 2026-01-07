@@ -1,0 +1,52 @@
+{% extends "dashboard/_layout.html" %}
+{% block title %}Data Sources{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel__header">
+    <div class="panel__heading">
+      <h2 class="panel__title">Data Sources & Governance</h2>
+      <p class="panel__subtitle">Executive transparency: source-of-truth, definitions, and constraints.</p>
+    </div>
+  </div>
+
+  <div class="panel__body">
+    <div class="prose">
+      <h3>Primary Source</h3>
+      <p>
+        CMS Provider Data – Hospital Readmissions dataset:
+        <a href="{{ cms_dataset_url }}" target="_blank" rel="noopener noreferrer">{{ cms_dataset_url }}</a>
+      </p>
+
+      <h3>Key Fields (as-is)</h3>
+      <ul>
+        <li>End Date</li>
+        <li>Excess Readmission Ratio</li>
+        <li>Expected Readmission Rate</li>
+        <li>Facility Name</li>
+        <li>Facility ID</li>
+        <li>Measure Name</li>
+        <li>Number of Discharges</li>
+        <li>Number of Readmissions</li>
+        <li>Predicted Readmission Rate</li>
+        <li>Start Date</li>
+        <li>State</li>
+      </ul>
+
+      <h3>Interpretation Notes</h3>
+      <ul>
+        <li><b>Excess Readmission Ratio</b> is a core performance signal. Values above 1.0 imply higher-than-expected readmissions.</li>
+        <li>Volume context matters: <b>Number of Discharges</b> and <b>Number of Readmissions</b> help prioritize impact.</li>
+        <li>This portfolio suite uses utilization and outcome signals to provide an executive “exposure” view (not a claims ledger).</li>
+      </ul>
+
+      <h3>Security Posture</h3>
+      <ul>
+        <li>Tableau embeds are <b>allowlisted by host</b> and sandboxed via iframe.</li>
+        <li>Referrer policy is locked down (<code class="code">strict-origin-when-cross-origin</code>).</li>
+        <li>Site is protected from framing (<code class="code">X_FRAME_OPTIONS=DENY</code>).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}
