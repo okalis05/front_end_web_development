@@ -15,9 +15,6 @@ from mystics_site.utils import get_mystics
 SEASON_DEFAULT = 2025
 
 
-# -------------------------
-# Helpers
-# -------------------------
 def _season(request: HttpRequest) -> int:
     s = request.GET.get("season")
     return int(s) if s and s.isdigit() else SEASON_DEFAULT
@@ -31,7 +28,7 @@ def _team_points_from_game(game: Game, team: Team) -> int:
 
 
 def _team_points_allowed_from_game(game: Game, team: Team) -> int:
-    """Return points allowed by `team` in this game using Game scores."""
+    "Return points allowed by `team` in this game using Game scores."""
     if game.home_team_id == team.id:
         return int(game.away_score or 0)
     return int(game.home_score or 0)

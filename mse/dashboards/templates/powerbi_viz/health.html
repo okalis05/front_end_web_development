@@ -1,0 +1,32 @@
+{% extends "powerbi_viz/base.html" %}
+{% block content %}
+
+<section class="hero hero--compact" id="hero">
+  <div class="hero__glass">
+    <p class="eyebrow">HEALTH · AVAILABILITY · RISK</p>
+    <h1 class="hero__title">
+      Player <span class="glow">Health & Risk</span>
+    </h1>
+    <p class="hero__subtitle">
+      Executive visibility into durability, missed games, and the downstream
+      impact of availability on performance and outcomes.
+    </p>
+
+    <div class="hero__actions">
+      <a class="cta cta--primary" data-jump="#health_risk" href="#health_risk">
+        View Health Dashboard <span class="arrow">→</span>
+      </a>
+      <a class="cta cta--ghost" data-jump="#executive_overview" href="#executive_overview">
+        Back to Executive Overview
+      </a>
+    </div>
+  </div>
+</section>
+
+{% for r in reports %}
+  {% if r.key == "health_risk" %}
+    {% include "powerbi_viz/partials/_section_embed.html" with r=r %}
+  {% endif %}
+{% endfor %}
+
+{% endblock %}

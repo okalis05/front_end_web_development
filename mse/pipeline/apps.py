@@ -7,5 +7,4 @@ class PipelineConfig(AppConfig):
     verbose_name = "Data Pipeline (Prefect + dbt)"
 
     def ready(self):
-        # Ensure signals register
-        import pipeline.signals  # noqa
+        import pipeline.signals  

@@ -1,0 +1,32 @@
+{% extends "powerbi_viz/base.html" %}
+{% block content %}
+
+<section class="hero hero--compact" id="hero">
+  <div class="hero__glass">
+    <p class="eyebrow">FANS · ATTENDANCE · BUSINESS</p>
+    <h1 class="hero__title">
+      Revenue & <span class="glow">Fan Impact</span>
+    </h1>
+    <p class="hero__subtitle">
+      Translate on-court performance into business outcomes — attendance lift,
+      star-player effects, and home-game ROI.
+    </p>
+
+    <div class="hero__actions">
+      <a class="cta cta--primary" data-jump="#revenue_fans" href="#revenue_fans">
+        View Revenue Dashboard <span class="arrow">→</span>
+      </a>
+      <a class="cta cta--ghost" data-jump="#executive_overview" href="#executive_overview">
+        Back to Executive Overview
+      </a>
+    </div>
+  </div>
+</section>
+
+{% for r in reports %}
+  {% if r.key == "revenue_fans" %}
+    {% include "powerbi_viz/partials/_section_embed.html" with r=r %}
+  {% endif %}
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "javascript_viz/base.html" %}
+
+{% block content %}
+<section class="hero reveal">
+  <div class="hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow">CINEMATIC · BRIGHT · EXECUTIVE STORYTELLING</p>
+      <h1 class="h1">Dashboards that answer one mission—using many visuals that each contribute evidence.</h1>
+      <p class="lead">
+        Every dashboard follows a strict structure: <strong>Title → Mission Question → Multiple Visual Scenes (each with its own Aside Insights)</strong>,
+        then a <strong>Final Answer</strong> that closes the story.
+      </p>
+
+      <div class="hero__chips">
+        <span class="chip">No dark UI</span>
+        <span class="chip">Alternating asides</span>
+        <span class="chip">Cinematic motion</span>
+        <span class="chip">Recruiter-ready</span>
+      </div>
+    </div>
+
+    <div class="hero__card glass reveal">
+      <div class="hero__cardTop">
+        <div class="badge">Template Standard</div>
+        <div class="mini">Each scene = visualization + insights + mission-link</div>
+      </div>
+      <div class="hero__cardBody">
+        <div class="miniLine">
+          <span class="miniDot"></span><span>Scene blocks auto-alternate left/right</span>
+        </div>
+        <div class="miniLine">
+          <span class="miniDot"></span><span>Bottom section answers the mission explicitly</span>
+        </div>
+        <div class="miniLine">
+          <span class="miniDot"></span><span>Plotly renders charts; layout stays bright</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="grid reveal">
+  <h2 class="h2">Case Studies</h2>
+  <div class="cards">
+    {% for c in cases %}
+      <a class="card glass" href="{% url 'dashboards:javascript_viz:dashboard' slug=c.slug %}">
+        <div class="card__top">
+          <div class="card__title">{{ c.title }}</div>
+          <div class="card__pill">Dashboard</div>
+        </div>
+        <div class="card__tagline">{{ c.hero_tagline }}</div>
+        <div class="card__mission">
+          <div class="card__label">Mission</div>
+          <div class="card__missionText">{{ c.mission }}</div>
+        </div>
+        <div class="card__meta">
+          <span class="metaDot" aria-hidden="true"></span>
+          <span class="metaText">{{ c.dataset_note }}</span>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

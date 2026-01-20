@@ -1,0 +1,65 @@
+{% extends "powerbi_viz/base.html" %}
+{% block content %}
+
+<section class="hero" id="hero">
+  <div class="hero__glass">
+    <p class="eyebrow">POWER BI · EXECUTIVE SPORTS INTELLIGENCE</p>
+    <h1 class="hero__title">
+      Winning the <span class="glow">Margins</span>
+    </h1>
+    <p class="hero__subtitle">
+      A boardroom-grade analytics surface connecting <strong>performance</strong>, <strong>availability</strong>,
+      and <strong>fan impact</strong>—embedded natively inside Django.
+    </p>
+
+    <div class="hero__kpis">
+      <div class="kpi">
+        <div class="kpi__label">Mode</div>
+        <div class="kpi__value">Vibrant Executive</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Navigation</div>
+        <div class="kpi__value">Plates + Teleport</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi__label">Experience</div>
+        <div class="kpi__value">Long-scroll Story</div>
+      </div>
+    </div>
+
+    <div class="hero__actions">
+      <a class="cta cta--primary" data-jump="#executive_overview" href="#executive_overview">
+        Enter Executive View <span class="arrow">→</span>
+      </a>
+      <a class="cta cta--ghost" data-jump="#player_impact" href="#player_impact">
+        Jump to Player Impact
+      </a>
+    </div>
+  </div>
+
+  <div class="hero__flare" aria-hidden="true"></div>
+</section>
+
+{% if sections %}
+  {% for r in sections %}
+    {% include "powerbi_viz/partials/_section_embed.html" with r=r %}
+  {% endfor %}
+{% else %}
+  <section class="section" id="executive_overview">
+    <div class="vizEmpty">
+      <div class="vizEmpty__title">Reports registry not configured yet</div>
+      <div class="vizEmpty__sub">Add POWERBI_VIZ_REPORTS in your Django settings (snippet below).</div>
+    </div>
+  </section>
+{% endif %}
+
+<footer class="footer">
+  <div class="footer__glass">
+    <div class="footer__title">powerbi_viz</div>
+    <div class="footer__sub">
+      Built for executive storytelling: vibrant color, glassmorphism, motion, and instant navigation.
+    </div>
+  </div>
+</footer>
+
+{% endblock %}

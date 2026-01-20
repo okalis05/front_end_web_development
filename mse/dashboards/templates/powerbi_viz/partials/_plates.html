@@ -1,0 +1,32 @@
+<aside class="plates" aria-label="Dashboards">
+  <div class="plates__hdr">
+    <div class="plates__title">Dashboards</div>
+    <div class="plates__sub">Stacked plates · jump anywhere</div>
+  </div>
+
+  <div class="plateStack" id="plateStack">
+    {% for r in reports %}
+      <button
+        class="plate"
+        type="button"
+        data-target="#{{ r.section_id }}"
+        data-key="{{ r.key }}"
+        aria-label="Open {{ r.title }}"
+      >
+        <span class="plate__cap"></span>
+        <span class="plate__title">{{ r.title }}</span>
+        <span class="plate__meta">{{ r.subtitle }}</span>
+        <span class="plate__glint" aria-hidden="true"></span>
+      </button>
+    {% endfor %}
+  </div>
+
+  <div class="plates__footer">
+    <div class="micro">
+      <span class="dot dot--blue"></span>
+      <span class="dot dot--red"></span>
+      <span class="dot dot--ylw"></span>
+      <span class="micro__text">Executive glass · vibrant motion</span>
+    </div>
+  </div>
+</aside>

@@ -1,0 +1,151 @@
+{% extends "tableau_viz/base.html" %}
+
+{% block title %}Dashboards{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero__left">
+    <div class="eyebrow">
+      <span class="eyebrow__dot"></span>
+      Executive Portfolio Case Study
+    </div>
+
+    <h1 class="hero__title">
+      Reducing Hospital <span class="accent">Readmissions</span><br>
+      While Controlling <span class="accent">Healthcare Costs</span>
+    </h1>
+
+    <p class="hero__subtitle">
+      A boardroom-grade analytics suite blending outcomes with utilization signals
+      to prioritize interventions, reduce penalties, and improve patient safety.
+    </p>
+
+    <div class="hero__cta">
+      <a class="btn btn--primary btn--lamp" href="{% url 'dashboards:tableau_viz:executive_overview' %}">
+        Open Executive Overview
+      </a>
+      <a class="btn btn--ghost" href="{% url 'dashboards:tableau_viz:data_sources' %}">
+        Data & Governance
+      </a>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L20 6V12C20 17 16.5 21 12 22C7.5 21 4 17 4 12V6L12 2Z"
+                  stroke="#35d3ff" stroke-width="2"/>
+            <path d="M9 12L11 14L15 10"
+                  stroke="#33e1a0" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="card__title">Quality & Safety</div>
+        <div class="card__desc">
+          Spot outlier facilities and condition-level risk patterns.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2V22" stroke="#35d3ff" stroke-width="2"/>
+            <path d="M17 7C17 5 15 4 12 4C9 4 7 5 7 7C7 11 17 9 17 13C17 15 15 16 12 16C9 16 7 15 7 13"
+                  stroke="#33e1a0" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="card__title">Financial Exposure</div>
+        <div class="card__desc">
+          Connect readmission signals to volume and penalty pressure.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="10" r="3" stroke="#35d3ff" stroke-width="2"/>
+            <path d="M12 22C16 17 20 14 20 10C20 5.6 16.4 2 12 2C7.6 2 4 5.6 4 10C4 14 8 17 12 22Z"
+                  stroke="#33e1a0" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="card__title">Geographic Insight</div>
+        <div class="card__desc">
+          State-level patterns to allocate resources strategically.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__right">
+    <div class="frame">
+      <div class="frame__header">
+        <div class="frame__badge">BOARD VIEW</div>
+        <div class="frame__chips">
+          <span class="chip">Risk</span>
+          <span class="chip">Volume</span>
+          <span class="chip">Intervention</span>
+        </div>
+      </div>
+
+      <div class="frame__body">
+        <svg class="frame__art" viewBox="0 0 600 360">
+          <rect x="20" y="40" width="160" height="220" rx="16" fill="rgba(53,211,255,.18)"/>
+          <rect x="220" y="80" width="160" height="180" rx="16" fill="rgba(51,225,160,.18)"/>
+          <rect x="420" y="120" width="140" height="140" rx="16" fill="rgba(24,199,183,.18)"/>
+        </svg>
+
+        <div class="frame__overlay">
+          <div class="mini-kpis">
+            <div class="mini">
+              <div class="mini__label">Priority Facilities</div>
+              <div class="mini__value">Top decile</div>
+            </div>
+            <div class="mini">
+              <div class="mini__label">Signal</div>
+              <div class="mini__value">Excess Ratio</div>
+            </div>
+            <div class="mini">
+              <div class="mini__label">Focus</div>
+              <div class="mini__value">Measure Name</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="frame__footer">
+        <span class="dot dot--ok"></span>
+        Secure embed framework ready · Tableau dashboards live
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section__title">Dashboards</div>
+
+  <div class="grid">
+    <a class="tile" href="{% url 'dashboards:tableau_viz:executive_overview' %}">
+      <div class="tile__title">Executive Overview</div>
+      <div class="tile__desc">Board KPIs, at-risk facilities, geographic concentration.</div>
+      <div class="tile__meta">CEO · CFO · CMO</div>
+    </a>
+
+    <a class="tile" href="{% url 'dashboards:tableau_viz:readmissions' %}">
+      <div class="tile__title">Readmissions & Outcomes</div>
+      <div class="tile__desc">Condition drivers, expected vs predicted, volume context.</div>
+      <div class="tile__meta">Quality · Clinical Ops</div>
+    </a>
+
+    <a class="tile" href="{% url 'dashboards:tableau_viz:cost_impact' %}">
+      <div class="tile__title">Cost & Utilization Impact</div>
+      <div class="tile__desc">Penalty pressure proxy, high-volume risk quadrant.</div>
+      <div class="tile__meta">Finance · Strategy</div>
+    </a>
+
+    <a class="tile" href="{% url 'dashboards:tableau_viz:hospital_profile' %}">
+      <div class="tile__title">Hospital Profile</div>
+      <div class="tile__desc">Facility scorecard, comparisons, drill-through narrative.</div>
+      <div class="tile__meta">Operators</div>
+    </a>
+  </div>
+</section>
+{% endblock %}

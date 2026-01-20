@@ -1,0 +1,35 @@
+{% extends "tableau_viz/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="panel panel--fill">
+  <div class="panel__head">
+    <div>
+      <h2 class="panel__title">{{ title }}</h2>
+      <p class="panel__sub">{{ subtitle }}</p>
+      {% if facility_id %}
+        <div class="pill-inline">Facility: {{ facility_id }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="panel__body panel__body--fill">
+    {% if embed %}
+      <div class="viz viz--fill">
+        <tableau-viz
+          id="tableau-{{ view_key }}"
+          src="{{ embed.url }}"
+          toolbar="hidden"
+          hide-tabs
+        ></tableau-viz>
+      </div>
+    {% else %}
+      <div class="empty">
+        <h3>Tableau view not connected</h3>
+        <p>Set <span class="mono">TABLEAU_VIEW_{{ view_key|upper }}</span> in <span class="mono">.env</span>, then restart.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

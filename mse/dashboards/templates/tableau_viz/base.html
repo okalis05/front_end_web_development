@@ -1,0 +1,56 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <title>{% block title %}{{ page_title }}{% endblock %} · MSE</title>
+
+  <link rel="stylesheet" href="{% static 'dashboards/css/tableau.css' %}">
+  <script defer src="{% static 'dashboards/js/tableau.js' %}"></script>
+
+  <script type="module" src="https://public.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="{% url 'dashboards:tableau_viz:landing' %}">
+        <span class="brand__mark" id="flash">◼︎</span>
+        <span class="brand__name">Executive Dashboards</span>
+      </a>
+
+      <nav class="nav">
+        {% for item in nav %}
+          <a class="nav__link {% if active == item.key %}is-active{% endif %}" href="{% url item.href %}">
+            {{ item.label }}
+          </a>
+        {% endfor %}
+      </nav>
+
+      <div class="actions topbar__actions">
+        <button id="themeToggle"
+                class="pill pill--ghost"
+                type="button"
+                aria-label="Toggle dark mode">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <a class="pill pill--lamp" href="{{ cms_dataset_url }}" target="_blank" rel="noopener noreferrer">
+          CMS Dataset
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__meta">Tableau hosts allowlisted: {{ tableau_hosts }}</div>
+    </div>
+  </footer>
+</body>
+</html>

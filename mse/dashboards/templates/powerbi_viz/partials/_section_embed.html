@@ -1,0 +1,57 @@
+<section class="section" id="{{ r.section_id }}" data-section="{{ r.key }}">
+  <div class="section__head">
+    <div class="section__badge">{{ forloop.counter|stringformat:"02d" }}</div>
+    <div class="section__titles">
+      <h2 class="section__title">{{ r.title }}</h2>
+      <p class="section__sub">{{ r.subtitle }}</p>
+    </div>
+    <div class="section__controls">
+      <button class="mini" type="button" data-jump="#hero">Top</button>
+      <button class="mini mini--hot" type="button" data-jump="#{{ r.section_id }}">Focus</button>
+    </div>
+  </div>
+
+  
+  <div class="kpiBar">
+  <div class="kpiTile">
+    <span class="kpiLabel">Win %</span>
+    <span class="kpiValue">—</span>
+  </div>
+  <div class="kpiTile">
+    <span class="kpiLabel">Availability</span>
+    <span class="kpiValue">—</span>
+  </div>
+  <div class="kpiTile">
+    <span class="kpiLabel">Attendance</span>
+    <span class="kpiValue">—</span>
+  </div>
+</div>
+
+
+  <div class="vizCard">
+    {% if r.embed_url %}
+      <div class="vizCard">
+  <div class="vizSkeleton">
+    <div class="shimmer"></div>
+  </div>
+
+  <iframe
+    class="vizFrame"
+    title="{{ r.title }}"
+    src="{{ r.embed_url }}"
+    loading="lazy"
+    allowfullscreen="true"
+    onload="this.previousElementSibling.remove()"
+  ></iframe>
+</div>
+
+    {% else %}
+      <div class="vizEmpty">
+        <div class="vizEmpty__title">Embed URL not configured</div>
+        <div class="vizEmpty__sub">
+          Set <code>POWERBI_VIZ_REPORTS["{{ r.key }}"]["embed_url"]</code> in your Django settings using a Power BI “Publish to web” iframe URL.
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>

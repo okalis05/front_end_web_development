@@ -1,4 +1,4 @@
-from prefect import flow, task
+from prefect import  task , flow
 from pipeline.services.dbt_runner import run_dbt_command
 
 @task(retries=1)

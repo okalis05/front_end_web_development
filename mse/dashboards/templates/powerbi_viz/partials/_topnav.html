@@ -1,0 +1,28 @@
+<nav class="topnav">
+  <a class="brand" href="{% url 'dashboards:powerbi_viz:landing' %}">
+
+    <span class="brand__mark" aria-hidden="true">▮</span>
+    <span class="brand__name">Sports Executive Intelligence</span>
+  </a>
+ <div class="breadcrumbs" id="breadcrumbs">
+  <span class="crumb is-active">Executive</span>
+</div>
+
+  <div class="topnav__links">
+    <a class="toplink" data-jump="#hero" href="#hero">Overview</a>
+    <a class="toplink" data-jump="#executive_overview" href="#executive_overview">Executive</a>
+    <a class="toplink" data-jump="#player_impact" href="#player_impact">Players</a>
+    <a class="toplink" data-jump="#health_risk" href="#health_risk">Health</a>
+    <a class="toplink" data-jump="#revenue_fans" href="#revenue_fans">Revenue</a>
+  </div>
+
+  <div class="topnav__actions">
+    <button class="pill" id="btnMotion" type="button" aria-pressed="true" title="Toggle motion">
+      Motion: ON
+    </button>
+    <button class="pill pill--hot" id="btnSkip" type="button" title="Skip to active report">
+      Teleport
+    </button>
+  </div>
+  
+</nav>

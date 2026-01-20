@@ -1,0 +1,119 @@
+{% extends "javascript_viz/base.html" %}
+
+{% block content %}
+<section class="caseHead reveal">
+  <div class="caseHead__left">
+    <p class="eyebrow">CASE STUDY DASHBOARD</p>
+    <h1 class="h1">{{ case.title }}</h1>
+    <p class="lead">{{ case.hero_tagline }}</p>
+  </div>
+
+  <div class="caseHead__right glass">
+    <div class="caseHead__boxTitle">Focus Mission</div>
+    <div class="caseHead__mission">{{ case.mission }}</div>
+    <div class="caseHead__note">{{ case.dataset_note }}</div>
+  </div>
+</section>
+
+<section class="question reveal">
+  <div class="question__inner glass">
+    <div class="question__kicker">The Question We Must Answer</div>
+    <div class="question__text">{{ case.mission }}</div>
+    <div class="question__hint">Every visualization below exists only to solve this mission.</div>
+  </div>
+</section>
+
+<section class="scenes">
+  {% for b in case.blocks %}
+    {% with idx=forloop.counter0 %}
+      <section class="scene reveal scene--{% if idx|divisibleby:2 %}left{% else %}right{% endif %}">
+
+        <aside class="aside glass">
+          <div class="aside__top">
+            <div class="aside__label">ASIDE INSIGHTS</div>
+            <div class="aside__title">{{ b.title }}</div>
+            <div class="aside__question">{{ b.sub_question }}</div>
+          </div>
+
+          <div class="kpis">
+            {% for k in b.kpis %}
+              <div class="kpi">
+                <div class="kpi__label">{{ k.label }}</div>
+                <div class="kpi__value" data-countup>{{ k.value }}</div>
+                <div class="kpi__hint">{{ k.hint }}</div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="insights">
+            <div class="insights__title">Key Insights</div>
+            <ul class="insights__list">
+              {% for i in b.insights %}
+                <li>{{ i }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <div class="missionLink">
+            <div class="missionLink__title">How this supports the mission</div>
+            <div class="missionLink__text">{{ b.mission_link }}</div>
+          </div>
+        </aside>
+
+        <div class="viz glass">
+          <div class="viz__head">
+            <div class="viz__title">{{ b.title }}</div>
+            <div class="viz__subq">{{ b.sub_question }}</div>
+          </div>
+
+          {# ✅ THIS IS THE CRITICAL PAYLOAD SCRIPT TAG #}
+          <script id="payload-{{ idx }}" type="application/json">
+            {{ b.payload_json|safe }}
+          </script>
+
+          <div class="viz__chart"
+               data-chart-type="{{ b.chart_type|escape }}"
+               data-payload-id="payload-{{ idx }}">
+            <div class="viz__loading">Rendering visualization…</div>
+          </div>
+
+          <div class="viz__microAnswer">
+            <div class="viz__microAnswerTitle">Mini Answer</div>
+            <div class="viz__microAnswerText">
+              This scene contributes evidence toward solving the mission by answering the sub-question above.
+            </div>
+          </div>
+        </div>
+
+      </section>
+    {% endwith %}
+  {% endfor %}
+</section>
+
+<section class="final reveal">
+  <div class="final__inner glass">
+    <div class="final__title">{{ case.final_answer_title }}</div>
+    <div class="final__answer">{{ case.final_answer }}</div>
+
+    <div class="final__cols">
+      <div class="final__col">
+        <div class="final__colTitle">Recommendations</div>
+        <ul class="final__list">
+          {% for r in case.recommendations %}
+            <li>{{ r }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="final__col">
+        <div class="final__colTitle">Next Steps</div>
+        <ul class="final__list">
+          {% for n in case.next_steps %}
+            <li>{{ n }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

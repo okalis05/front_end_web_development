@@ -139,7 +139,7 @@
   <div class="card__top">
     <div class="pill pill--cyan">Financial Systems</div>
     <a href="{% url 'banking:dashboard' %}">
-      <div class="card__meta">Banking Core</div>
+      <div class="card__meta">Banking</div>
     </a>
   </div>
 
@@ -165,29 +165,28 @@
 <!--------------------------------------//Project 6--------------------------->
      <article class="card reveal" data-tilt>
   <div class="card__top">
-    <div class="pill">Decision Analytics</div>
+    <div class="pill">Analytical Dashboards</div>
     <a href="#">
-      <div class="card__meta">Analytics</div>
+      <div class="card__meta">Dashboardss</div>
     </a>
   </div>
 
-  <h3>Executive analytics & insight delivery</h3>
+  <h3>Executive analytics with embedded tools</h3>
 
   <p>
-    A centralized analytics platform transforming raw data into
-    fast, interpretable insights designed for leadership review
+    A centralized analytics platform embedding Tableau, PowerBI and JavaScript 
+    to create advanced visualizations designed for leadership review
     and operational decision-making.
   </p>
 
   <ul class="bullets">
-    <li>Unified metrics layer with consistent KPI definitions</li>
-    <li>Interactive dashboards optimized for executive scan</li>
-    <li>Cached, server-rendered views for resilient performance</li>
+    <li>Embedded visualizations tools into Django APP</li>
+    <li>Interactive dashboards delivered with Tableau , PowerBI and Javascript</li>
   </ul>
 
   <div class="card__actions">
-    <a class="link" href="{% url 'analytics:playground' %}">View Analytics App →</a>
-    <span class="muted">Django • Metrics Modeling • Chart.js/D3</span>
+    <a class="link" href="{% url 'dashboards:landing' %}">View Dashboards App →</a>
+    <span class="muted">Django • Tableau • JS • PowerBI</span>
   </div>
 </article>
 
@@ -289,7 +288,7 @@
       <p>Prefer a simple start: one problem, one decision, one clean system.</p>
 
       <div class="contact__actions">
-        <a class="btn btn--ghost" href="https://github.com/okalis05/" target="_blank" rel="noreferrer">
+        <a class="btn btn--ghost" href="https://github.com/okalis05/front_end_web_development.git" target="_blank" rel="noreferrer">
           GitHub <span class="arrow">↗</span>
         </a>
         <a class="btn btn--ghost" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
@@ -312,5 +311,9 @@
       <p class="fineprint">© <span id="year"></span> Francoise Elis</p>
     </div>
   </section>
+
+
+  <div id="note">Thanks for visiting</div>
+
 {% endblock %}
 

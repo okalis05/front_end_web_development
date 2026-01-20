@@ -9,19 +9,6 @@ from urllib3.util.retry import Retry
 
 
 class PrefectAPI:
-    """
-    Minimal Prefect HTTP client with retries + timeouts.
-
-    Env:
-      PREFECT_API_URL (e.g. http://127.0.0.1:4200/api)
-      PREFECT_API_TOKEN (optional)
-      PREFECT_HTTP_TIMEOUT (seconds, default 10)
-
-    Notes:
-      - Prefect v2 typically uses deployments to create runs.
-      - We'll try deployment-name endpoint first when provided.
-    """
-
     def __init__(self):
         self.base_url = (os.getenv("PREFECT_API_URL") or "http://127.0.0.1:4200/api").rstrip("/")
         self.token = os.getenv("PREFECT_API_TOKEN") or ""

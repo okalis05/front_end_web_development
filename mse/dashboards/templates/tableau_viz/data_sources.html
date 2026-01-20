@@ -1,0 +1,62 @@
+{% extends "tableau_viz/base.html" %}
+
+{% block title %}Data Sources & Governance{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel__head">
+    <div>
+      <h2 class="panel__title">Data Sources & Governance</h2>
+      <p class="panel__sub">
+        Executive transparency: sources, definitions, and interpretive guardrails.
+      </p>
+    </div>
+  </div>
+
+  <div class="panel__body">
+    <div class="prose">
+      <h3>Primary Source</h3>
+      <p>
+        CMS Provider Data – Hospital Readmissions:
+        <a href="{{ cms_dataset_url }}" target="_blank" rel="noopener noreferrer">
+          {{ cms_dataset_url }}
+        </a>
+      </p>
+
+      <h3>Fields Used (As-Is)</h3>
+      <ul>
+        <li>Facility ID</li>
+        <li>Facility Name</li>
+        <li>State</li>
+        <li>Measure Name</li>
+        <li>Start Date / End Date</li>
+        <li>Excess Readmission Ratio</li>
+        <li>Expected Readmission Rate</li>
+        <li>Predicted Readmission Rate</li>
+        <li>Number of Discharges</li>
+        <li>Number of Readmissions</li>
+      </ul>
+
+      <h3>Interpretation Notes</h3>
+      <ul>
+        <li>
+          <b>Excess Readmission Ratio</b> above 1.0 implies higher-than-expected outcomes.
+        </li>
+        <li>
+          Volume context matters — penalties scale with discharges.
+        </li>
+        <li>
+          Dashboards surface <b>exposure and prioritization</b>, not claims accounting.
+        </li>
+      </ul>
+
+      <h3>Security & Embedding</h3>
+      <ul>
+        <li>Tableau embeds are host-allowlisted.</li>
+        <li>Strict iframe referrer policy enforced.</li>
+        <li>No third-party scripts executed outside Tableau runtime.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}

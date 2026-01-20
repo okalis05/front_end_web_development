@@ -1,0 +1,112 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Dashboards · MSE</title>
+
+  <link rel="stylesheet" href="{% static 'dashboards/css/dashboards.css' %}">
+</head>
+
+<body>
+  <!-- =========================
+       Minimal Executive Navbar
+  ========================== -->
+  <header class="nav">
+    <div class="nav__inner">
+
+      <a class="brand" href="{% url 'dashboards:landing' %}">
+        <span class="brand__mark"></span>
+        <span class="brand__name">Dashboards</span>
+      </a>
+
+      <nav class="nav__links">
+        <a class="nav__link" href="{% url  'dashboards:tableau_viz:landing' %}">
+          <span class="pill">TABLEAU</span>
+          <span class="label">Tableau</span>
+        </a>
+        <a class="nav__link" href="{% url  'dashboards:powerbi_viz:landing' %}">
+          <span class="pill">POWER BI</span>
+          <span class="label">Power BI</span>
+        </a>
+        <a class="nav__link" href="{% url  'dashboards:javascript_viz:index' %}"">
+          <span class="pill">JAVASCRIPT</span>
+          <span class="label">JavaScript</span>
+        </a>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- =========================
+       Hero
+  ========================== -->
+  <main class="wrap">
+    <section class="hero">
+      <p class="eyebrow">EXECUTIVE ANALYTICS COMMAND CENTER</p>
+
+      <h1 class="title">
+        Unified Dashboard Platform
+      </h1>
+
+      <p class="sub">
+        A single entry point for Tableau embeds, Power BI reports, and high-performance JavaScript visualizations —
+        engineered for leadership-level clarity.
+      </p>
+
+      <div class="cta-row">
+        <a class="btn btn--primary" href="/dashboards/javascript/executive/">
+          Browse JS Viz <span class="arrow">→</span>
+        </a>
+        <a class="btn" href="/dashboards/tableau/">
+          Browse Tableau Viz<span class="arrow">→</span>
+        </a>
+        <a class="btn" href="/dashboards/powerbi/">
+          Browse Power BI Viz<span class="arrow">→</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- =========================
+         Cards (3 apps)
+    ========================== -->
+    <section class="grid">
+
+      <a class="card" href="/dashboards/tableau/">
+        <div class="card__top">
+          <span class="tag">TABLEAU</span>
+          <span class="go">→</span>
+        </div>
+        <h2 class="card__title">Tableau Viz</h2>
+        <p class="card__desc">
+          Embedded Tableau dashboards with executive narratives, global filters, and storytelling layouts.
+        </p>
+      </a>
+
+      <a class="card" href="/dashboards/powerbi/">
+        <div class="card__top">
+          <span class="tag">POWER BI</span>
+          <span class="go">→</span>
+        </div>
+        <h2 class="card__title">Power BI Viz</h2>
+        <p class="card__desc">
+          Publish Power BI reports with enterprise structure: report index, drill-through navigation, and KPI layers.
+        </p>
+      </a>
+      <a class="card" href="/dashboards/javascript/">
+        <div class="card__top">
+          <span class="tag">POWER BI</span>
+          <span class="go">→</span>
+        </div>
+        <h2 class="card__title">Power BI Viz</h2>
+        <p class="card__desc">
+          Embedded javascript dashboards with enterprise structure: report index, drill-through navigation, and KPI layers.
+        </p>
+      </a>
+    </section>
+  </main>
+</body>
+</html>
+
+     

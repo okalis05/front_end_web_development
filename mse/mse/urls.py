@@ -8,10 +8,8 @@ from django.shortcuts import redirect
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("portfolio.urls")),
-    path("analytics/", include("analytics.urls")),
     path("pipeline/", include("pipeline.urls")),
     path("mystics_site/", include("mystics_site.urls")),
-    path("playground/", include("playground.urls")),
     path("banking/", include("banking.urls")),
     path("store/", include("store.urls")),
     path("store/api/", include("store.api_urls")),
@@ -19,6 +17,6 @@ urlpatterns = [
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema")),
     path("sentinel/", include("sentinel.urls")),
-     path("dashboard/", include("dashboard.urls")),
+    path("dashboards/",include('dashboards.urls'))
 
 ]

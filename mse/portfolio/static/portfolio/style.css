@@ -560,3 +560,63 @@ body{
   .nav{ gap: 8px; }
   .nav a{ padding: 8px 8px; }
 }
+
+
+
+/* Optional: import a premium-looking font */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap');
+
+#note{
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+
+  /* hidden by default */
+  opacity: 0;
+  pointer-events: none;
+
+  /* premium look */
+  font-family: "Cinzel", "Georgia", serif;
+  font-weight: 700;
+  font-size: clamp(26px, 3.6vw, 52px);
+  letter-spacing: 1px;
+
+  /* gold cinematic */
+  color: rgba(255, 226, 160, 0.98);
+  text-shadow:
+    0 0 10px rgba(255, 200, 120, 0.45),
+    0 0 28px rgba(255, 170, 70, 0.25);
+
+  /* glass base */
+  padding: 18px 28px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.20);
+  border: 1px solid rgba(255,255,255,0.14);
+  backdrop-filter: blur(10px);
+
+  /* smooth reveal */
+  transition: opacity .5s ease, transform .5s ease;
+}
+
+/* show state (added by JS) */
+#note.show{
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* semi-circle effect using SVG arc text inside via JS
+   This CSS improves the look once it's converted */
+#note svg{
+  display: block;
+  width: min(92vw, 780px);
+  height: 160px;
+}
+
+#note svg text{
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: 42px;
+  fill: rgba(255, 226, 160, 0.98);
+  letter-spacing: 2px;
+}

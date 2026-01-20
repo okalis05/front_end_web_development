@@ -1,0 +1,63 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="referrer" content="strict-origin-when-cross-origin"/>
+  <title>{{ page_title }} · JavaScript Viz</title>
+
+  <link rel="stylesheet" href="{% static 'dashboards/css/javascript_viz.css' %}"/>
+  <script defer src="{% static 'dashboards/js/javascript_viz.js' %}"></script>
+  <link rel="icon" href="{% static 'favicon.ico' %}">
+  <script id="payload-{{ forloop.counter0 }}" type="application/json">
+  {{ b.payload_json|safe }}
+</script>
+
+
+  <!-- Plotly (CDN) -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+</head>
+
+<body>
+  <div class="bg">
+    <div class="bg__filmgrain"></div>
+    <div class="bg__flare bg__flare--a"></div>
+    <div class="bg__flare bg__flare--b"></div>
+    <div class="bg__ribbon bg__ribbon--1"></div>
+    <div class="bg__ribbon bg__ribbon--2"></div>
+  </div>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="{% url 'dashboards:javascript_viz:index' %}">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__name">JavaScript Visualizations</span>
+      </a>
+
+      <nav class="nav">
+        <a class="nav__link" href="{% url 'dashboards:javascript_viz:index' %}">Dashboards</a>
+        <span class="nav__sep" aria-hidden="true">•</span>
+        <a class="nav__link nav__link--pill" href="#content">View</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="content" class="content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__left">
+        <span class="footer__dot" aria-hidden="true"></span>
+        <span class="footer__text">Bright cinematic dashboards · story-first · insight-driven</span>
+      </div>
+      <div class="footer__right">
+        <span class="footer__text">Plotly · Django · Executive narrative</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
